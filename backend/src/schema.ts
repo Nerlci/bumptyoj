@@ -10,7 +10,7 @@ export const responseBase = z.object({
     payload: z.object({}).passthrough(),
 });
 
-export const DateRange = z
+export const dateRange = z
     .object({
         startDate: z.date(),
         endDate: z.date(),
@@ -18,4 +18,31 @@ export const DateRange = z
     .refine((d) => d.endDate >= d.startDate, {
         message: "End date must be later than or equal to the start date",
     });
-export type DateRange = z.infer<typeof DateRange>;
+export type DateRange = z.infer<typeof dateRange>;
+
+export const problemMetadata = z.object({
+    problemId: z.number().default(0),
+    displayId: z.string(),
+    acceptedCount: z.number().default(0),
+    submissionCount: z.number().default(0),
+    title: z.string(),
+    createdAt: z.date().default(() => new Date()),
+    difficulty: z.string(),
+    time: z.number(),
+    memory: z.number(),
+});
+
+export const problem = z.object({
+    metadata: problemMetadata,
+    description: z.string(),
+    format: z.object({
+        input: z.string(),
+        output: z.string(),
+    }),
+    sample: z.object({
+        input: z.string(),
+        output: z.string(),
+    }),
+    other: z.string(),
+});
+export type Problem = z.infer<typeof problem>;
