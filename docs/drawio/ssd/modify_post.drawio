@@ -1,0 +1,60 @@
+<mxfile host="65bd71144e">
+    <diagram id="6WNUeCZyW9SIcsBnCyCO" name="第 1 页">
+        <mxGraphModel dx="647" dy="442" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="24" value="" style="shape=umlLifeline;participant=umlActor;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;verticalAlign=top;spacingTop=36;outlineConnect=0;" parent="1" vertex="1">
+                    <mxGeometry x="230" y="80" width="20" height="350" as="geometry"/>
+                </mxCell>
+                <mxCell id="25" value="OJ" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;" parent="1" vertex="1">
+                    <mxGeometry x="510" y="80" width="100" height="350" as="geometry"/>
+                </mxCell>
+                <mxCell id="26" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;" parent="25" vertex="1">
+                    <mxGeometry x="45" y="60" width="10" height="260" as="geometry"/>
+                </mxCell>
+                <mxCell id="28" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;" parent="25" vertex="1">
+                    <mxGeometry x="50" y="100" width="10" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="29" value="checkPermission(userId)" style="edgeStyle=orthogonalEdgeStyle;html=1;align=left;spacingLeft=2;endArrow=block;rounded=0;entryX=1;entryY=0;" parent="25" target="28" edge="1">
+                    <mxGeometry x="0.0667" relative="1" as="geometry">
+                        <mxPoint x="55" y="80" as="sourcePoint"/>
+                        <Array as="points">
+                            <mxPoint x="85" y="80"/>
+                        </Array>
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="30" value="可选" style="shape=umlFrame;whiteSpace=wrap;html=1;width=50;height=20;" parent="25" vertex="1">
+                    <mxGeometry x="-330" y="150" width="430" height="110" as="geometry"/>
+                </mxCell>
+                <mxCell id="31" value="modifyPost(postId, title, content, tag)" style="html=1;verticalAlign=bottom;endArrow=block;entryX=0;entryY=0;" parent="1" source="24" target="26" edge="1">
+                    <mxGeometry x="0.0011" relative="1" as="geometry">
+                        <mxPoint x="365" y="220" as="sourcePoint"/>
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="32" value="return&lt;br&gt;postId" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;exitX=0;exitY=0.95;" parent="1" source="26" target="24" edge="1">
+                    <mxGeometry x="0.0034" relative="1" as="geometry">
+                        <mxPoint x="365" y="296" as="targetPoint"/>
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="27" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;fontSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="560" y="255" width="10" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="37" value="removeReply(replyId)" style="html=1;verticalAlign=bottom;endArrow=block;entryX=0;entryY=0;fontSize=10;" parent="1" target="27" edge="1">
+                    <mxGeometry x="0.0627" y="5" relative="1" as="geometry">
+                        <mxPoint x="239.92857142857144" y="255" as="sourcePoint"/>
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="38" value="return" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;exitX=0;exitY=0.95;fontSize=10;" parent="1" source="27" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="239.92857142857144" y="331" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
