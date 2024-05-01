@@ -1,4 +1,4 @@
-# hotel_management
+# BUmPTy OJ
 
 ## Run dev server
 
