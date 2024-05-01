@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import { apiRouter } from "./router/apiRouter";
 
 const app = express();
 
@@ -16,6 +17,8 @@ app.get("/", async (req, res) => {
 app.get("/echo", async (req, res) => {
     res.send(req.body);
 });
+
+app.use("/api", apiRouter);
 
 app.listen(8080, () => {
     console.log("Server is running on http://localhost:8080");
