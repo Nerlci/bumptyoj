@@ -4,28 +4,28 @@
         <input type="text" placeholder="搜索帖子">
         <el-button class="search-button" type="primary">搜索</el-button>
       </div>
-      <div class="board" @click="viewBoard('题目讨论')">
+      <div class="board" @click="viewBoard('ProblemDiscussion')">
         <h3 class="board-title">题目讨论</h3>
         <hr>
         <ul>
           <li v-for="post in latestPosts" :key="post.id">{{ post.title }}</li>
         </ul>
       </div>
-      <div class="board" @click="viewBoard('技术交流')">
+      <div class="board" @click="viewBoard('TechExchange')">
         <h3 class="board-title">技术交流</h3>
         <hr>
         <ul>
           <li v-for="post in latestPosts" :key="post.id">{{ post.title }}</li>
         </ul>
       </div>
-      <div class="board" @click="viewBoard('反馈与建议')">
+      <div class="board" @click="viewBoard('FeedbackAndSuggestions')">
         <h3 class="board-title">反馈与建议</h3>
         <hr>
         <ul>
           <li v-for="post in latestPosts" :key="post.id">{{ post.title }}</li>
         </ul>
       </div>
-      <div class="board" @click="viewBoard('灌水区')">
+      <div class="board" @click="viewBoard('OffTopic')">
         <h3 class="board-title">灌水区</h3>
         <hr>
         <ul>
@@ -59,7 +59,7 @@
         }, 1000); // 模拟延迟1秒
       },
       viewBoard(boardName) {
-        // 这里可以根据板块名称跳转到对应的板块页面
+        this.$router.push({ name: boardName });
         console.log("进入板块：" + boardName);
       }
     }
