@@ -10,7 +10,7 @@
                      element-loading-background="rgba(0, 0, 0, 0.8)"
                      class="registerContainer">
 
-                <h3 class="registerTitle">Fake Oj 注册</h3>
+                <h3 class="registerTitle">Bumpty Oj 注册</h3>
 
                 <el-form-item prop="username">
                     <el-input v-model="registerForm.username" placeholder="用户名" prefix-icon="el-icon-s-custom"></el-input>
@@ -100,8 +100,8 @@
         computed: {
             backgroundStyle : function () {
                 let high = window.innerHeight - 110;
-                let img = ["/image/0_0.jpg", "/image/0_1.jpg", '/image/0_2.jpg']
-                return "background-image:url('" + img[Math.floor(Math.random() * 3)] + "'); background-repeat: no-repeat; background-size: cover; height:" + high + "px;"
+                let img = require("../../public/image/bupt.jpg");
+            return "background-image:url('" + img + "'); background-repeat: no-repeat; background-size: cover; background-position: center; height:" + high + "px;";
             }
         },
         created() {

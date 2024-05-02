@@ -5,7 +5,7 @@
             <el-form :model="loginForm" :rules="rules" ref="loginForm" v-loading="loading"
                 element-loading-text="正在登录..." element-loading-spinner="el-icon-loading"
                 element-loading-background="rgba(0, 0, 0, 0.8)" class="loginContainer">
-                <h3 class="loginTitle">Fake Oj 登录</h3>
+                <h3 class="loginTitle">Bumpty OJ 登录</h3>
                 <el-form-item prop="email">
                     <el-input v-model="loginForm.email" placeholder="邮箱" prefix-icon="el-icon-s-custom"></el-input>
                 </el-form-item>
@@ -47,12 +47,12 @@ export default {
     computed: {
         backgroundStyle: function () {
             let high = window.innerHeight - 110;
-            let img = ["/image/0_0.jpg", "/image/0_1.jpg", '/image/0_2.jpg']
-            return "background-image:url('" + img[Math.floor(Math.random() * 3)] + "'); background-repeat: no-repeat; background-size: cover; height:" + high + "px;"
+            let img = require("../../public/image/bupt.jpg");
+            return "background-image:url('" + img + "'); background-repeat: no-repeat; background-size: cover; background-position: center; height:" + high + "px;";
         }
     },
     created() {
-        document.title = "Fake OJ"
+        document.title = "Bumpty OJ"
     },
     methods: {
         // submitForm(loginForm) {

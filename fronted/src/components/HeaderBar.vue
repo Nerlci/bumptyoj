@@ -1,6 +1,6 @@
 <template>
     <div class="nav-bar">
-        <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="shortcut icon" type="image/x-icon" href="../../public/image/favicon.ico" />
         <el-row>
             <el-col :span="2">
                 <div class="nav_bar_name">
