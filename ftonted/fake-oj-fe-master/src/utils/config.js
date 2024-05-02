@@ -1,4 +1,4 @@
-export const baseApi = "/api"
+export const baseApi = ""
 
 export function handleUrl(Url) {
     return this.baseApi + "/" + Url

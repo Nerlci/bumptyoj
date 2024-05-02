@@ -8,22 +8,23 @@ export default new Vuex.Store({
         status: {
             isLogin: false,
             username: '',
-            isAdmin: false,
-            canAdd: false
+            userId: 0,
+            type: 1 //0管理员，1普通用户，2教师
         }
     },
     mutations: {
-        login (state, resp) {
-            if (resp === null) return
+        login (state, payload) {
+            if (payload === null) return
             state.status.isLogin = true
-            state.status.username = resp.userName
-            state.status.isAdmin = resp.isAdmin
-            state.status.canAdd = resp.canAdd
+            state.status.username = payload.username
+            state.status.userId = payload.userId
+            state.status.type = payload.type
         },
         logout (state) {
             state.status.isLogin = false
             state.status.username = ''
-            state.status.isAdmin = false
+            state.status.userId = 0,
+            state.status.type = 1
         }
     },
     actions: {}

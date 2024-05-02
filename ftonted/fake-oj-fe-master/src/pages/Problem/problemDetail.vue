@@ -2,15 +2,15 @@
     <div class="problem-detail" v-loading="loading" v-show="show">
         <h2 id="problem-detail-title">{{problem.title}}</h2>
         <div class="problem-metadata">
-            <span id="problem-metadata-solve"><i class="el-icon-circle-check"></i>解决&nbsp; {{problem.solvedCount}}</span>&nbsp;|&nbsp;
-            <span id="problem-metadata-submit"><i class="el-icon-notebook-2"></i>提交&nbsp; {{problem.submitCount}}</span>
+            <span id="problem-metadata-solve"><i class="el-icon-circle-check"></i>解决&nbsp; {{problem.acceptedCount}}</span>&nbsp;|&nbsp;
+            <span id="problem-metadata-submit"><i class="el-icon-notebook-2"></i>提交&nbsp; {{problem.submissionCount}}</span>
         </div>
 
         <div class="problem-detail-main">
             <problem-info :problem="problem"/>
         </div>
         <div class="problem-submit">
-            <problem-submit :pid="problem.id"/>
+            <problem-submit :pid="problem.problemId"/>
         </div>
     </div>
 </template>
@@ -27,22 +27,50 @@
                 show: false,
                 loading: true,
                 problem: {
-                    id: 1,
-                    solvedCount: 0,
-                    submitCount: 0,
-                    title: ' ',
-                    content: ' ',
-                    hint: ' '
+                    problemId: 0,
+                    displayId: '',
+                    title: '',
+                    acceptedCount: 0,
+                    submissionCount: 0,
+                    createdAt: '',
+                    difficulty: '',
+                    time: 0,
+                    memory: 0,
+                    description: '',
+                    inputFormat: '',
+                    outputFormat: '',
+                    sampleInput: '',
+                    sampleOutput: '',
+                    other: ''
                 }
             }
         },
         methods: {
             updatePro() {
                 this.loading = true
-                this.getRequest('/getProblem', {
-                    id: this.$route.params.id
-                }).then(resp => {
-                    this.problem = resp
+                this.getRequest('/api/problem/problem', {
+                    problemId: this.$route.params.id
+                }).then(response => {
+                    const data = response.payload.metadata;
+                    const format = response.payload.format;
+                    const sample = response.payload.sample;
+                    this.problem = {
+                        problemId: data.problemId,
+                        displayId: data.displayId,
+                        title: data.title,
+                        acceptedCount: data.acceptedCount,
+                        submissionCount: data.submissionCount,
+                        createdAt: data.createdAt,
+                        difficulty: data.difficulty,
+                        time: data.time,
+                        memory: data.memory,
+                        description: response.payload.description,
+                        inputFormat: format.input,
+                        outputFormat: format.output,
+                        sampleInput: sample.input,
+                        sampleOutput: sample.output,
+                        other: response.payload.other
+                    };
                     this.loading = false
                 }).catch(error => {
                     this.loading = false
@@ -52,7 +80,6 @@
             }
         },
         created() {
-            console.log("creat")
             this.updatePro()
         },
         mounted() {

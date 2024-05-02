@@ -45,7 +45,7 @@ let base = config.baseApi
 export const postRequest = (url, params) => {
     return axios({
         method: 'post',
-        url: `${base}${url}`,
+        url: `${url}`,
         data: params
     })
 }

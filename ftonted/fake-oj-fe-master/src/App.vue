@@ -31,18 +31,15 @@ export default {
     HeaderBar
   },
   created() {
-    this.getRequest('/loginStatue').then(resp => {
-      //console.log(resp)
-      if (resp === null) return
-      if (resp.statue === 0) {
-         this.$store.commit('login', resp.data);
-      } else {
-        this.$store.commit('logout')
-      }
-    })
-    //if (window.screen.width > 1000) {
-    //  document.write('<body style="zoom: 125%">')
-    //}
+    // this.getRequest('/loginStatue').then(resp => {
+    //   //console.log(resp)
+    //   if (resp === null) return
+    //   if (resp.statue === 0) {
+    //      this.$store.commit('login', resp.data);
+    //   } else {
+    //     this.$store.commit('logout')
+    //   }
+    // })
   }
 }
 </script>

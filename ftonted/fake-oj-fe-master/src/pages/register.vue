@@ -20,13 +20,13 @@
                     <el-input type="email" v-model="registerForm.email" placeholder="邮箱" prefix-icon="el-icon-message"></el-input>
                 </el-form-item>
 
-                <el-form-item prop="pwd">
-                    <el-input type="password" placeholder="密码" v-model="registerForm.pwd"
+                <el-form-item prop="password">
+                    <el-input type="password" placeholder="密码" v-model="registerForm.password"
                               prefix-icon="el-icon-key"></el-input>
                 </el-form-item>
 
-                <el-form-item prop="repwd">
-                    <el-input type="password" placeholder="确认密码" v-model="registerForm.repwd"
+                <el-form-item prop="repassword">
+                    <el-input type="password" placeholder="确认密码" v-model="registerForm.repassword"
                               @keydown.enter.native="submitForm('registerForm')" prefix-icon="el-icon-lock"></el-input>
                 </el-form-item>
 
@@ -49,8 +49,8 @@
                 if (value === '') {
                     callback(new Error('请输入密码'));
                 } else {
-                    if (this.registerForm.repwd !== '') {
-                        this.$refs.registerForm.validateField('repwd');
+                    if (this.registerForm.repassword !== '') {
+                        this.$refs.registerForm.validateField('repassword');
                     }
                     callback();
                 }
@@ -58,7 +58,7 @@
             let validatePass2 = (rule, value, callback) => {
                 if (value === '') {
                     callback(new Error('请再次输入密码'));
-                } else if (value !== this.registerForm.pwd) {
+                } else if (value !== this.registerForm.password) {
                     callback(new Error('两次输入密码不一致!'));
                 } else {
                     callback();
@@ -67,10 +67,6 @@
             let validateName = async (rule, value, callback) => {
                 if (value === '') {
                     callback(new Error('请输入用户名'));
-                } else if (!await this.ckName(value)) {
-                    callback(new Error('用户名已存在!'));
-                } else {
-                    callback();
                 }
             };
 
@@ -78,20 +74,20 @@
                 loading: false,
                 registerForm: {
                     username: '',
-                    pwd: '',
+                    password: '',
                     email: '',
-                    repwd: ''
+                    repassword: ''
                 },
                 rules: {
                     username: [
                         {validator: validateName, trigger: 'blur'},
                         { min: 3, max: 20, message: '长度在 3 到 20 个字符', trigger: 'blur' }
                     ],
-                    pwd: [
+                    password: [
                         {validator: validatePass, trigger: 'blur'},
                         { min: 3, max: 32, message: '长度在 3 到 32 个字符', trigger: 'blur' }
                     ],
-                    repwd: [
+                    repassword: [
                         {validator: validatePass2, trigger: 'blur'},
                         { min: 3, max: 32, message: '长度在 3 到 32 个字符', trigger: 'blur' }
                     ],
@@ -112,14 +108,6 @@
             document.title = "Fake OJ 注册"
         },
         methods:{
-            async ckName(name) {
-                this.flag = false
-                return await this.getRequest("/ckName", {
-                    name: name
-                }).then(resp => {
-                    return resp === 1;
-                })
-            },
             submitForm(registerForm) {
                 this.$refs[registerForm].validate((valid) => {
                     if (valid) {
@@ -127,7 +115,8 @@
                         this.postRequest('/register', this.registerForm).then(resp => {
                             this.loading = false
                             //console.log(resp)
-                            if (resp.statue === 0) {
+                            if (resp.code == 200) {
+                                console.log(' 注册成功！')
                                 this.$router.replace('/home')
                             } else {
                                 Message.error(resp.message)

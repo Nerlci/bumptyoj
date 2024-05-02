@@ -1,68 +1,101 @@
 <template>
     <div class="problem-manager" v-loading="loading">
         <el-form :model="problem" label-position="right" label-width="auto" ref="form">
-            <el-form-item label="题目ID" prop="id">
-                <el-input v-model="problem.id" :disabled="!this.$store.state.status.isAdmin"
-                placeholder="不填则自动生成(推荐)"></el-input>
+            <el-form-item label="题目ID" prop="displayId">
+                <el-input v-model="problem.displayId" :disabled="true"></el-input>
             </el-form-item>
 
             <el-form-item label="标题" prop="title">
                 <el-input v-model="problem.title"></el-input>
             </el-form-item>
 
-            <el-form-item label="题目" prop="content">
-                <el-input v-model="problem.content" :autosize="{ minRows: 12, maxRows: 25 }" type="textarea"
-                          placeholder="可使用html标签"></el-input>
+            <el-form-item label="描述" prop="description">
+                <el-input v-model="problem.description" :autosize="{ minRows: 12, maxRows: 25 }" type="textarea"
+                    placeholder="输入题目描述，可包含简单的Markdown或HTML"></el-input>
             </el-form-item>
 
-            <el-form-item label="提示" prop="hint">
-                <el-input v-model="problem.hint" :autosize="{ minRows: 4, maxRows: 8 }" type="textarea"></el-input>
+            <el-form-item label="输入格式" prop="inputFormat">
+                <el-input v-model="problem.inputFormat" :autosize="{ minRows: 4, maxRows: 8 }" type="textarea"
+                    placeholder="描述输入格式"></el-input>
             </el-form-item>
 
-            <el-form-item label="数据" prop="data">
-                <el-input v-model="problem.data" :autosize="{ minRows: 4, maxRows: 8 }" type="textarea" placeholder="无需修改则无需填写.若有多个答案,用;分割">
-                </el-input>
+            <el-form-item label="输出格式" prop="outputFormat">
+                <el-input v-model="problem.outputFormat" :autosize="{ minRows: 4, maxRows: 8 }" type="textarea"
+                    placeholder="描述输出格式"></el-input>
+            </el-form-item>
+
+            <el-form-item label="样例输入" prop="sampleInput">
+                <el-input v-model="problem.sampleInput" :autosize="{ minRows: 2, maxRows: 4 }"
+                    type="textarea"></el-input>
+            </el-form-item>
+
+            <el-form-item label="样例输出" prop="sampleOutput">
+                <el-input v-model="problem.sampleOutput" :autosize="{ minRows: 2, maxRows: 4 }"
+                    type="textarea"></el-input>
+            </el-form-item>
+
+            <el-form-item label="其他信息" prop="other">
+                <el-input v-model="problem.other" :autosize="{ minRows: 3, maxRows: 6 }" type="textarea"
+                    placeholder="例如数据范围、限制等"></el-input>
             </el-form-item>
 
             <el-form-item>
                 <el-button @click="update" type="primary">{{ operation }}题目</el-button>
+                <!-- 根据 operation 显示删除按钮 -->
+                <el-button v-if="operation === '更新'" @click="deleteProblem" type="danger" style="margin-left: 10px;">删除题目</el-button>
             </el-form-item>
         </el-form>
     </div>
 </template>
 
 <script>
-    export default {
-        name: "ProblemManager",
-        props: ['problem', 'operation'],
-        data() {
-            return {
-                loading: true
-            }
+export default {
+    name: "ProblemManager",
+    props: ['problem', 'operation'],
+    data() {
+        return {
+            loading: false
+        }
+    },
+    methods: {
+        update() {
+            // 验证表单并更新题目
         },
-        methods: {
-            update() {
-                this.$refs['form'].validate(v => {
-                    if (v) {
-                        this.postRequest('/updateProblem', this.problem).then(resp => {
-                            //console.log(resp)
-                            this.$message({ showClose: true, duration: 2000, message: '更新成功', type: 'success' })
-                            this.$router.push({name: "problemDetail", params: {id: resp.data}})
-                        })
+        deleteProblem() {
+            // 调用删除API
+            this.$confirm('确定要删除这个题目吗？操作不可恢复!', '警告', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                this.deleteRequest(`/api/problem/problem?problemId=${this.problem.id}`).then(response => {
+                    if (response.code === "200") {
+                        this.$message({
+                            type: 'success',
+                            message: '删除成功!'
+                        });
+                        this.$router.push({ name: '/problems' });
+                    } else {
+                        this.$message.error('删除失败: ' + response.error.msg);
                     }
                 })
-            }
-        },
-        mounted() {
-            this.loading = false
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });  
+            });
         }
     }
+}
 </script>
 
+
+
 <style scoped>
-    .problem-manager {
-        width: 80%;
-        margin-left: auto;
-        margin-right: auto;
-    }
+.problem-manager {
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+}
 </style>
