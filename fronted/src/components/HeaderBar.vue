@@ -4,7 +4,7 @@
         <el-row>
             <el-col :span="2">
                 <div class="nav_bar_name">
-                    <a :href="'/home'" class="no-decoration">Fake OJ</a>
+                    <a :href="'/home'" class="no-decoration">Bumpty OJ</a>
                 </div>
             </el-col>
             <el-col :span="14">
@@ -14,6 +14,7 @@
                     <el-menu-item index="/status"><i class="el-icon-coffee-cup"></i>状态</el-menu-item>
                     <el-menu-item index="/rank"><i class="el-icon-trophy"></i>排名</el-menu-item>
                     <el-menu-item index="/contest"><i class="el-icon-s-flag"></i>比赛</el-menu-item>
+                    <el-menu-item index="/discuss"><i class="el-icon-chat-line-square"></i>讨论</el-menu-item>
                 </el-menu>
             </el-col>
 

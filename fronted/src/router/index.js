@@ -13,6 +13,7 @@ const problemEdit = () => import("../pages/Problem/problemEdit")
 const problemAdd = () => import("../pages/Problem/problemAdd")
 const statusDetail = () => import("../pages/Status/statusDetail")
 const contest = () => import("../pages/contest")
+const discuss = () => import("../pages/discuss")
 
 Vue.use(Router)
 
@@ -56,6 +57,11 @@ const constRouter = [
         path: '/manager',
         name: 'manager',
         component: manager
+    },
+    {
+        path: '/discuss',
+        name: 'discuss',
+        component: discuss
     },
     {
         path: '/problem/detail/:id',
