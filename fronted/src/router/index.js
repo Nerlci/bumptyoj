@@ -14,11 +14,6 @@ const problemAdd = () => import("../pages/Problem/problemAdd")
 const statusDetail = () => import("../pages/Status/statusDetail")
 const contest = () => import("../pages/contest")
 const discuss = () => import("../pages/discuss")
-const ProblemDiscussion = () => import("../pages/Discuss/ProblemDiscussion")
-const FeedbackAndSuggestions = () => import("../pages/Discuss/FeedbackAndSuggestions")
-const TechExchange = () => import("../pages/Discuss/TechExchange")
-const OffTopic = () => import("../pages/Discuss/OffTopic")
-const Board = () => import("../pages/Discuss/Board")
 
 Vue.use(Router)
 
@@ -67,54 +62,6 @@ const constRouter = [
         path: '/discuss',
         name: 'discuss',
         component: discuss
-    },
-    {
-        path: '/discuss/problemDiscussion',
-        name: 'ProblemDiscussion',
-        component: ProblemDiscussion,
-        children: [
-            {
-                path: 'board',
-                name: 'Board',
-                component: Board
-            }
-        ]
-    },
-    {
-        path: '/discuss/feedbackAndSuggestions',
-        name: 'FeedbackAndSuggestions',
-        component: FeedbackAndSuggestions,
-        children: [
-            {
-                path: 'board',
-                name: 'Board',
-                component: Board
-            }
-        ]
-    },
-    {
-        path: '/discuss/techExchange',
-        name: 'TechExchange',
-        component: TechExchange,
-        children: [
-            {
-                path: 'board',
-                name: 'Board',
-                component: Board
-            }
-        ]
-    },
-    {
-        path: '/discuss/offTopic',
-        name: 'OffTopic',
-        component: OffTopic,
-        children: [
-            {
-                path: 'board',
-                name: 'Board',
-                component: Board
-            }
-        ]
     },
     {
         path: '/problem/detail/:id',

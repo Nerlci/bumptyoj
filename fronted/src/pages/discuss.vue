@@ -1,129 +1,104 @@
 <template>
-    <div class="container">
-      <div class="search-box">
-        <input type="text" placeholder="搜索帖子">
-        <el-button class="search-button" type="primary">搜索</el-button>
-      </div>
-      <div class="board" @click="viewBoard('ProblemDiscussion')">
-        <h3 class="board-title">题目讨论</h3>
-        <hr>
-        <ul>
-          <li v-for="post in latestPosts" :key="post.id">{{ post.title }}</li>
-        </ul>
-      </div>
-      <div class="board" @click="viewBoard('TechExchange')">
-        <h3 class="board-title">技术交流</h3>
-        <hr>
-        <ul>
-          <li v-for="post in latestPosts" :key="post.id">{{ post.title }}</li>
-        </ul>
-      </div>
-      <div class="board" @click="viewBoard('FeedbackAndSuggestions')">
-        <h3 class="board-title">反馈与建议</h3>
-        <hr>
-        <ul>
-          <li v-for="post in latestPosts" :key="post.id">{{ post.title }}</li>
-        </ul>
-      </div>
-      <div class="board" @click="viewBoard('OffTopic')">
-        <h3 class="board-title">灌水区</h3>
-        <hr>
-        <ul>
-          <li v-for="post in latestPosts" :key="post.id">{{ post.title }}</li>
-        </ul>
-      </div>
-      <el-button class="post-button" type="success">发帖</el-button>
+  <div class="discussion-page">
+    <!-- 搜索和发布按钮 -->
+    <div class="top-bar">
+      <search-bar @search="handleSearch" />
+      <post-button @post="handlePost" />
     </div>
-  </template>
-  
-  <script>
-  export default {
-    data() {
-      return {
-        latestPosts: []
-      };
+
+    <!-- 板块分类和帖子列表 -->
+    <div class="main-content">
+      <category-list @select-category="handleCategorySelect" />
+      <post-list :posts="filteredPosts" />
+    </div>
+
+    <!-- 分页 -->
+    <pagination :total="totalPosts" @change-page="handleChangePage" />
+
+    <!-- 弹出窗口用于发布帖子 -->
+    <post-dialog v-model="dialogVisible" @submit-success="handleSubmitSuccess" />
+  </div>
+</template>
+
+<script>
+import SearchBar from '../components/Discuss/SearchBar.vue';
+import PostButton from '../components/Discuss/PostButton.vue';
+import CategoryList from '../components/Discuss/CategoryList.vue';
+import PostList from '../components/Discuss/PostList.vue';
+import Pagination from '../components/Discuss/Pagination.vue';
+import PostDialog from '../components/Discuss/PostDialog.vue'; 
+
+export default {
+  components: {
+    SearchBar,
+    PostButton,
+    CategoryList,
+    PostList,
+    Pagination,
+    PostDialog 
+  },
+  data() {
+    return {
+      posts: [],
+      filteredPosts: [],
+      totalPosts: 0,
+      currentCategory: null,
+      searchQuery: '',
+      dialogVisible: false 
+    };
+  },
+  methods: {
+    handleSearch(query) {
+      this.searchQuery = query;
+      this.filterPosts();
     },
-    mounted() {
-      this.fetchLatestPosts();
+    handlePost() {
+      // 打开发布帖子的对话框
+      this.dialogVisible = true;
     },
-    methods: {
-      fetchLatestPosts() {
-        // 模拟获取最新帖子数据的异步操作
-        setTimeout(() => {
-          this.latestPosts = [
-            { id: 1, title: "最新帖子1" },
-            { id: 2, title: "最新帖子2" },
-            { id: 3, title: "最新帖子3" },
-            // 其他帖子...
-          ];
-        }, 1000); // 模拟延迟1秒
-      },
-      viewBoard(boardName) {
-        this.$router.push({ name: boardName });
-        console.log("进入板块：" + boardName);
-      }
+    handleCategorySelect(category) {
+      this.currentCategory = category;
+      this.filterPosts();
+    },
+    handleChangePage(page) {
+      console.log('Page changed to:', page);
+    },
+    filterPosts() {
+      this.filteredPosts = this.posts.filter(post => {
+        return (this.currentCategory ? post.category === this.currentCategory : true) &&
+               (this.searchQuery ? post.title.includes(this.searchQuery) : true);
+      });
+    },
+    handleSubmitSuccess() {
+      // 处理帖子提交成功后的逻辑，例如重新加载帖子列表
+      this.dialogVisible = false;
+      console.log('Post submitted successfully.');
     }
-  };
-  </script>
-  
-  <style scoped>
-  .container {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); /* 将列数修改为两列 */
-    gap: 1em; /* 设置网格间距 */
-    background-color: #f5f5f5; /* 设置背景颜色 */
-    padding: 20px; /* 设置内边距 */
-    border-radius: 10px; /* 设置圆角边框 */
+  },
+  mounted() {
+    this.posts = [
+      { id: 1, title: 'Vue.js Basics', author: 'Alice', category: '1', date: '2022-01-01' },
+      { id: 2, title: 'Advanced Vue Techniques', author: 'Bob', category: '1', date: '2022-01-02' },
+      { id: 3, title: 'Introduction to Vuex', author: 'Carol', category: '2', date: '2022-01-03' }
+    ];
+    this.totalPosts = this.posts.length;
+    this.filteredPosts = this.posts;
   }
-  
-  .board {
-    margin-bottom: 1em;
-    padding: 1em;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    background-color: #fff;
-    cursor: pointer; /* 鼠标悬停时显示手型 */
-  }
-  
-  .board-title {
-    font-size: 1.2em; /* 缩小板块名称的字体大小 */
-    margin-bottom: 0.5em;
-  }
-  
-  ul {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  hr {
-    border: 0;
-    border-top: 1px solid #ddd;
-    margin-bottom: 1em;
-  }
-  
-  .search-box {
-    grid-column: 1 / -1; /* 搜索框横跨所有列 */
-    display: flex;
-    align-items: center; /* 垂直居中 */
-    justify-content: flex-end; /* 右对齐 */
-    margin-bottom: 1em; /* 与板块之间留出一定的间距 */
-  }
-  
-  .search-box input {
-    padding: 0.5em;
-    margin-right: 0.5em;
-    border: 1px solid #ddd;
-    border-radius: 5px; /* 圆角边框 */
-  }
-  
-  .search-button {
-    margin-right: 0.5em;
-  }
-  
-  .post-button {
-    grid-column: 2; /* 发帖按钮只占第二列 */
-    justify-self: end; /* 右对齐 */
-    margin-top: 1em; /* 添加一些顶部间距 */
-  }
-  </style>
-  
+}
+</script>
+
+<style scoped>
+.discussion-page {
+  margin: 20px;
+}
+
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.main-content {
+  display: flex;
+}
+</style>

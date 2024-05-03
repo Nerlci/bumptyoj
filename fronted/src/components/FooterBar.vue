@@ -7,8 +7,6 @@
             <el-menu-item class="footer-show"><a class="no-decoration" href="https://cn.vuejs.org/index.html">vue</a></el-menu-item>
 
             <el-menu-item class="footer-show"><a class="no-decoration" href="https://element.eleme.cn">element-ui</a></el-menu-item>
-
-            <el-menu-item class="footer-show"><a class="no-decoration" href="https://github.com/Ghost-LZW">lzw</a></el-menu-item>
         </el-menu>
     </div>
 </template>
