@@ -58,3 +58,19 @@ export const getRequest = (url, params) => {
         params: params
     })
 }
+
+export const putRequest = (url, params) => {
+    return axios({
+        method: 'put',
+        url: `${base}${url}`,
+        params: params
+    })
+}
+
+export const deleteRequest = (url, params) => {
+    return axios({
+        method: 'delete',
+        url: `${base}${url}`,
+        params: params
+    })
+}

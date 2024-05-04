@@ -13,7 +13,7 @@ const problemEdit = () => import("../pages/Problem/problemEdit")
 const problemAdd = () => import("../pages/Problem/problemAdd")
 const statusDetail = () => import("../pages/Status/statusDetail")
 const contest = () => import("../pages/contest")
-
+const problemTestData = () => import("../pages/Problem/problemTestData")
 Vue.use(Router)
 
 const constRouter = [
@@ -71,6 +71,11 @@ const constRouter = [
         path: '/problem/add',
         name: 'problemAdd',
         component: problemAdd
+    },
+    {
+        path: '/problem/data/:id',
+        name: 'problemTestData',
+        component: problemTestData
     },
     {
         path: '/status/detail/:id',

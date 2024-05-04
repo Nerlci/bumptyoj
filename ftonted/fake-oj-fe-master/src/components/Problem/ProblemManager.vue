@@ -40,9 +40,13 @@
             </el-form-item>
 
             <el-form-item>
-                <el-button @click="update" type="primary">{{ operation }}题目</el-button>
+                <el-button @click="operation === '添加' ? add : update" type="primary">{{ operation }}题目</el-button>
                 <!-- 根据 operation 显示删除按钮 -->
-                <el-button v-if="operation === '更新'" @click="deleteProblem" type="danger" style="margin-left: 10px;">删除题目</el-button>
+                <el-button v-if="operation === '更新'" @click="deleteProblem" type="danger"
+                    style="margin-left: 10px;">删除题目</el-button>
+                <el-button v-if="operation === '更新'" @click="manageTestData" type="info"
+                    style="margin-left: 10px;">评测数据管理</el-button>
+                    <h3>当前问题 ID: {{ this.problem.id }}</h3>
             </el-form-item>
         </el-form>
     </div>
@@ -58,8 +62,83 @@ export default {
         }
     },
     methods: {
+        create() {
+            this.$refs['form'].validate((valid) => {
+                if (valid) {
+                    const requestData = {
+                        metadata: {
+                            displayId: this.problem.displayId,
+                            title: this.problem.title,
+                            difficulty: this.problem.difficulty,
+                            time: this.problem.time,
+                            memory: this.problem.memory
+                        },
+                        description: this.problem.description,
+                        format: {
+                            input: this.problem.inputFormat,
+                            output: this.problem.outputFormat
+                        },
+                        sample: {
+                            input: this.problem.sampleInput,
+                            output: this.problem.sampleOutput
+                        },
+                        other: this.problem.other
+                    };
+
+                    this.postRequest('/api/problem/problem', requestData).then(response => {
+                        if (response.code === "200") {
+                            this.$message({
+                                showClose: true,
+                                message: '创建成功',
+                                type: 'success',
+                                duration: 2000
+                            });
+                            this.$router.push({ name: "problemList" });
+                        } else {
+                            this.$message.error('创建失败: ' + response.error.msg);
+                        }
+                    });
+                }
+            });
+        },
         update() {
-            // 验证表单并更新题目
+            this.$refs['form'].validate((valid) => {
+                if (valid) {
+                    const requestData = {
+                        metadata: {
+                            displayId: this.problem.displayId,
+                            title: this.problem.title,
+                            difficulty: this.problem.difficulty,
+                            time: this.problem.time,
+                            memory: this.problem.memory
+                        },
+                        description: this.problem.description,
+                        format: {
+                            input: this.problem.inputFormat,
+                            output: this.problem.outputFormat
+                        },
+                        sample: {
+                            input: this.problem.sampleInput,
+                            output: this.problem.sampleOutput
+                        },
+                        other: this.problem.other
+                    };
+
+                    this.putRequest(`/api/problem/problem?problemId=${this.problem.problemId}`, requestData).then(response => {
+                        if (response.code === "200") {
+                            this.$message({
+                                showClose: true,
+                                message: '更新成功',
+                                type: 'success',
+                                duration: 2000
+                            });
+                            this.$router.push({ name: "problemDetail", params: { id: this.problem.problemId } });
+                        } else {
+                            this.$message.error('更新失败: ' + response.error.msg);
+                        }
+                    })
+                }
+            });
         },
         deleteProblem() {
             // 调用删除API
@@ -83,8 +162,12 @@ export default {
                 this.$message({
                     type: 'info',
                     message: '已取消删除'
-                });  
+                });
             });
+        },
+        manageTestData() {
+            // 跳转到评测数据管理页面
+            this.$router.push({ name: 'problemTestData', params: { id: this.problem.problemId } });
         }
     }
 }

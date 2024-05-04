@@ -27,7 +27,7 @@
                 this.$router.push({name: 'register'})
             },
             logout() {
-                this.getRequest('/logout').then(() => {
+                this.getRequest('/api/user/logout').then(() => {
                     this.$store.commit("logout")
                     Message.info("注销成功")
                 })

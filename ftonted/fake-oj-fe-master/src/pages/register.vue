@@ -119,7 +119,7 @@
                                 console.log(' 注册成功！')
                                 this.$router.replace('/home')
                             } else {
-                                Message.error(resp.message)
+                                Message.error(resp.error.msg)
                             }
                         })
                     } else {
