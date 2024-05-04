@@ -14,6 +14,8 @@ const problemAdd = () => import("../pages/Problem/problemAdd")
 const statusDetail = () => import("../pages/Status/statusDetail")
 const contest = () => import("../pages/contest")
 const problemTestData = () => import("../pages/Problem/problemTestData")
+const discuss = () => import("../pages/Discuss/discuss")
+const postDetail = () => import("../pages/Discuss/postDetail")
 Vue.use(Router)
 
 const constRouter = [
@@ -46,6 +48,16 @@ const constRouter = [
         path: '/status',
         name: 'status',
         component: status
+    },
+    {
+        path: '/discuss',
+        name: 'discuss',
+        component: discuss
+    },
+    {
+        path: '/post/detail/:id',
+        name: 'postDetail',
+        component: postDetail
     },
     {
         path: '/register',

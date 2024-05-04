@@ -3,101 +3,118 @@
         <el-table :data="tableData" stripe>
             <el-table-column align="center" label="提交ID" prop="id" width="76px">
                 <template slot-scope="scope">
-                    <span @click="showStatus(scope.row.id, scope.row.author)" class="cursor-pointer">{{scope.row.id}}</span>
+                    <span @click="showStatus(scope.row.id, scope.row.author)"
+                        class="cursor-pointer">{{ scope.row.id }}</span>
                 </template>
             </el-table-column>
 
             <el-table-column align="center" label="题目ID" prop="pid" width="76px">
                 <template slot-scope="scope">
-                    <span @click="showProblem(scope.row.pid)" class="cursor-pointer">{{scope.row.pid}}</span>
+                    <span @click="showProblem(scope.row.pid)" class="cursor-pointer">{{ scope.row.pid }}</span>
                 </template>
             </el-table-column>
 
-            <el-table-column align="center" label="用户名" prop="author"/>
+            <el-table-column align="center" label="用户名" prop="author" />
 
             <el-table-column align="center" label="结果" prop="status">
                 <template slot-scope="scope">
-                    <span @click="showStatus(scope.row.id, scope.row.author)" class="cursor-pointer" :style="GetColor(scope.row.status)">{{ statusResult(scope.row.status) }}</span>
+                    <span @click="showStatus(scope.row.id, scope.row.author)" class="cursor-pointer"
+                        :style="GetColor(scope.row.status)">{{ statusResult(scope.row.status) }}</span>
                 </template>
             </el-table-column>
 
-            <el-table-column align="center" label="长度" prop="answerLength" width="90xp"/>
-            <el-table-column align="center" label="提交时间" prop="submitTime" width="100px"/>
+            <el-table-column align="center" label="长度" prop="answerLength" width="90xp" />
+            <el-table-column align="center" label="提交时间" prop="submitTime" width="100px" />
 
         </el-table>
 
-        <el-pagination :page-size="pageSize" :total="itemCount"
-                       @current-change="getPage" background
-                       element-loading-spinner="el-icon-more-outline"
-                       class="status-list-pagination"
-                       layout="prev, pager, next" v-show="itemCount > pageSize">
+        <el-pagination :page-size="pageSize" :total="itemCount" @current-change="getPage" background
+            element-loading-spinner="el-icon-more-outline" class="status-list-pagination" layout="prev, pager, next"
+            v-show="itemCount > pageSize">
         </el-pagination>
     </div>
 </template>
 
 <script>
-    export default {
-        name: "statue",
-        data() {
-            return {
-                loading: true,
-                itemCount: 10,
-                pageSize: 10,
-                tableData: []
-            }
-        },
-        methods: {
-            getPage(index) {
-                this.loading = true
-                this.getRequest('/statusList', {
-                    index: index,
-                    size: this.pageSize
-                }).then(resp => {
-                    this.tableData = resp
-                    this.loading = false
-                })
-            },
-            getPageInfo() {
-                this.getRequest('/getStatusInfo').then(resp => {
-                    this.itemCount = resp.itemCount
-                    this.getPage(1);
-                })
-            },
-            statusResult(sta) {
-                if (sta === 0) return "WA"
-                else return "AC"
-            },
-            GetColor(sta) {
-                if (sta === 0) return "color: darkred"
-                else return "color: green"
-            },
-            showProblem(pid) {
-                this.$router.push({name: 'problemDetail', params: {id: pid}})
-            },
-            showStatus(id, author) {
-                if (!this.$store.state.status.isAdmin && author !== this.$store.state.status.username) return
-                this.$router.push({name: 'statusDetail', params: {id: id}})
-            }
-        },
-        created() {
-            this.getPageInfo()
+export default {
+    name: "statue",
+    data() {
+        return {
+            loading: true,
+            itemCount: 10,
+            pageSize: 10,
+            tableData: []
         }
+    },
+    methods: {
+        getPage(index) {
+            this.loading = true;
+            this.getRequest(`/api/submission/list?submissionId=1&problemId=3&userId=2&count=10&maxId=15&page=${index}`, requestOptions)
+                .then(response => response.json())  // Assuming the API response is JSON
+                .then(data => {
+                    if (data.code === "200") {
+                        this.tableData = data.payload.submissions;
+                        this.itemCount = data.payload.count;
+                    } else {
+                        console.error('API Error:', data.error.msg);
+                    }
+                    this.loading = false;
+                })
+                .catch(error => {
+                    console.error('error', error);
+                    this.loading = false;
+                });
+        },
+        getPageInfo() {
+            this.getRequest('/api/submission/list?submissionId=1&problemId=3&userId=2&count=10&maxId=15')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === "200" && data.payload.count > 0) {
+                        this.itemCount = data.payload.count;
+                        this.getPage(1);
+                    } else {
+                        console.error('Invalid API response:', data);
+                    }
+                })
+                .catch(error => {
+                    console.error('API request failed:', error);
+                });
+        },
+        statusResult(sta) {
+            if (sta === 0) return "WA"
+            else return "AC"
+        },
+        GetColor(sta) {
+            if (sta === 0) return "color: darkred"
+            else return "color: green"
+        },
+        showProblem(pid) {
+            this.$router.push({ name: 'problemDetail', params: { id: pid } })
+        },
+        showStatus(id, author) {
+            if (!this.$store.state.status.isAdmin && author !== this.$store.state.status.username) return
+            this.$router.push({ name: 'statusDetail', params: { id: id } })
+        }
+    },
+    created() {
+        this.getPageInfo()
     }
+}
 </script>
 
 <style scoped>
-    .status-list {
-        font-weight: bold;
-        width: 80%;
-        margin-left: auto;
-        margin-right: auto;
-    }
+.status-list {
+    font-weight: bold;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+}
 
-    .cursor-pointer {
-        cursor: pointer;
-    }
+.cursor-pointer {
+    cursor: pointer;
+}
 
-    .status-list-pagination {
-        margin-top: 30px;
-    }
+.status-list-pagination {
+    margin-top: 30px;
+}
 </style>
