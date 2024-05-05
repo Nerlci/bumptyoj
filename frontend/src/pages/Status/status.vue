@@ -49,8 +49,15 @@ export default {
     methods: {
         getPage(index) {
             this.loading = true;
+            var requestOptions = {
+            method: 'GET',
+            headers: new Headers({
+                "User-Agent": "Apifox/1.0.0 (https://apifox.com)"
+            }),
+            redirect: 'follow'
+        };
             this.getRequest(`/api/submission/list?submissionId=1&problemId=3&userId=2&count=10&maxId=15&page=${index}`, requestOptions)
-                .then(response => response.json())  // Assuming the API response is JSON
+                .then(response => response.json())
                 .then(data => {
                     if (data.code === "200") {
                         this.tableData = data.payload.submissions;
