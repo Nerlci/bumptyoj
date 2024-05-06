@@ -29,7 +29,7 @@
             }
         },
         created() {
-            this.getNews()
+            //this.getNews()
         }
     }
 </script>

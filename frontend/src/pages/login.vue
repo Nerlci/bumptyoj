@@ -5,7 +5,7 @@
             <el-form :model="loginForm" :rules="rules" ref="loginForm" v-loading="loading"
                 element-loading-text="正在登录..." element-loading-spinner="el-icon-loading"
                 element-loading-background="rgba(0, 0, 0, 0.8)" class="loginContainer">
-                <h3 class="loginTitle">Bumpty OJ 登录</h3>
+                <h3 class="loginTitle">Fake Oj 登录</h3>
                 <el-form-item prop="email">
                     <el-input v-model="loginForm.email" placeholder="邮箱" prefix-icon="el-icon-s-custom"></el-input>
                 </el-form-item>
@@ -24,7 +24,7 @@
 
 <script>
 import { Message } from "element-ui";
-
+import { postRequest } from '@/utils/request';
 export default {
     name: 'login',
     data() {
@@ -47,59 +47,36 @@ export default {
     computed: {
         backgroundStyle: function () {
             let high = window.innerHeight - 110;
-            let img = require("../../public/image/bupt.jpg");
-            return "background-image:url('" + img + "'); background-repeat: no-repeat; background-size: cover; background-position: center; height:" + high + "px;";
+            let img = ["/image/0_0.jpg", "/image/0_1.jpg", '/image/0_2.jpg']
+            return "background-image:url('" + img[Math.floor(Math.random() * 3)] + "'); background-repeat: no-repeat; background-size: cover; height:" + high + "px;"
         }
     },
     created() {
-        document.title = "Bumpty OJ"
+        document.title = "Fake OJ"
     },
     methods: {
-        // submitForm(loginForm) {
-        //     this.$refs[loginForm].validate((valid) => {
-        //         if (valid) {
-        //             this.loading = true
-        //             this.postRequest('/api/user/login', this.loginForm).then(resp => {
-        //                 this.loading = false
-        //                 //console.log(resp)
-        //                 if (resp.code === 200) {
-        //                     this.$db.save("USER", resp.data)
-        //                     this.$db.save("LOGIN", "1")
-        //                     this.$store.commit('login', resp.data)
-        //                     this.$router.replace('/home')
-        //                 } else {
-        //                     Message.error(resp.message)
-        //                 }
-        //             })
-        //         } else {
-        //             //console.log('error submit')
-        //             Message.error('error submit')
-        //             return false
-        //         }
-        //     });
-        // }
         submitForm(loginForm) {
-            this.$refs[loginForm].validate((valid) => {
-                if (valid) {
-                    this.loading = true
-                    // 更新 API 路径
-                    this.postRequest('/api/user/login', this.loginForm).then(resp => {
-                        this.loading = false
-                        // 检查返回的状态码
-                        if (resp.code == 200) {
-                            // 使用新的响应结构更新本地存储和状态
-                            this.$db.save("USER", resp.payload)
-                            this.$db.save("LOGIN", "1")
-                            this.$store.commit('login', resp.payload)
-                            this.$router.replace('/home')
-                        } else {
-                            // 使用新的错误信息字段显示错误
-                            Message.error(resp.error.msg || '登录失败')
-                        }
-                    })
-                } else {
-                    Message.error('表单验证失败')
-                    return false
+            this.$refs[loginForm].validate(async (valid) => {
+                if (!valid) {
+                    Message.error('表单验证失败');
+                    return false;
+                }
+                this.loading = true;
+                try {
+                    const resp = await postRequest('/api/user/login', this.loginForm);
+                    this.loading = false;
+                    if (resp && resp.code === "200") {
+                        this.$db.save("USER", resp.payload);
+                        this.$db.save("LOGIN", "1");
+                        this.$store.commit('login', resp.payload);
+                        this.$router.replace('/problems');
+                    } else {
+                        Message.error((resp && resp.error && resp.error.msg) || '登录失败');
+                    }
+                } catch (error) {
+                    this.loading = false;
+                    Message.error('网络请求异常或服务器错误');
+                    console.error('请求错误：', error);
                 }
             });
         }

@@ -32,7 +32,7 @@
 
 
 <script>
-import axios from 'axios';
+import { postRequest,deleteRequest,getRequest } from '@/utils/request';
 
 export default {
     name: 'TestDataManager',
@@ -51,7 +51,7 @@ export default {
     },
     methods: {
         fetchData() {
-            axios.get(`/api/problem/testdata?problemId=${this.problemId}`)
+            getRequest(`/api/problem/testdata?problemId=${this.problemId}`)
                 .then(response => {
                     if (response.data.code === '200') {
                         this.testData = response.data.payload.testdata;
@@ -69,7 +69,7 @@ export default {
             formData.append('inputFile', data.inputFile);
             formData.append('outputFile', data.outputFile);
 
-            axios.post(`/api/problem/testdata?problemId=${this.problemId}`, formData)
+            postRequest(`/api/problem/testdata?problemId=${this.problemId}`, formData)
                 .then(response => {
                     if (response.data.code === '200') {
                         this.fetchData(); // 重新加载数据
@@ -82,7 +82,7 @@ export default {
                 });
         },
         deleteData(testdataId) {
-            axios.delete(`/api/problem/testdata?testDataId=${testdataId}`)
+            deleteRequest(`/api/problem/testdata?testDataId=${testdataId}`)
                 .then(response => {
                     if (response.data.code === '200') {
                         this.testData = this.testData.filter(td => td.testdataId !== testdataId);
@@ -102,8 +102,7 @@ export default {
                 formData.append('inputFile', this.inputFile);
                 formData.append('outputFile', this.outputFile);
 
-                // 使用 axios 发送 POST 请求上传文件
-                axios.post(`/api/problem/testdata?problemId=${this.problemId}`, formData, {
+                postRequest(`/api/problem/testdata?problemId=${this.problemId}`, formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }

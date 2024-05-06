@@ -2,7 +2,7 @@ import axios from 'axios'
 import { Message } from "element-ui";
 import db from '../utils/sessionStorage'
 import router from '../router'
-import * as config from '../utils/config'
+
 
 axios.interceptors.response.use(success => {
     if (success.status && success.status === 200 && success.data.status === 500) {
@@ -10,7 +10,7 @@ axios.interceptors.response.use(success => {
         return ;
     }
     if (success.data.msg) {
-        if (success.data.code === 200) {
+        if (success.data.code == 200) {
             Message.success({message: success.data.msg})
         } else {
             Message.warning({message: success.data.msg})
@@ -40,37 +40,20 @@ axios.interceptors.response.use(success => {
     }
 })
 
-let base = config.baseApi
 
+// 你可以直接在请求函数中使用相对路径，省去 baseApi
 export const postRequest = (url, params) => {
-    return axios({
-        method: 'post',
-        url: `${url}`,
-        data: params
-    })
+    return axios.post(`/api${url}`, params);
 }
 
 export const getRequest = (url, params) => {
-    //Message.info({message: `${base}${url}`})
-    return axios({
-        method: 'get',
-        url: `${base}${url}`,
-        params: params
-    })
+    return axios.get(`/api${url}`, { params });
 }
 
 export const putRequest = (url, params) => {
-    return axios({
-        method: 'put',
-        url: `${base}${url}`,
-        params: params
-    })
+    return axios.put(`/api${url}`, params);
 }
 
 export const deleteRequest = (url, params) => {
-    return axios({
-        method: 'delete',
-        url: `${base}${url}`,
-        params: params
-    })
+    return axios.delete(`/api${url}`, { params });
 }

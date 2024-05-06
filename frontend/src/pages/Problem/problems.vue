@@ -5,7 +5,8 @@
                 <el-table-column label="ID" prop="displayId" width="76px"></el-table-column>
                 <el-table-column label="题目" prop="title">
                     <template slot-scope="scope">
-                        <span @click="showProblem(scope.row.problemId)" class="cursor-pointer">{{scope.row.title}}</span>
+                        <span @click="showProblem(scope.row.problemId)"
+                            class="cursor-pointer">{{ scope.row.title }}</span>
                     </template>
                 </el-table-column>
 
@@ -22,9 +23,14 @@
                 </el-table-column>
             </el-table>
 
-            <el-pagination class="problem-pagination" :page-size="pageSize" :total="itemCount"
-                            @current-change="getPage" background
-                            layout="prev, pager, next" v-show="itemCount > pageSize">
+            <!-- 新建题目按钮 -->
+            <el-button type="primary" @click="addProblem" v-if="this.$store.state.status.type == 0"
+                class="add-problem-button">
+                新建题目
+            </el-button>
+
+            <el-pagination class="problem-pagination" :page-size="pageSize" :total="itemCount" @current-change="getPage"
+                background layout="prev, pager, next" v-show="itemCount > pageSize">
             </el-pagination>
         </div>
     </div>
@@ -73,34 +79,46 @@ export default {
         editProblem(id) {
             this.$router.push({ name: 'problemEdit', params: { id: id } });
         },
+        addProblem() {
+            this.$router.push({ name: 'problemAdd' });
+        },
         getPageInfo() {
             this.getPage(1);
         }
     },
     created() {
-        //this.getPageInfo();
+        this.getPageInfo();
     }
 }
 </script>
 
 <style scoped>
-    .problem-list {
-        width: 90%;
-        height: 100%;
-        margin: auto;
-        font-weight: bold;
-    }
+.problem-list {
+    width: 90%;
+    height: 100%;
+    margin: auto;
+    font-weight: bold;
+}
 
-    .cursor-pointer {
-        cursor: pointer;
-    }
+.cursor-pointer {
+    cursor: pointer;
+}
 
-    .problem-edit {
-        cursor: pointer;
-        color: #52abff;
-    }
+.problem-edit
+{
+    margin-top: 20px;
+    /* 添加顶部边距，根据需要调整 */
+    cursor: pointer;
+    color: #56a1f7;
+}
+.add-problem-button {
+    margin-top: 20px;
+    /* 添加顶部边距，根据需要调整 */
+    cursor: pointer;
+    color: #f4f9fb;
+}
 
-    .problem-pagination {
-        margin-top: 40px;
-    }
+.problem-pagination {
+    margin-top: 40px;
+}
 </style>

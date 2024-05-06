@@ -7,6 +7,7 @@
 
 <script>
     import ProblemManager from "../../components/Problem/ProblemManager";
+    import { getRequest } from '@/utils/request';
     export default {
         name: "problemEdit",
         components: {ProblemManager},
@@ -18,7 +19,7 @@
         methods: {
             fetchProblemData() {
                 // 确保使用正确的查询参数名 'problemId' 而非 'id'
-                this.getRequest("/api/problem/problem", {
+                getRequest("/api/problem/problem", {
                     problemId: this.$route.params.id
                 }).then(response => {
                     if (response.code === "200" && response.payload) {
@@ -40,6 +41,7 @@
                             sampleOutput: response.payload.sample.output,
                             other: response.payload.other
                         };
+                        
                     }
                 }).catch(error => {
                     console.error("Failed to fetch problem data:", error);
