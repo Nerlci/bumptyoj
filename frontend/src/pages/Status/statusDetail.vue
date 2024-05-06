@@ -24,69 +24,39 @@
 
 
 <script>
+import { getRequest } from '@/utils/request';
+
 export default {
-    name: "statusDetail",
-    data() {
-        return {
-            loading: true,
-            show: false,
-            solution: {}
+  data() {
+    return {
+      detail: null,
+      loading: false,
+      error: null,
+    };
+  },
+  created() {
+    this.fetchSubmissionDetail();
+  },
+  methods: {
+    fetchSubmissionDetail() {
+      const submissionId = this.$route.params.submissionId; // 获取路由参数中的 submissionId
+      this.loading = true;
+      getRequest('/submission/submission', {
+        submissionId // 传递 submissionId 作为参数
+      }).then(response => {
+        if (response.code === "200") {
+          this.detail = response.payload;
+        } else {
+          this.error = response.error.msg;
         }
-    },
-    methods: {
-        gao(status) {
-            if (status === "AC") return "color: green"
-            else return "color: darkred"
-        },
-        getSolution() {
-            this.loading = true;
-            this.getRequest(`/api/submission/submission?submissionId=${this.$route.params.id}`, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'User-Agent': 'Your User Agent'
-                }
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.code === "200") {
-                        this.solution = {
-                            title: data.payload.problemId,  
-                            submitTime: data.payload.timestamp,
-                            status: data.payload.status,
-                            answer: data.payload.code,
-                            language: data.payload.language,
-                            length: data.payload.length,
-                            time: data.payload.time,
-                            memory: data.payload.memory,
-                            score: data.payload.score,
-                            detail: data.payload.detail
-                        };
-                        this.show = true;
-                    } else {
-                        this.$message.error(data.error.msg || "数据加载错误");
-                    }
-                    this.loading = false;
-                })
-                .catch(error => {
-                    console.error('Error fetching solution:', error);
-                    this.$message.error("无法加载解决方案数据");
-                    this.loading = false;
-                });
-        },
-        onCopyError() {
-            this.$message.error("复制失败")
-        },
-        onCopySuccess() {
-            this.$message.success("复制成功")
-        }
-    },
-    created() {
-        this.getSolution()
-    },
-    mounted() {
-        this.show = true
+      }).catch(error => {
+        this.error = error.message || 'Failed to fetch data';
+      }).finally(() => {
+        this.loading = false;
+      });
     }
-}
+  }
+};
 </script>
 
 <style scoped>
