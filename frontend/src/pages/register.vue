@@ -7,7 +7,7 @@
                 element-loading-text="正在提交信息..." element-loading-spinner="el-icon-loading"
                 element-loading-background="rgba(0, 0, 0, 0.8)" class="registerContainer">
 
-                <h3 class="registerTitle">Fake Oj 注册</h3>
+                <h3 class="registerTitle">Bumpty Oj 注册</h3>
 
                 <el-form-item prop="username">
                     <el-input v-model="registerForm.username" placeholder="用户名"
@@ -99,12 +99,11 @@ export default {
     computed: {
         backgroundStyle: function () {
             let high = window.innerHeight - 110;
-            let img = ["/image/0_0.jpg", "/image/0_1.jpg", '/image/0_2.jpg']
-            return "background-image:url('" + img[Math.floor(Math.random() * 3)] + "'); background-repeat: no-repeat; background-size: cover; height:" + high + "px;"
+            return "background-image:url('../../image/bupt.jpg'); background-repeat: no-repeat; background-size: cover;background-position: center;height:" + high + "px;"
         }
     },
     created() {
-        document.title = "Fake OJ 注册"
+        document.title = "Bumpty OJ 注册"
     },
     methods: {
         submitForm(registerForm) {
