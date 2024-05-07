@@ -1,14 +1,12 @@
-
-
 ## 技术栈
 
-* ElementUI
+- ElementUI
 
-* axios
+- axios
 
-* vuex
+- vuex
 
-* vue-router
+- vue-router
 
 ## 项目结构
 

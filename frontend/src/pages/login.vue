@@ -1,133 +1,155 @@
 <template>
-    <div class="login" :style="backgroundStyle">
-        <div style="height: 20%">.</div>
-        <div style="width:300px;margin-left: auto;margin-right: auto;">
-            <el-form :model="loginForm" :rules="rules" ref="loginForm" v-loading="loading"
-                element-loading-text="正在登录..." element-loading-spinner="el-icon-loading"
-                element-loading-background="rgba(0, 0, 0, 0.8)" class="loginContainer">
-                <h3 class="loginTitle">Bumpty OJ 登录</h3>
-                <el-form-item prop="email">
-                    <el-input v-model="loginForm.email" placeholder="邮箱" prefix-icon="el-icon-s-custom"></el-input>
-                </el-form-item>
-                <el-form-item prop="password">
-                    <el-input type="password" placeholder="密码" v-model="loginForm.password"
-                        @keydown.enter.native="submitForm('loginForm')" prefix-icon="el-icon-key"></el-input>
-                </el-form-item>
-                <el-form-item style="text-align:center">
-                    <el-button type="primary" @click="submitForm('loginForm')" class="submit_btn"
-                        size="medium">登录</el-button>
-                </el-form-item>
-            </el-form>
-        </div>
+  <div class="login" :style="backgroundStyle">
+    <div style="height: 20%">.</div>
+    <div style="width: 300px; margin-left: auto; margin-right: auto">
+      <el-form
+        :model="loginForm"
+        :rules="rules"
+        ref="loginForm"
+        v-loading="loading"
+        element-loading-text="正在登录..."
+        element-loading-spinner="el-icon-loading"
+        element-loading-background="rgba(0, 0, 0, 0.8)"
+        class="loginContainer"
+      >
+        <h3 class="loginTitle">Bumpty OJ 登录</h3>
+        <el-form-item prop="email">
+          <el-input
+            v-model="loginForm.email"
+            placeholder="邮箱"
+            prefix-icon="el-icon-s-custom"
+          ></el-input>
+        </el-form-item>
+        <el-form-item prop="password">
+          <el-input
+            type="password"
+            placeholder="密码"
+            v-model="loginForm.password"
+            @keydown.enter.native="submitForm('loginForm')"
+            prefix-icon="el-icon-key"
+          ></el-input>
+        </el-form-item>
+        <el-form-item style="text-align: center">
+          <el-button
+            type="primary"
+            @click="submitForm('loginForm')"
+            class="submit_btn"
+            size="medium"
+            >登录</el-button
+          >
+        </el-form-item>
+      </el-form>
     </div>
+  </div>
 </template>
 
 <script>
 import { Message } from "element-ui";
 
 export default {
-    name: 'login',
-    data() {
-        return {
-            loading: false,
-            loginForm: {
-                email: '',
-                password: ''
-            },
-            rules: {
-                email: [
-                    { required: true, message: '请输入邮箱地址', trigger: 'blur' }
-                ],
-                password: [
-                    { required: true, message: '请输入密码', trigger: 'blur' }
-                ]
+  name: "login",
+  data() {
+    return {
+      loading: false,
+      loginForm: {
+        email: "",
+        password: "",
+      },
+      rules: {
+        email: [{ required: true, message: "请输入邮箱地址", trigger: "blur" }],
+        password: [{ required: true, message: "请输入密码", trigger: "blur" }],
+      },
+    };
+  },
+  computed: {
+    backgroundStyle: function () {
+      let high = window.innerHeight - 110;
+      let img = require("../../public/image/bupt.jpg");
+      return (
+        "background-image:url('" +
+        img +
+        "'); background-repeat: no-repeat; background-size: cover; background-position: center; height:" +
+        high +
+        "px;"
+      );
+    },
+  },
+  created() {
+    document.title = "Bumpty OJ";
+  },
+  methods: {
+    // submitForm(loginForm) {
+    //     this.$refs[loginForm].validate((valid) => {
+    //         if (valid) {
+    //             this.loading = true
+    //             this.postRequest('/api/user/login', this.loginForm).then(resp => {
+    //                 this.loading = false
+    //                 //console.log(resp)
+    //                 if (resp.code === 200) {
+    //                     this.$db.save("USER", resp.data)
+    //                     this.$db.save("LOGIN", "1")
+    //                     this.$store.commit('login', resp.data)
+    //                     this.$router.replace('/home')
+    //                 } else {
+    //                     Message.error(resp.message)
+    //                 }
+    //             })
+    //         } else {
+    //             //console.log('error submit')
+    //             Message.error('error submit')
+    //             return false
+    //         }
+    //     });
+    // }
+    submitForm(loginForm) {
+      this.$refs[loginForm].validate((valid) => {
+        if (valid) {
+          this.loading = true;
+          // 更新 API 路径
+          this.postRequest("/api/user/login", this.loginForm).then((resp) => {
+            this.loading = false;
+            // 检查返回的状态码
+            if (resp.code == 200) {
+              // 使用新的响应结构更新本地存储和状态
+              this.$db.save("USER", resp.payload);
+              this.$db.save("LOGIN", "1");
+              this.$store.commit("login", resp.payload);
+              this.$router.replace("/home");
+            } else {
+              // 使用新的错误信息字段显示错误
+              Message.error(resp.error.msg || "登录失败");
             }
+          });
+        } else {
+          Message.error("表单验证失败");
+          return false;
         }
+      });
     },
-    computed: {
-        backgroundStyle: function () {
-            let high = window.innerHeight - 110;
-            let img = require("../../public/image/bupt.jpg");
-            return "background-image:url('" + img + "'); background-repeat: no-repeat; background-size: cover; background-position: center; height:" + high + "px;";
-        }
-    },
-    created() {
-        document.title = "Bumpty OJ"
-    },
-    methods: {
-        // submitForm(loginForm) {
-        //     this.$refs[loginForm].validate((valid) => {
-        //         if (valid) {
-        //             this.loading = true
-        //             this.postRequest('/api/user/login', this.loginForm).then(resp => {
-        //                 this.loading = false
-        //                 //console.log(resp)
-        //                 if (resp.code === 200) {
-        //                     this.$db.save("USER", resp.data)
-        //                     this.$db.save("LOGIN", "1")
-        //                     this.$store.commit('login', resp.data)
-        //                     this.$router.replace('/home')
-        //                 } else {
-        //                     Message.error(resp.message)
-        //                 }
-        //             })
-        //         } else {
-        //             //console.log('error submit')
-        //             Message.error('error submit')
-        //             return false
-        //         }
-        //     });
-        // }
-        submitForm(loginForm) {
-            this.$refs[loginForm].validate((valid) => {
-                if (valid) {
-                    this.loading = true
-                    // 更新 API 路径
-                    this.postRequest('/api/user/login', this.loginForm).then(resp => {
-                        this.loading = false
-                        // 检查返回的状态码
-                        if (resp.code == 200) {
-                            // 使用新的响应结构更新本地存储和状态
-                            this.$db.save("USER", resp.payload)
-                            this.$db.save("LOGIN", "1")
-                            this.$store.commit('login', resp.payload)
-                            this.$router.replace('/home')
-                        } else {
-                            // 使用新的错误信息字段显示错误
-                            Message.error(resp.error.msg || '登录失败')
-                        }
-                    })
-                } else {
-                    Message.error('表单验证失败')
-                    return false
-                }
-            });
-        }
-
-    }
-}
+  },
+};
 </script>
 
 <style>
 body {
-    margin: 0;
+  margin: 0;
 }
 
 .login {
-    width: 100%;
+  width: 100%;
 }
 
 .loginContainer {
-    border-radius: 5px;
-    background-clip: padding-box;
-    width: 260px;
-    padding: 5px 40px 5px 40px;
+  border-radius: 5px;
+  background-clip: padding-box;
+  width: 260px;
+  padding: 5px 40px 5px 40px;
 }
 
 .loginTitle {
-    margin: 20px auto 20px auto;
-    text-align: center;
-    color: #52abff;
-    font-size: 26px;
+  margin: 20px auto 20px auto;
+  text-align: center;
+  color: #52abff;
+  font-size: 26px;
 }
 </style>

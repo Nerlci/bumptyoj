@@ -2,7 +2,7 @@
   <div id="app">
     <el-container>
       <el-header>
-        <HeaderBar/>
+        <HeaderBar />
       </el-header>
       <el-main>
         <router-view style="margin-bottom: 80px" />
@@ -19,16 +19,16 @@ import HeaderBar from "./components/HeaderBar";
 import FooterBar from "./components/FooterBar";
 
 export default {
-  name: 'App',
+  name: "App",
   props: {
     height: {
       type: String,
-      default: '10px'
-    }
+      default: "10px",
+    },
   },
   components: {
     FooterBar,
-    HeaderBar
+    HeaderBar,
   },
   created() {
     // this.getRequest('/loginStatue').then(resp => {
@@ -40,16 +40,16 @@ export default {
     //     this.$store.commit('logout')
     //   }
     // })
-  }
-}
+  },
+};
 </script>
 
 <style>
-  #app {
-    font-family: Avenir, Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-align: center;
-    color: #2c3e50;
-  }
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+}
 </style>

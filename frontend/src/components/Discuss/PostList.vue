@@ -8,11 +8,11 @@
 
 <script>
 export default {
-  props: ['posts'],
+  props: ["posts"],
   methods: {
     handleRowClick(row) {
-      this.$router.push({ name: 'PostDetails', params: { id: row.id }});
-    }
-  }
-}
+      this.$router.push({ name: "PostDetails", params: { id: row.id } });
+    },
+  },
+};
 </script>
