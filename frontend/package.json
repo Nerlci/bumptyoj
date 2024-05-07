@@ -21,6 +21,7 @@
     "babel-eslint": "^10.1.0",
     "eslint": "^7.2.0",
     "eslint-plugin-vue": "^6.2.2",
+    "prettier": "3.2.5",
     "vue-fontawesome-elementui-icon-picker": "^0.1.9",
     "vue-router": "^3.3.2",
     "vue-template-compiler": "^2.6.11",
