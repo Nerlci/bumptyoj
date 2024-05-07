@@ -6,11 +6,23 @@ let problemRouter = express.Router();
 
 problemRouter.get("/problem", problemController.getProblem);
 
-problemRouter.post("/problem", authUserMiddleware, problemController.createProblem);
+problemRouter.post(
+  "/problem",
+  authUserMiddleware,
+  problemController.createProblem,
+);
 
-problemRouter.put("/problem", authUserMiddleware, problemController.modifyProblem);
+problemRouter.put(
+  "/problem",
+  authUserMiddleware,
+  problemController.modifyProblem,
+);
 
-problemRouter.delete("/problem", authUserMiddleware, problemController.deleteProblem);
+problemRouter.delete(
+  "/problem",
+  authUserMiddleware,
+  problemController.deleteProblem,
+);
 
 problemRouter.get("/list", problemController.listProblem);
 
