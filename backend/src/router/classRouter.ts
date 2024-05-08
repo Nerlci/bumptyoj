@@ -11,3 +11,5 @@ classRouter.get("/class", authUserMiddleware, classController.getClass);
 classRouter.put("/class", authUserMiddleware, classController.modifyClass);
 
 classRouter.delete("/class", authUserMiddleware, classController.deleteClass);
+
+export { classRouter };
