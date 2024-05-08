@@ -46,3 +46,11 @@ export const problem = z.object({
   other: z.string(),
 });
 export type Problem = z.infer<typeof problem>;
+
+export const class_ = z.object({
+  classId: z.number().default(0),
+  teacherId: z.number(),
+  students: z.array(z.number()),
+  className: z.string().default(""),
+});
+export type Class = z.infer<typeof class_>;
