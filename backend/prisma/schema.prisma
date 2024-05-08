@@ -14,11 +14,13 @@ datasource db {
 }
 
 model User {
-  id         Int          @id @default(autoincrement())
-  email      String       @unique
-  username   String?
-  type       Int          @default(0)
-  password   String
+  id       Int     @id @default(autoincrement())
+  email    String  @unique
+  username String?
+  type     Int     @default(0)
+  password String
+  classesTeacher     Class[]  @relation(name: "Teacher")
+  classesStudent     Class[]  @relation(name: "Student")
   Submission Submission[]
 }
 
@@ -78,4 +80,12 @@ model Submission {
   score     Int
   timestamp DateTime           @default(now())
   detail    SubmissionDetail[]
+}
+
+model Class {
+  id          Int      @id @default(autoincrement())
+  name        String
+  teacher     User     @relation(name: "Teacher", fields: [teacherId], references: [id])
+  teacherId   Int
+  students    User[]   @relation(name: "Student")
 }

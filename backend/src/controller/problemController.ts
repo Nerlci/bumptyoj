@@ -127,7 +127,7 @@ const listProblem = async (req: Request, res: Response) => {
     offset = Number(req.query.offset);
   const result = await problemService.listProblem(count, offset);
 
-  const resProb = result.map((result) =>
+  const resProb = result.map((result: any) =>
     problemService.mapResponseToProblemMetadata(result),
   );
   res.send(
@@ -161,7 +161,7 @@ const getTestdata = async (req: Request, res: Response) => {
   const problemId = Number(req.query.problemId);
   const result = await problemService.getTestdataByProblemId(problemId);
 
-  const resTestdata = result.map((result) => {
+  const resTestdata = result.map((result: any) => {
     return {
       testdataId: result.id,
       inputFilename: result.inputFilename,
