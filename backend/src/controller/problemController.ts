@@ -161,7 +161,7 @@ const getTestdata = async (req: Request, res: Response) => {
   const problemId = Number(req.query.problemId);
   const result = await problemService.getTestdataByProblemId(problemId);
 
-  const resTestdata = result.map((result) => {
+  const resTestdata = result.map((result: any) => {
     return {
       testdataId: result.id,
       inputFilename: result.inputFilename,
