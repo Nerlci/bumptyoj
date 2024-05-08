@@ -116,7 +116,7 @@ const listProblem = async (req: Request, res: Response) => {
     offset = Number(req.query.offset);
   const result = await problemService.listProblem(count, offset);
 
-  const resProb = result.map((result) =>
+  const resProb = result.map((result: any) =>
     problemService.mapResponseToProblemMetadata(result),
   );
   res.send(
