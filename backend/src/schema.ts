@@ -1,6 +1,15 @@
 import { timeStamp } from "node:console";
 import { z } from "zod";
 
+export const user = z.object({
+  userId: z.number().default(0),
+  email: z.string().email(),
+  username: z.string(),
+  type: z.number().default(0),
+  password: z.string(),
+});
+export type User = z.infer<typeof user>;
+
 export const responseBase = z.object({
   code: z
     .union([z.literal("200"), z.literal("400"), z.literal("500")])
@@ -51,7 +60,8 @@ export type Problem = z.infer<typeof problem>;
 export const class_ = z.object({
   classId: z.number().default(0),
   teacherId: z.number(),
-  students: z.array(z.number()),
+  name: z.string(),
+  students: z.array(user).default([]),
   className: z.string().default(""),
 });
 export type Class = z.infer<typeof class_>;
