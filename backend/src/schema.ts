@@ -48,6 +48,16 @@ export const problem = z.object({
 });
 export type Problem = z.infer<typeof problem>;
 
+export const testdata = z.object({
+  testdataId: z.number().default(0),
+  problemId: z.number(),
+  input: z.string(),
+  output: z.string(),
+  inputFilename: z.string(),
+  outputFilename: z.string(),
+});
+export type Testdata = z.infer<typeof testdata>;
+
 export const submissionDetail = z.object({
   submissionId: z.number(),
   testdataId: z.number(),
