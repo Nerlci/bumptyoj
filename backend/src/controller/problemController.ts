@@ -184,8 +184,7 @@ const getTestdata = async (req: Request, res: Response) => {
   );
 };
 
-// TODO: add score setting
-// TODO: create schema for testdata
+// TODO: move score, time and memory setting to testdata
 const createTestdata = async (req: Request, res: Response) => {
   const problemId = Number(req.body.problemId);
 
@@ -291,7 +290,6 @@ const deleteTestdata = async (req: Request, res: Response) => {
 };
 
 const downloadTestdata = async (req: Request, res: Response) => {
-  // TODO: Handle files
   const testdataId = Number(req.query.testdataId);
   const file = Number(req.query.file);
   const result = await problemService.getTestdata(testdataId);
