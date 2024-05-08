@@ -1,5 +1,5 @@
 import { prisma } from "../prisma";
-import { Problem, problem, problemMetadata } from "../schema";
+import { Problem, Testdata, problem, problemMetadata } from "../schema";
 
 const mapProblemToResponse = (problem: Problem) => {
   const { format, sample, metadata, ...rest } = problem;
@@ -107,40 +107,23 @@ const getTestdata = async (testdataId: number) => {
   });
 };
 
-const createTestdata = async (
-  problemId: number,
-  input: string,
-  output: string,
-  inputFilename: string,
-  outputFilename: string,
-) => {
+const createTestdata = async (data: Testdata) => {
+  const { testdataId, ...rest } = data;
+
   return prisma.testdata.create({
     data: {
-      problemId,
-      input,
-      output,
-      inputFilename,
-      outputFilename,
+      ...rest,
     },
   });
 };
 
-const modifyTestdata = async (
-  testdataId: number,
-  input: string,
-  output: string,
-  inputFilename: string,
-  outputFilename: string,
-) => {
+const modifyTestdata = async (testdataId: number, data: Testdata) => {
   return prisma.testdata.update({
     where: {
       id: testdataId,
     },
     data: {
-      input,
-      output,
-      inputFilename,
-      outputFilename,
+      ...data,
     },
   });
 };
