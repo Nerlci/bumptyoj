@@ -91,6 +91,68 @@ const listProblem = async (count: number, offset: number) => {
   });
 };
 
+const getTestdataByProblemId = async (problemId: number) => {
+  return prisma.testdata.findMany({
+    where: {
+      problemId,
+    },
+  });
+};
+
+const getTestdata = async (testdataId: number) => {
+  return prisma.testdata.findUnique({
+    where: {
+      id: testdataId,
+    },
+  });
+};
+
+const createTestdata = async (
+  problemId: number,
+  input: string,
+  output: string,
+  inputFilename: string,
+  outputFilename: string,
+) => {
+  return prisma.testdata.create({
+    data: {
+      problemId,
+      input,
+      output,
+      inputFilename,
+      outputFilename,
+    },
+  });
+};
+
+const modifyTestdata = async (
+  testdataId: number,
+  input: string,
+  output: string,
+  inputFilename: string,
+  outputFilename: string,
+) => {
+  return prisma.testdata.update({
+    where: {
+      id: testdataId,
+    },
+    data: {
+      input,
+      output,
+      inputFilename,
+      outputFilename,
+    },
+  });
+};
+
+const deleteTestdata = async (testdataId: number) => {
+  return prisma.testdata.delete({
+    where: {
+      id: testdataId,
+    },
+  });
+};
+
 const problemService = {
   mapResponseToProblem,
   mapProblemToResponse,
@@ -101,6 +163,11 @@ const problemService = {
   deleteProblem,
   countProblem,
   listProblem,
+  getTestdataByProblemId,
+  getTestdata,
+  createTestdata,
+  modifyTestdata,
+  deleteTestdata,
 };
 
 export { problemService };

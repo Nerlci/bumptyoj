@@ -14,34 +14,36 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  username  String?
-  type      Int      @default(0)
-  password  String
+  id       Int     @id @default(autoincrement())
+  email    String  @unique
+  username String?
+  type     Int     @default(0)
+  password String
 }
 
-model Testdata{
-  id          Int      @id @default(autoincrement())
-  problem     Problem  @relation(fields: [problemId], references: [id])
-  problemId   Int
-  input       String
-  output      String
+model Testdata {
+  id             Int     @id @default(autoincrement())
+  problem        Problem @relation(fields: [problemId], references: [id])
+  problemId      Int
+  input          String
+  output         String
+  inputFilename  String
+  outputFilename String
 }
 
 model Problem {
-  id          Int      @id @default(autoincrement())
-  displayId   String
-  title       String
-  createdAt   DateTime @default(now())
-  difficulty  String
-  time        Int
-  memory      Int
-  description String
-  inputFormat String
+  id           Int        @id @default(autoincrement())
+  displayId    String
+  title        String
+  createdAt    DateTime   @default(now())
+  difficulty   String
+  time         Int
+  memory       Int
+  description  String
+  inputFormat  String
   outputFormat String
-  sampleInput String
+  sampleInput  String
   sampleOutput String
-  other       String
-  testdata    Testdata[]
+  other        String
+  testdata     Testdata[]
 }
