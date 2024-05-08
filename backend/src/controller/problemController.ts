@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import { unlink } from "fs";
 
 import { problemService } from "../service/problemService";
-import { problem, responseBase } from "../schema";
+import { problem, responseBase, testdata } from "../schema";
 import test from "node:test";
 import { count } from "console";
 
@@ -184,22 +184,21 @@ const getTestdata = async (req: Request, res: Response) => {
   );
 };
 
+// TODO: add score setting
+// TODO: create schema for testdata
 const createTestdata = async (req: Request, res: Response) => {
   const problemId = Number(req.body.problemId);
 
   const filesReq = req as TestdataRequest;
-  const input = filesReq.files!.inputFile[0].path;
-  const output = filesReq.files!.outputFile[0].path;
-  const inputFilename = filesReq.files!.inputFile[0].originalname;
-  const outputFilename = filesReq.files!.outputFile[0].originalname;
-
-  const result = await problemService.createTestdata(
+  const data = testdata.parse({
     problemId,
-    input,
-    output,
-    inputFilename,
-    outputFilename,
-  );
+    input: filesReq.files!.inputFile[0].path,
+    output: filesReq.files!.outputFile[0].path,
+    inputFilename: filesReq.files!.inputFile[0].originalname,
+    outputFilename: filesReq.files!.outputFile[0].originalname,
+  });
+
+  const result = await problemService.createTestdata(data);
 
   res.send(
     responseBase.parse({
@@ -223,10 +222,12 @@ const modifyTestdata = async (req: Request, res: Response) => {
   const testdataId = Number(req.query.testdataId);
 
   const filesReq = req as TestdataRequest;
-  const input = filesReq.files!.inputFile[0].path;
-  const output = filesReq.files!.outputFile[0].path;
-  const inputFilename = filesReq.files!.inputFile[0].originalname;
-  const outputFilename = filesReq.files!.outputFile[0].originalname;
+  const data = testdata.parse({
+    input: filesReq.files!.inputFile[0].path,
+    output: filesReq.files!.outputFile[0].path,
+    inputFilename: filesReq.files!.inputFile[0].originalname,
+    outputFilename: filesReq.files!.outputFile[0].originalname,
+  });
 
   if (!(await deletePreviousFiles(testdataId))) {
     res.send(
@@ -241,13 +242,7 @@ const modifyTestdata = async (req: Request, res: Response) => {
     return;
   }
 
-  const result = await problemService.modifyTestdata(
-    testdataId,
-    input,
-    output,
-    inputFilename,
-    outputFilename,
-  );
+  const result = await problemService.modifyTestdata(testdataId, data);
 
   res.send(
     responseBase.parse({
