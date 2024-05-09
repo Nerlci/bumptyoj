@@ -1,3 +1,4 @@
+import { Prisma } from "@prisma/client";
 import { prisma } from "../prisma";
 
 type UserScore = {
@@ -66,13 +67,24 @@ const weightedLeaderboard = async (
   startTime: string | undefined,
   endTime: string | undefined,
 ) => {
-  // TODO: replace hardcoded difficulty with enum
-  const scores = (await prisma.$queryRaw`
+  const difficultyMap = {
+    简单: 1,
+    中等: 1.5,
+    困难: 2,
+  };
+
+  const caseString = Object.entries(difficultyMap).reduce(
+    (acc, [key, value]) => {
+      acc += `WHEN p.difficulty = '${key}' THEN ${value}\n`;
+      return acc;
+    },
+    "",
+  );
+
+  const scores = await prisma.$queryRaw<{ userId: number; score: number }[]>`
     SELECT s.userId, SUM(
       CASE
-        WHEN p.difficulty = '简单' THEN 1
-        WHEN p.difficulty = '中等' THEN 1.5
-        WHEN p.difficulty = '困难' THEN 2
+        ${Prisma.raw(caseString)}
       END
       ) as score FROM Submission s
     INNER JOIN Problem p ON s.problemId = p.id
@@ -80,7 +92,7 @@ const weightedLeaderboard = async (
     AND timestamp >= ${startTime} 
     AND timestamp <= ${endTime} 
     GROUP BY s.userId;
-  `) as { userId: number; score: number }[];
+  `;
 
   const users = await prisma.user.findMany({
     select: {
