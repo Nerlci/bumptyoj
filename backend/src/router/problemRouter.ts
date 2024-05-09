@@ -69,4 +69,10 @@ problemRouter.get(
   problemController.downloadTestdata,
 );
 
+problemRouter.get(
+  "/downloadAll",
+  authUserMiddleware,
+  problemController.downloadAllTestdata,
+);
+
 export { problemRouter };
