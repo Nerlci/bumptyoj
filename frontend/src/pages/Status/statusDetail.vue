@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import { getRequest } from '@/utils/request';
+import { getRequest } from "@/utils/request";
 
 export default {
   data() {
@@ -52,21 +52,24 @@ export default {
     fetchSubmissionDetail() {
       const submissionId = this.$route.params.submissionId; // 获取路由参数中的 submissionId
       this.loading = true;
-      getRequest('/submission/submission', {
-        submissionId // 传递 submissionId 作为参数
-      }).then(response => {
-        if (response.code === "200") {
-          this.detail = response.payload;
-        } else {
-          this.error = response.error.msg;
-        }
-      }).catch(error => {
-        this.error = error.message || 'Failed to fetch data';
-      }).finally(() => {
-        this.loading = false;
-      });
-    }
-  }
+      getRequest("/submission/submission", {
+        submissionId, // 传递 submissionId 作为参数
+      })
+        .then((response) => {
+          if (response.code === "200") {
+            this.detail = response.payload;
+          } else {
+            this.error = response.error.msg;
+          }
+        })
+        .catch((error) => {
+          this.error = error.message || "Failed to fetch data";
+        })
+        .finally(() => {
+          this.loading = false;
+        });
+    },
+  },
 };
 </script>
 

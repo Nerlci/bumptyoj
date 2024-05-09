@@ -1,21 +1,23 @@
 <template>
-    <div class="home">
-        <el-container>
-            <el-main>
-                <div class="home-main">
-                    <div class="home-title">
-                        <p class="home-title-h">Welcome to <b class="home-title-oj">Bumpty OJ</b></p>
-                    </div>
-                    <div>
-                        <News></News>
-                    </div>
-                    <div class="home-problem">
-                        <problem-introduce/>
-                    </div>
-                </div>
-            </el-main>
-        </el-container>
-    </div>
+  <div class="home">
+    <el-container>
+      <el-main>
+        <div class="home-main">
+          <div class="home-title">
+            <p class="home-title-h">
+              Welcome to <b class="home-title-oj">Bumpty OJ</b>
+            </p>
+          </div>
+          <div>
+            <News></News>
+          </div>
+          <div class="home-problem">
+            <problem-introduce />
+          </div>
+        </div>
+      </el-main>
+    </el-container>
+  </div>
 </template>
 
 <script>
