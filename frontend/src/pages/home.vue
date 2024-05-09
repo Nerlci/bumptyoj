@@ -4,7 +4,7 @@
             <el-main>
                 <div class="home-main">
                     <div class="home-title">
-                        <p class="home-title-h">Welcome to <b class="home-title-oj">Fake OJ</b></p>
+                        <p class="home-title-h">Welcome to <b class="home-title-oj">Bumpty OJ</b></p>
                     </div>
                     <div>
                         <News></News>
