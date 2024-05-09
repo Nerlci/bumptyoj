@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { submissionService } from "../service/submissionService";
-import { submission } from "../schema";
-import { timeStamp } from "console";
+import { responseBase, submission } from "../schema";
 
 const postSubmit = async (req: Request, res: Response) => {
   const { problemId, code, language } = req.body;
@@ -17,16 +16,19 @@ const postSubmit = async (req: Request, res: Response) => {
 
   const result = await submissionService.handleJudge(submissionData);
 
-  res.json({
-    code: "200",
-    payload: {
-      submissionId: result.id,
-      problemId: result.problemId,
-      userId: result.userId,
-      language: result.language,
-      timestamp: result.timestamp,
-    },
-  });
+  res.send(
+    responseBase.parse({
+      code: "200",
+      payload: {
+        submissionId: result.id,
+        problemId: result.problemId,
+        userId: result.userId,
+        language: result.language,
+        timestamp: result.timestamp,
+      },
+      error: { message: "" },
+    }),
+  );
 };
 
 const getSubmission = async (req: Request, res: Response) => {
@@ -41,19 +43,22 @@ const getSubmission = async (req: Request, res: Response) => {
     };
   });
 
-  res.json({
-    code: "200",
-    payload: {
-      submissionId: id,
-      ...rest,
-      detail: detailData,
-    },
-  });
+  res.send(
+    responseBase.parse({
+      code: "200",
+      payload: {
+        submissionId: id,
+        ...rest,
+        detail: detailData,
+      },
+      error: { message: "" },
+    }),
+  );
 };
 
 const listSubmission = async (req: Request, res: Response) => {
   const count = Number(req.query.count);
-  const maxId = Number(req.query.maxId);
+  const maxId = Number(req.query.maxId) || undefined;
   const submissionId = Number(req.query.submissionId) || undefined;
   const userId = Number(req.query.userId) || undefined;
   const problemId = Number(req.query.problemId) || undefined;
@@ -74,13 +79,16 @@ const listSubmission = async (req: Request, res: Response) => {
     };
   });
 
-  res.json({
-    code: "200",
-    payload: {
-      count: result.length,
-      submissions: resultData,
-    },
-  });
+  res.send(
+    responseBase.parse({
+      code: "200",
+      payload: {
+        count: result.length,
+        submissions: resultData,
+      },
+      error: { message: "" },
+    }),
+  );
 };
 
 const countSubmission = async (req: Request, res: Response) => {
@@ -89,12 +97,15 @@ const countSubmission = async (req: Request, res: Response) => {
 
   const result = await submissionService.countSubmission(userId, problemId);
 
-  res.json({
-    code: "200",
-    payload: {
-      count: result,
-    },
-  });
+  res.send(
+    responseBase.parse({
+      code: "200",
+      payload: {
+        count: result,
+      },
+      error: { message: "" },
+    }),
+  );
 };
 
 const submissionController = {
