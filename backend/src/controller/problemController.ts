@@ -4,8 +4,6 @@ import { unlink } from "fs";
 
 import { problemService } from "../service/problemService";
 import { problem, responseBase, testdata } from "../schema";
-import test from "node:test";
-import { count } from "console";
 
 interface TestdataRequest extends Request {
   files: {

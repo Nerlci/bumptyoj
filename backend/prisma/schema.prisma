@@ -38,21 +38,23 @@ model Testdata {
 }
 
 model Problem {
-  id           Int          @id @default(autoincrement())
-  displayId    String
-  title        String
-  createdAt    DateTime     @default(now())
-  difficulty   String
-  time         Int
-  memory       Int
-  description  String
-  inputFormat  String
-  outputFormat String
-  sampleInput  String
-  sampleOutput String
-  other        String
-  testdata     Testdata[]
-  submission   Submission[]
+  id              Int          @id @default(autoincrement())
+  displayId       String
+  title           String
+  createdAt       DateTime     @default(now())
+  difficulty      String
+  time            Int
+  memory          Int
+  description     String
+  inputFormat     String
+  outputFormat    String
+  sampleInput     String
+  sampleOutput    String
+  submissionCount Int
+  acceptedCount   Int
+  other           String
+  testdata        Testdata[]
+  submission      Submission[]
 }
 
 model SubmissionDetail {
