@@ -49,6 +49,7 @@ axios.interceptors.response.use(
 
 let base = config.baseApi;
 
+// 你可以直接在请求函数中使用相对路径，省去 baseApi
 export const postRequest = (url, params) => {
   return axios({
     method: "post",

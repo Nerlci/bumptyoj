@@ -61,85 +61,37 @@
 </template>
 
 <script>
+import { getRequest } from '@/utils/request';
+
 export default {
-  name: "statue",
   data() {
     return {
-      loading: true,
-      itemCount: 10,
-      pageSize: 10,
-      tableData: [],
+      submissions: [],
+      loading: false,
+      error: null,
     };
   },
-  methods: {
-    getPage(index) {
-      this.loading = true;
-      var requestOptions = {
-        method: "GET",
-        headers: new Headers({
-          "User-Agent": "Apifox/1.0.0 (https://apifox.com)",
-        }),
-        redirect: "follow",
-      };
-      this.getRequest(
-        `/api/submission/list?submissionId=1&problemId=3&userId=2&count=10&maxId=15&page=${index}`,
-        requestOptions,
-      )
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.code === "200") {
-            this.tableData = data.payload.submissions;
-            this.itemCount = data.payload.count;
-          } else {
-            console.error("API Error:", data.error.msg);
-          }
-          this.loading = false;
-        })
-        .catch((error) => {
-          console.error("error", error);
-          this.loading = false;
-        });
-    },
-    getPageInfo() {
-      this.getRequest(
-        "/api/submission/list?submissionId=1&problemId=3&userId=2&count=10&maxId=15",
-      )
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.code === "200" && data.payload.count > 0) {
-            this.itemCount = data.payload.count;
-            this.getPage(1);
-          } else {
-            console.error("Invalid API response:", data);
-          }
-        })
-        .catch((error) => {
-          console.error("API request failed:", error);
-        });
-    },
-    statusResult(sta) {
-      if (sta === 0) return "WA";
-      else return "AC";
-    },
-    GetColor(sta) {
-      if (sta === 0) return "color: darkred";
-      else return "color: green";
-    },
-    showProblem(pid) {
-      this.$router.push({ name: "problemDetail", params: { id: pid } });
-    },
-    showStatus(id, author) {
-      if (
-        !this.$store.state.status.isAdmin &&
-        author !== this.$store.state.status.username
-      )
-        return;
-      this.$router.push({ name: "statusDetail", params: { id: id } });
-    },
-  },
   created() {
-    this.getPageInfo();
+    this.fetchSubmissions();
   },
+  methods: {
+    fetchSubmissions() {
+      this.loading = true;
+      getRequest('/submission/list', {
+        count: 20 
+      }).then(response => {
+        if (response.code === "200") {
+          this.submissions = response.payload.submissions;
+        } else {
+          this.error = response.error.msg;
+        }
+      }).catch(error => {
+        this.error = error.message || 'Failed to fetch data';
+      }).finally(() => {
+        this.loading = false;
+      });
+    }
+  }
 };
 </script>
 
