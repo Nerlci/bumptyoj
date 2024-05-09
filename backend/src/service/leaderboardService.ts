@@ -20,7 +20,7 @@ const getLeaderboard = (userScores: UserScore[]) => {
     return {
       userId: userScore.userId,
       username: userScore.username,
-      count: userScore.score,
+      score: userScore.score,
       rank,
     };
   });
@@ -40,8 +40,8 @@ const countLeaderboard = async (
             where: {
               status: "Accepted",
               timestamp: {
-                gte: startTime ? new Date(startTime) : startTime,
-                lte: endTime ? new Date(endTime) : endTime,
+                gte: startTime ? new Date(startTime) : undefined,
+                lte: endTime ? new Date(endTime) : undefined,
               },
             },
           },
