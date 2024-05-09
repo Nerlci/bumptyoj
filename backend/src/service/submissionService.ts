@@ -122,7 +122,7 @@ const getSubmission = async (submissionId: number) => {
 
 const listSubmission = async (
   count: number,
-  maxId: number,
+  maxId: number | undefined,
   submissionId: number | undefined,
   userId: number | undefined,
   problemId: number | undefined,
@@ -134,7 +134,7 @@ const listSubmission = async (
     take: count,
     where: {
       id: {
-        lt: maxId,
+        ...(maxId ? { lt: maxId } : {}),
         equals: submissionId,
       },
       ...(userId ? { userId: userId } : {}),
