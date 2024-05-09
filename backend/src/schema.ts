@@ -91,3 +91,24 @@ export const submission = z.object({
   detail: z.array(submissionDetail).default([]),
 });
 export type Submission = z.infer<typeof submission>;
+
+export const discussionPost = z.object({
+  postId: z.number().default(0),
+  userId: z.number(),
+  title: z.string(),
+  author: z.string(),
+  content: z.string(),
+  category: z.string(),
+  timestamp: z.date().default(() => new Date()),
+});
+export type DiscussionPost = z.infer<typeof discussionPost>;
+
+export const comment = z.object({
+  commentId: z.number().default(0),
+  postId: z.number().default(0),
+  userId: z.number(),
+  author: z.string(),
+  content: z.string(),
+  timestamp: z.date().default(() => new Date()),
+});
+export type Comment = z.infer<typeof comment>;
