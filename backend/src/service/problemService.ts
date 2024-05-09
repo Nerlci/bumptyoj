@@ -13,6 +13,8 @@ const mapProblemToResponse = (problem: Problem) => {
     outputFormat: format.output,
     sampleInput: sample.input,
     sampleOutput: sample.output,
+    submissionCount: submissionCount,
+    acceptedCount: acceptedCount,
     testdata: {},
   };
 };
@@ -20,7 +22,6 @@ const mapProblemToResponse = (problem: Problem) => {
 const mapResponseToProblem = (data: any) => {
   if (!data) return null;
 
-  // TODO: Query submission count and accepted count
   return problem.parse({
     metadata: problemMetadata.parse({
       problemId: data.id,
@@ -42,7 +43,6 @@ const mapResponseToProblem = (data: any) => {
 const mapResponseToProblemMetadata = (data: any) => {
   if (!data) return null;
 
-  // TODO: Query submission count and accepted count
   return problemMetadata.parse({
     problemId: data.id,
     ...data,

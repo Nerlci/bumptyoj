@@ -78,6 +78,12 @@ const handleJudge = async (data: Submission) => {
     },
   });
 
+  const problemData = problemService.mapResponseToProblem(
+    await problemService.getProblem(data.problemId),
+  );
+  problemData!.metadata.submissionCount += 1;
+  problemService.modifyProblem(data.problemId, problemData!);
+
   const submissionData = submission.parse({
     ...result,
     submissionId: result.id,
@@ -109,6 +115,14 @@ const resultCallback = async (data: Submission) => {
       },
     },
   });
+
+  if (data.status === "Accepted") {
+    const problemData = problemService.mapResponseToProblem(
+      await problemService.getProblem(data.problemId),
+    );
+    problemData!.metadata.acceptedCount += 1;
+    problemService.modifyProblem(data.problemId, problemData!);
+  }
 };
 
 const getSubmission = async (submissionId: number) => {
