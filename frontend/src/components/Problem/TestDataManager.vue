@@ -34,7 +34,6 @@
     </div>
 </template>
 
-
 <script>
 import { putRequest,postRequest, deleteRequest, getRequest } from '@/utils/request';
 
@@ -160,50 +159,50 @@ export default {
 
 <style scoped>
 .test-data-manager {
-    width: 80%;
-    margin: 20px auto;
-    font-family: Arial, sans-serif;
+  width: 80%;
+  margin: 20px auto;
+  font-family: Arial, sans-serif;
 }
 
 .test-data-manager h3 {
-    color: #333;
-    margin-bottom: 20px;
+  color: #333;
+  margin-bottom: 20px;
 }
 
 table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
 }
 
 table,
 th,
 td {
-    border: 1px solid #ccc;
+  border: 1px solid #ccc;
 }
 
 th,
 td {
-    padding: 8px;
-    text-align: left;
+  padding: 8px;
+  text-align: left;
 }
 
 th {
-    background-color: #f2f2f2;
+  background-color: #f2f2f2;
 }
 
 button {
-    margin-right: 10px;
-    padding: 5px 10px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+  margin-right: 10px;
+  padding: 5px 10px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
 button:hover {
-    background-color: #45a049;
+  background-color: #45a049;
 }
 
 input[type="file"] {

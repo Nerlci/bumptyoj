@@ -1,27 +1,38 @@
 <template>
-    <div class="status-detail" v-loading="loading" v-show="show">
-        <h2 id="solution-title">代码查看 - {{ solution.title }}</h2>
-        
-        <div class="metadata">
-            <span><i class="el-icon-timer"></i>提交时间&nbsp;{{ solution.submitTime }}</span>&nbsp;|&nbsp;
-            <span :style="gao(solution.status)"><i class="el-icon-hot-water"></i>状态&nbsp;{{ solution.status }}</span>
-            <span>语言: {{ solution.language }}</span>&nbsp;|&nbsp;
-            <span>内存使用: {{ solution.memory }}</span>&nbsp;|&nbsp;
-            <span>执行时间: {{ solution.time }}</span>&nbsp;|&nbsp;
-            <span>得分: {{ solution.score }}</span>
-        </div>
+  <div class="status-detail" v-loading="loading" v-show="show">
+    <h2 id="solution-title">代码查看 - {{ solution.title }}</h2>
 
-        <el-button id="clip-button" size="large" v-clipboard:copy="solution.answer"
-                   v-clipboard:error="onCopyError" v-clipboard:success="onCopySuccess"
-                   type="primary">复制代码
-        </el-button>
-
-        <el-card class="solution-answer" shadow="always">
-            <pre>{{ solution.answer }}</pre>
-        </el-card>
+    <div class="metadata">
+      <span
+        ><i class="el-icon-timer"></i>提交时间&nbsp;{{
+          solution.submitTime
+        }}</span
+      >&nbsp;|&nbsp;
+      <span :style="gao(solution.status)"
+        ><i class="el-icon-hot-water"></i>状态&nbsp;{{ solution.status }}</span
+      >
+      <span>语言: {{ solution.language }}</span
+      >&nbsp;|&nbsp; <span>内存使用: {{ solution.memory }}</span
+      >&nbsp;|&nbsp; <span>执行时间: {{ solution.time }}</span
+      >&nbsp;|&nbsp;
+      <span>得分: {{ solution.score }}</span>
     </div>
-</template>
 
+    <el-button
+      id="clip-button"
+      size="large"
+      v-clipboard:copy="solution.answer"
+      v-clipboard:error="onCopyError"
+      v-clipboard:success="onCopySuccess"
+      type="primary"
+      >复制代码
+    </el-button>
+
+    <el-card class="solution-answer" shadow="always">
+      <pre>{{ solution.answer }}</pre>
+    </el-card>
+  </div>
+</template>
 
 <script>
 import { getRequest } from '@/utils/request';
@@ -61,21 +72,21 @@ export default {
 
 <style scoped>
 .status-detail {
-    width: 80%;
-    margin-left: auto;
-    margin-right: auto;
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .metadata {
-    margin-top: 20px;
-    margin-bottom: 30px;
+  margin-top: 20px;
+  margin-bottom: 30px;
 }
 
 #clip-button {
-    margin-bottom: 30px;
+  margin-bottom: 30px;
 }
 
 .solution-answer {
-    text-align: left;
+  text-align: left;
 }
 </style>

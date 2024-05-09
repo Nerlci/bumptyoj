@@ -5,7 +5,9 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "format": "prettier --write .",
+    "prepare": "husky install"
   },
   "dependencies": {
     "axios": "^0.21.2",
@@ -21,6 +23,9 @@
     "babel-eslint": "^10.1.0",
     "eslint": "^7.2.0",
     "eslint-plugin-vue": "^6.2.2",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.2",
+    "prettier": "3.2.5",
     "vue-fontawesome-elementui-icon-picker": "^0.1.9",
     "vue-router": "^3.3.2",
     "vue-template-compiler": "^2.6.11",
@@ -44,5 +49,10 @@
     "> 1%",
     "last 2 versions",
     "not dead"
-  ]
+  ],
+  "lint-staged": {
+    "src/**/*.{js,jsx,ts,tsx,json,css}": [
+      "prettier --write ."
+    ]
+  }
 }

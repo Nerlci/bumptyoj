@@ -1,15 +1,11 @@
 <template>
-    <div>
-        manager
-    </div>
+  <div>manager</div>
 </template>
 
 <script>
-    export default {
-        name: "manager"
-    }
+export default {
+  name: "manager",
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

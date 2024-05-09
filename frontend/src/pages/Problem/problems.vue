@@ -10,18 +10,44 @@
                     </template>
                 </el-table-column>
 
-                <el-table-column label="AC" prop="acceptedCount" width="76px"></el-table-column>
-                <el-table-column label="提交" prop="submissionCount" width="76px"></el-table-column>
-                <el-table-column label="通过率" prop="ratio" width="76px"></el-table-column>
-                <el-table-column label="创建时间" prop="createdAt" width="120px"></el-table-column>
-                <el-table-column label="难度" prop="difficulty" width="76px"></el-table-column>
+        <el-table-column
+          label="AC"
+          prop="acceptedCount"
+          width="76px"
+        ></el-table-column>
+        <el-table-column
+          label="提交"
+          prop="submissionCount"
+          width="76px"
+        ></el-table-column>
+        <el-table-column
+          label="通过率"
+          prop="ratio"
+          width="76px"
+        ></el-table-column>
+        <el-table-column
+          label="创建时间"
+          prop="createdAt"
+          width="120px"
+        ></el-table-column>
+        <el-table-column
+          label="难度"
+          prop="difficulty"
+          width="76px"
+        ></el-table-column>
 
-                <el-table-column label="操作" v-if="this.$store.state.status.type == 0" width="76px">
-                    <template slot-scope="scope">
-                        <span @click="editProblem(scope.row.problemId)" class="problem-edit">编辑</span>
-                    </template>
-                </el-table-column>
-            </el-table>
+        <el-table-column
+          label="操作"
+          v-if="this.$store.state.status.type == 0"
+          width="76px"
+        >
+          <template slot-scope="scope">
+            <span @click="editProblem(scope.row.problemId)" class="problem-edit"
+              >编辑</span
+            >
+          </template>
+        </el-table-column>
+      </el-table>
 
             <!-- 新建题目按钮 -->
             <el-button type="primary" @click="addProblem" v-if="this.$store.state.status.type == 0"

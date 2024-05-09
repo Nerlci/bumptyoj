@@ -19,24 +19,24 @@
 </template>
 
 <script>
-    import News from "../components/News";
-    import ProblemIntroduce from "../components/ProblemIntroduce";
-    export default {
-        name: "home",
-        components: {ProblemIntroduce, News}
-    }
+import News from "../components/News";
+import ProblemIntroduce from "../components/ProblemIntroduce";
+export default {
+  name: "home",
+  components: { ProblemIntroduce, News },
+};
 </script>
 
 <style scoped>
-    .home {
-        background-color: #52abff;
-        border-radius: 10px;
-        width: 90%;
-        margin-left: auto;
-        margin-right: auto;
-    }
+.home {
+  background-color: #52abff;
+  border-radius: 10px;
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+}
 
-    .home-title {
-        font-size: 26px;
-    }
+.home-title {
+  font-size: 26px;
+}
 </style>

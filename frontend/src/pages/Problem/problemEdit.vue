@@ -1,8 +1,8 @@
 <template>
-    <div class="problem-edit">
-        <h2 id="problem-edit-title">题目编辑</h2>
-        <problem-manager :problem="problem" :operation="'更新'" />
-    </div>
+  <div class="problem-edit">
+    <h2 id="problem-edit-title">题目编辑</h2>
+    <problem-manager :problem="problem" :operation="'更新'" />
+  </div>
 </template>
 
 <script>
@@ -55,5 +55,5 @@
 </script>
 
 <style scoped>
-    /* Add any additional styles if needed */
+/* Add any additional styles if needed */
 </style>

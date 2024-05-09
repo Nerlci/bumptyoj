@@ -86,24 +86,24 @@ export default {
 
 <style>
 body {
-    margin: 0;
+  margin: 0;
 }
 
 .login {
-    width: 100%;
+  width: 100%;
 }
 
 .loginContainer {
-    border-radius: 5px;
-    background-clip: padding-box;
-    width: 260px;
-    padding: 5px 40px 5px 40px;
+  border-radius: 5px;
+  background-clip: padding-box;
+  width: 260px;
+  padding: 5px 40px 5px 40px;
 }
 
 .loginTitle {
-    margin: 20px auto 20px auto;
-    text-align: center;
-    color: #52abff;
-    font-size: 26px;
+  margin: 20px auto 20px auto;
+  text-align: center;
+  color: #52abff;
+  font-size: 26px;
 }
 </style>
