@@ -61,7 +61,7 @@
 </template>
 
 <script>
-import { getRequest } from '@/utils/request';
+import { getRequest } from "@/utils/request";
 
 export default {
   data() {
@@ -77,21 +77,24 @@ export default {
   methods: {
     fetchSubmissions() {
       this.loading = true;
-      getRequest('/submission/list', {
-        count: 20 
-      }).then(response => {
-        if (response.code === "200") {
-          this.submissions = response.payload.submissions;
-        } else {
-          this.error = response.error.msg;
-        }
-      }).catch(error => {
-        this.error = error.message || 'Failed to fetch data';
-      }).finally(() => {
-        this.loading = false;
-      });
-    }
-  }
+      getRequest("/submission/list", {
+        count: 20,
+      })
+        .then((response) => {
+          if (response.code === "200") {
+            this.submissions = response.payload.submissions;
+          } else {
+            this.error = response.error.msg;
+          }
+        })
+        .catch((error) => {
+          this.error = error.message || "Failed to fetch data";
+        })
+        .finally(() => {
+          this.loading = false;
+        });
+    },
+  },
 };
 </script>
 
