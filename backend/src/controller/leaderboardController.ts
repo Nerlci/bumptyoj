@@ -42,7 +42,20 @@ const weightedLeaderboard = async (req: Request, res: Response) => {
   );
 };
 
-const problemsetLeaderboard = async (req: Request, res: Response) => {};
+const problemsetLeaderboard = async (req: Request, res: Response) => {
+  const problemsetId = Number(req.query.problemsetId);
+
+  const problemsetLeaderboard =
+    await leaderboardService.problemsetLeaderboard(problemsetId);
+
+  res.json({
+    code: "200",
+    payload: {
+      leaderboard: problemsetLeaderboard,
+    },
+    error: { msg: "" },
+  });
+};
 
 const leaderboardController = {
   countLeaderboard,
