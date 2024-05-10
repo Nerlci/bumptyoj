@@ -24,6 +24,7 @@ model User {
   submission     Submission[]
   post           Post[]
   comment        Comment[]
+  problemSets    ProblemSet[]
 }
 
 model Testdata {
@@ -55,6 +56,7 @@ model Problem {
   other           String
   testdata        Testdata[]
   submission      Submission[]
+  problemSet      ProblemSet[]
 }
 
 model SubmissionDetail {
@@ -92,6 +94,7 @@ model Class {
   teacher   User   @relation(name: "Teacher", fields: [teacherId], references: [id])
   teacherId Int
   students  User[] @relation(name: "Student")
+  problemSets ProblemSet[]
 }
 
 model Post {
@@ -113,4 +116,16 @@ model Comment {
   userId    Int
   content   String
   timestamp DateTime @default(now())
+}
+
+model ProblemSet {
+  id            Int      @id @default(autoincrement())
+  title         String
+  type          Int      @default(0) // 0: homework, 1: contest
+  description   String   @default("")
+  startTime     DateTime?
+  endTime       DateTime?
+  problems      Problem[]
+  classes       Class[]
+  users         User[]    
 }
