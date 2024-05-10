@@ -89,7 +89,8 @@ const weightedLeaderboard = async (
       CASE
         ${Prisma.raw(caseString)}
       END
-      ) as score FROM Submission s
+      ) as score
+    FROM Submission s
     INNER JOIN Problem p ON s.problemId = p.id
     WHERE status = 'Accepted' 
     AND ${startTimeCondition} 
@@ -106,7 +107,7 @@ const weightedLeaderboard = async (
 
   const scoreMap = scores.reduce(
     (acc, { userId, score }) => {
-      acc[userId] = score!;
+      acc[userId] = Number(score!);
       return acc;
     },
     {} as Record<number, number>,
