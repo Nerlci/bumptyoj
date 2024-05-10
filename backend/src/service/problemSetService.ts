@@ -187,6 +187,26 @@ const getContestList = async (userId: number) => {
     : null;
 };
 
+const countHomework = async () => {
+  return prisma.problemSet.count({
+    where: {
+      type: 0,
+    },
+  });
+};
+
+const countContest = async () => {
+  return prisma.problemSet.count({
+    where: {
+      type: 1,
+    },
+  });
+};
+
+const countProblemSet = async () => {
+  return prisma.problemSet.count();
+};
+
 export const problemSetService = {
   createProblemSet,
   getProblemSet,
@@ -196,4 +216,7 @@ export const problemSetService = {
   attendContest,
   getHomeworkList,
   getContestList,
+  countHomework,
+  countContest,
+  countProblemSet,
 };

@@ -139,6 +139,48 @@ const getContestList = async (req: Request, res: Response) => {
   );
 };
 
+const countProblemSet = async (req: Request, res: Response) => {
+  const result = await problemSetService.countProblemSet();
+
+  res.send(
+    responseBase.parse({
+      code: "200",
+      payload: { count: result },
+      error: {
+        msg: "",
+      },
+    }),
+  );
+};
+
+const countHomework = async (req: Request, res: Response) => {
+  const result = await problemSetService.countHomework();
+
+  res.send(
+    responseBase.parse({
+      code: "200",
+      payload: { count: result },
+      error: {
+        msg: "",
+      },
+    }),
+  );
+};
+
+const countContest = async (req: Request, res: Response) => {
+  const result = await problemSetService.countContest();
+
+  res.send(
+    responseBase.parse({
+      code: "200",
+      payload: { count: result },
+      error: {
+        msg: "",
+      },
+    }),
+  );
+};
+
 export const problemSetController = {
   createProblemSet,
   getProblemSet,
@@ -148,4 +190,7 @@ export const problemSetController = {
   attendContest,
   getHomeworkList,
   getContestList,
+  countProblemSet,
+  countHomework,
+  countContest,
 };
