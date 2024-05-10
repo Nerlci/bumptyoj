@@ -42,7 +42,8 @@ export default {
         this.$message.error("请登录！");
         return;
       }
-      if (!this.language) { // 确保语言已经被选择
+      if (!this.language) {
+        // 确保语言已经被选择
         this.$message.error("请选择一种编程语言！");
         return;
       }
