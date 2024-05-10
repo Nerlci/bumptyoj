@@ -81,6 +81,9 @@ const weightedLeaderboard = async (
     "",
   );
 
+  const startTimeCondition = startTime ? `timestamp >= '${startTime}'` : "1=1";
+  const endTimeCondition = endTime ? `timestamp <= '${endTime}'` : "1=1";
+
   const scores = await prisma.$queryRaw<{ userId: number; score: number }[]>`
     SELECT s.userId, SUM(
       CASE
@@ -89,10 +92,10 @@ const weightedLeaderboard = async (
       ) as score FROM Submission s
     INNER JOIN Problem p ON s.problemId = p.id
     WHERE status = 'Accepted' 
-    AND timestamp >= ${startTime} 
-    AND timestamp <= ${endTime} 
-    GROUP BY s.userId;
-  `;
+    AND ${startTimeCondition} 
+    AND ${endTimeCondition}
+    GROUP BY s.userId
+    `;
 
   const users = await prisma.user.findMany({
     select: {
