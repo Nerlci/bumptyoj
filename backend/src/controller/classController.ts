@@ -59,7 +59,7 @@ const deleteClass = async (req: Request, res: Response) => {
   res.send(
     responseBase.parse({
       code: "200",
-      payload: result,
+      payload: {},
       error: {
         msg: "",
       },
