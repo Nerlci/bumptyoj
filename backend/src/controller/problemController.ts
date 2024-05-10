@@ -14,11 +14,7 @@ interface TestdataRequest extends Request {
 }
 
 const createProblem = async (req: Request, res: Response) => {
-  const { metadata, ...rest } = req.body;
-  const data = {
-    metadata,
-    ...rest,
-  };
+  const data = req.body;
 
   const prob = problem.parse(data);
 
@@ -37,11 +33,7 @@ const createProblem = async (req: Request, res: Response) => {
 };
 
 const modifyProblem = async (req: Request, res: Response) => {
-  const { metadata, ...rest } = req.body;
-  const data = {
-    metadata,
-    ...rest,
-  };
+  const data = req.body;
 
   const prob = problem.parse(data);
 
