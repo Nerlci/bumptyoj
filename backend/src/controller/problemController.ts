@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 
-import { unlink } from "fs";
+import fs from "fs";
+import archiver from "archiver";
 
 import { problemService } from "../service/problemService";
 import { problem, responseBase, testdata } from "../schema";
@@ -13,11 +14,7 @@ interface TestdataRequest extends Request {
 }
 
 const createProblem = async (req: Request, res: Response) => {
-  const { metadata, ...rest } = req.body;
-  const data = {
-    metadata,
-    ...rest,
-  };
+  const data = req.body;
 
   const prob = problem.parse(data);
 
@@ -36,11 +33,7 @@ const createProblem = async (req: Request, res: Response) => {
 };
 
 const modifyProblem = async (req: Request, res: Response) => {
-  const { metadata, ...rest } = req.body;
-  const data = {
-    metadata,
-    ...rest,
-  };
+  const data = req.body;
 
   const prob = problem.parse(data);
 
@@ -149,8 +142,8 @@ const deletePreviousFiles = async (testdataId: number) => {
     return false;
   }
 
-  unlink(previous.input, () => {});
-  unlink(previous.output, () => {});
+  fs.unlink(previous.input, () => {});
+  fs.unlink(previous.output, () => {});
 
   return true;
 };
@@ -299,6 +292,29 @@ const downloadTestdata = async (req: Request, res: Response) => {
   }
 };
 
+const downloadAllTestdata = async (req: Request, res: Response) => {
+  const problemId = Number(req.query.problemId);
+  const results = await problemService.getTestdataByProblemId(problemId);
+
+  res.setHeader(
+    "Content-Disposition",
+    `attachment; filename=testdata_${problemId}.zip`,
+  );
+  const archive = archiver("zip");
+  archive.pipe(res);
+
+  results.forEach((result) => {
+    archive.append(fs.createReadStream(result.input), {
+      name: result.inputFilename,
+    });
+    archive.append(fs.createReadStream(result.output), {
+      name: result.outputFilename,
+    });
+  });
+
+  await archive.finalize();
+};
+
 const problemController = {
   createProblem,
   modifyProblem,
@@ -311,6 +327,7 @@ const problemController = {
   modifyTestdata,
   deleteTestdata,
   downloadTestdata,
+  downloadAllTestdata,
 };
 
 export { problemController };

@@ -53,7 +53,10 @@ export default {
             this.$message.error("提交失败: " + response.error.msg);
           } else {
             this.$message.success("提交成功！");
-            this.$router.push({ name: "status" }); // 导航到状态页面
+            this.$router.push({
+              name: "statusDetail",
+              params: { submissionId: response.payload.submissionId },
+            });
           }
         })
         .catch((error) => {

@@ -90,7 +90,7 @@ const constRouter = [
     component: problemTestData,
   },
   {
-    path: "/status/detail/:id",
+    path: "/status/:submissionId",
     name: "statusDetail",
     component: statusDetail,
   },
