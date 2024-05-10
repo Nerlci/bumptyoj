@@ -1,11 +1,16 @@
 <template>
   <div class="discussion">
-    <div class="sidebar">
+    <div class="header">
+      <div class="button-container">
+        <el-button icon="el-icon-edit" type="primary" @click="openPostDialog" class="post-button">发布帖子</el-button>
+      </div>
       <el-menu
         default-active="1"
-        class="el-menu-vertical-demo"
+        mode="horizontal"
+        class="el-menu-horizontal"
         @select="handleSelect"
       >
+        <el-menu-item index="0">全部帖子</el-menu-item>
         <el-menu-item index="1">题目讨论</el-menu-item>
         <el-menu-item index="2">技术交流</el-menu-item>
         <el-menu-item index="3">反馈与建议</el-menu-item>
@@ -13,11 +18,14 @@
       </el-menu>
     </div>
     <div class="content">
-      <el-button type="primary" @click="openPostDialog">发布帖子</el-button>
-      <el-table :data="posts" style="width: 100%" @row-click="goToPostDetail">
+      <el-table :data="posts" style="width: 90%" @row-click="goToPostDetail">
         <el-table-column prop="title" label="标题"></el-table-column>
         <el-table-column prop="author" label="作者"></el-table-column>
-        <el-table-column prop="timestamp" label="发布时间" :formatter="formatTimestamp"></el-table-column>
+        <el-table-column
+          prop="timestamp"
+          label="发布时间"
+          :formatter="formatTimestamp"
+        ></el-table-column>
       </el-table>
       <div style="display: flex; justify-content: center; margin-top: 20px">
         <el-button
@@ -67,7 +75,7 @@
 <script>
 import { getRequest } from "@/utils/request";
 import { postRequest } from "@/utils/request";
-import { DateTime } from 'luxon';
+import { DateTime } from "luxon";
 
 export default {
   data() {
@@ -80,7 +88,7 @@ export default {
       },
       posts: [],
       currentPage: 1,
-      pageSize: 20,
+      pageSize: 10,
       total: 0,
       maxPage: 1,
       currentCategory: "题目讨论",
@@ -93,13 +101,14 @@ export default {
   methods: {
     fetchPosts() {
       const offset = (this.currentPage - 1) * this.pageSize;
-      getRequest("/api/discussion/list", {
-        params: {
-          category: this.currentCategory,
-          count: this.pageSize,
-          offset: offset,
-        },
-      })
+      let url =
+        "/api/discussion/list?count=" + this.pageSize + "&offset=" + offset;
+      if (this.currentCategory !== "全部帖子") {
+        url += "&category=" + this.currentCategory;
+      } else {
+        url += "&category";
+      }
+      getRequest(url)
         .then((response) => {
           if (response.code === "200") {
             this.posts = response.payload.posts;
@@ -144,7 +153,11 @@ export default {
       }
     },
     goToPostDetail(row) {
-      this.$router.push({ name: "PostDetail", params: { postId: row.postId } });
+      console.log(row.postId);
+      this.$router.push({ 
+        name: "postDetail", 
+        params: { postId: row.postId },
+      });
     },
     openPostDialog() {
       this.dialogVisible = true;
@@ -168,11 +181,12 @@ export default {
         this.$message.error("请填写完整信息！");
         return;
       }
-      postRequest("/api/discussion/post", {
+      const postData = {
         title: this.postForm.title,
         category: this.postForm.category,
-        content: this.postForm.content,
-      })
+        content: this.postForm.category,
+      };
+      postRequest("/api/discussion/post", postData)
         .then((response) => {
           if (response.code === "200") {
             this.$message.success("发布成功！");
@@ -190,11 +204,17 @@ export default {
         });
     },
     mapIndexToCategory(index) {
-      const categories = ["题目讨论", "技术交流", "反馈与建议", "闲聊灌水"];
-      return categories[index - 1];
+      const categories = [
+        "全部帖子",
+        "题目讨论",
+        "技术交流",
+        "反馈与建议",
+        "闲聊灌水",
+      ];
+      return categories[index];
     },
     formatTimestamp(value) {
-      const dt = DateTime.fromISO(value.timestamp, { zone: 'Asia/Shanghai' });
+      const dt = DateTime.fromISO(value.timestamp, { zone: "Asia/Shanghai" });
       return dt.toRelative();
     },
   },
@@ -203,19 +223,24 @@ export default {
 
 <style scoped>
 .discussion {
-  display: flex;
+  width: 90%;
+  margin: auto;
+  padding: 0 5%;
 }
-.sidebar {
-  width: 200px;
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
 }
 .content {
-  flex: 1;
+  width: 100%;
 }
 .el-dialog {
-  --el-input-width: 300px; 
+  --el-input-width: 300px;
 }
-
 .el-input--textarea {
-  width: 100%; 
+  width: 100%;
 }
 </style>
+
