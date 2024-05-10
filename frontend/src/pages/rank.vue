@@ -1,63 +1,19 @@
 <template>
   <div class="rank-list" v-loading="loading" v-show="show">
+    <el-radio-group v-model="rankType" @input="handleRankTypeChange">
+      <el-radio-button label="count">通过数排名</el-radio-button>
+      <el-radio-button label="weighted">加权排名</el-radio-button>
+    </el-radio-group>
     <el-table :data="tableData" stripe style="height: 100%">
       <el-table-column label="排名" prop="rank" width="80px"></el-table-column>
 
       <el-table-column label="用户名" prop="username"></el-table-column>
 
       <el-table-column
-        label="正确"
-        prop="solvedCount"
+        label="分数"
+        prop="score"
         width="100px"
       ></el-table-column>
-
-      <el-table-column
-        label="提交"
-        prop="submitCount"
-        width="100px"
-      ></el-table-column>
-
-      <el-table-column
-        label="正确率"
-        prop="ratio"
-        width="100px"
-      ></el-table-column>
-
-      <el-table-column
-        label="创建题目"
-        prop="problemCount"
-        width="100px"
-      ></el-table-column>
-
-      <el-table-column
-        label="操作"
-        v-if="this.$store.state.status.isAdmin"
-        width="100px"
-      >
-        <template slot-scope="scope">
-          <span
-            @click="lockOrUnlock(scope.row)"
-            class="cursor-pointer"
-            :style="block(scope.row.locked)"
-            >{{ scope.row.locked ? "解禁" : "封禁" }}</span
-          >
-        </template>
-      </el-table-column>
-
-      <el-table-column
-        label="添加题目"
-        v-if="this.$store.state.status.isAdmin"
-        width="60px"
-      >
-        <template slot-scope="scope">
-          <span
-            @click="addOrCanNot(scope.row)"
-            class="cursor-pointer"
-            :style="block(!scope.row.canAdd)"
-            >{{ scope.row.canAdd ? "禁止" : "允许" }}</span
-          >
-        </template>
-      </el-table-column>
     </el-table>
 
     <el-pagination
@@ -79,72 +35,42 @@ export default {
   name: "rank",
   data() {
     return {
+      rankType: "count",
       loading: true,
       tableData: [],
-      pageSize: 14,
+      pageSize: 10,
       pageIndex: 1,
-      itemCount: 14,
+      itemCount: 10,
       show: false,
+      leaderboard: [],
     };
   },
   methods: {
     getPage(index) {
-      this.loading = true;
       this.pageIndex = index;
-      this.getRequest("/rankList", {
-        index: index,
-        size: this.pageSize,
-      }).then((resp) => {
-        for (let i = 0; i < resp.length; i++) {
-          resp[i].rank = this.pageSize * (this.pageIndex - 1) + i + 1;
-          if (resp[i].submitCount === 0) resp[i].ratio = 0 + "%";
-          else
-            resp[i].ratio =
-              Math.round(
-                (resp[i].solvedCount / resp[i].submitCount) * 100 * 100,
-              ) /
-                100 +
-              "%";
-        }
-        this.tableData = resp;
-        this.loading = false;
-      });
+      this.tableData = this.leaderboard.slice(
+        (index - 1) * this.pageSize,
+        index * this.pageSize,
+      );
     },
     getPageInfo() {
-      this.getRequest("/rankInfo").then((resp) => {
-        this.itemCount = resp.itemCount;
+      this.getRequest(`/api/leaderboard/${this.rankType}`).then((resp) => {
+        this.leaderboard = resp.payload.leaderboard;
+        this.itemCount = this.leaderboard.length;
         this.getPage(1);
       });
     },
-    lockOrUnlock(info) {
-      this.postRequest("/lockOrUnlock", {
-        id: info.id,
-        opt: info.locked,
-      }).then((resp) => {
-        info.locked = resp === "locked";
-        if (info.locked) this.$message.success("封禁成功");
-        else this.$message.success("解禁成功");
-      });
-    },
-    addOrCanNot(info) {
-      console.log(info);
-      this.postRequest("/addOrCanNot", {
-        id: info.id,
-        opt: info.canAdd,
-      }).then((resp) => {
-        //console.log(resp)
-        info.canAdd = resp === "canAdd";
-        if (info.canAdd) this.$message.success("添加权限成功");
-        else this.$message.success("去除权限成功");
-      });
-    },
-    block(aim) {
-      if (aim) return "color: #52abff";
-      else return "color: red";
+    handleRankTypeChange() {
+      this.loading = true;
+      setTimeout(() => {
+        this.getPageInfo();
+        this.loading = false;
+      }, 250);
     },
   },
   created() {
     this.getPageInfo();
+    this.loading = false;
   },
   mounted() {
     this.show = true;
