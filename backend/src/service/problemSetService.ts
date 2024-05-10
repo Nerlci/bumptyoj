@@ -29,6 +29,7 @@ const mapProblemSetToResponse = (result: any) => {
     problems: result.problems.map((problem: any) => {
       return problem.id;
     }),
+    contestType: result.contestType,
   };
 };
 
@@ -57,8 +58,7 @@ const createProblemSet = async (data: ProblemSet) => {
   const result = await prisma.problemSet.create({
     data: {
       ...mapDataToProblemSet(data),
-      startTime: data.startTime,
-      endTime: data.endTime,
+      contestType: data.contestType,
     },
     include: {
       problems: true,
@@ -87,6 +87,7 @@ const modifyProblemSet = async (data: ProblemSet) => {
     },
     data: {
       ...mapDataToProblemSet(data),
+      contestType: data.contestType,
     },
     include: {
       problems: true,
@@ -143,6 +144,7 @@ const attendContest = async (setId: number, userId: number) => {
         description: result.description,
         startTime: result.startTime,
         endTime: result.endTime,
+        contestType: result.contestType,
       }
     : null;
 };
@@ -179,6 +181,7 @@ const getContestList = async (userId: number) => {
     ? result.map((res: any) => {
         return {
           ...mapProblemSetToResponseBase(res),
+          contestType: res.contestType,
         };
       })
     : null;

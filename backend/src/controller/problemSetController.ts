@@ -5,8 +5,6 @@ import { problemSetService } from "../service/problemSetService";
 
 const createProblemSet = async (req: Request, res: Response) => {
   const { startTime, endTime, ...data } = req.body;
-  console.log(startTime, endTime);
-  console.log(new Date(startTime), new Date(endTime));
   data.startTime = startTime ? new Date(startTime) : null;
   data.endTime = endTime ? new Date(endTime) : null;
 
@@ -80,7 +78,6 @@ const issueHomework = async (req: Request, res: Response) => {
   const { startTime, endTime, ...data } = req.body;
   data.startTime = new Date(startTime);
   data.endTime = new Date(endTime);
-  console.log(data);
   const result = await problemSetService.issueHomework(data);
 
   res.send(
