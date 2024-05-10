@@ -122,9 +122,63 @@ const weightedLeaderboard = async (
   return weightedLeaderboard;
 };
 
+const problemsetLeaderboard = async (setId: number) => {
+  const problemSet = await prisma.problemSet.findUnique({
+    where: {
+      id: setId,
+    },
+    include: {
+      users: {
+        select: {
+          id: true,
+          username: true,
+        },
+      },
+      submissions: {
+        where: {
+          status: "Accepted",
+        },
+        select: {
+          userId: true,
+          problemId: true,
+          score: true,
+          status: true,
+        },
+      },
+    },
+  });
+
+  const contestType = problemSet!.contestType;
+
+  const scores = problemSet!.submissions.reduce(
+    (acc, submission) => {
+      acc[submission.userId] = acc[submission.userId] || 0;
+
+      if (contestType === 0) {
+        acc[submission.userId] += submission.score;
+      } else {
+        // TODO: implement acm penalty
+        acc[submission.userId] += submission.status == "Accepted" ? 1 : 0;
+      }
+
+      return acc;
+    },
+    {} as Record<number, number>,
+  );
+
+  const userScores = problemSet!.users.map((user) => ({
+    userId: user.id,
+    username: user.username!,
+    score: scores[user.id] || 0,
+  }));
+
+  return getLeaderboard(userScores);
+};
+
 const leaderboardService = {
   countLeaderboard,
   weightedLeaderboard,
+  problemsetLeaderboard,
 };
 
 export { leaderboardService };
