@@ -135,9 +135,9 @@ export default {
         url += `&userId=${encodeURIComponent(this.userSearchQuery)}`;
 
       if (direction === "next" && this.maxId) {
-        url += `&maxId=${this.minId - 1}`;
+        url += `&maxId=${this.minId}`;
       } else if (direction === "prev" && this.minId) {
-        url += `&minId=${this.maxId + 1}`;
+        url += `&minId=${this.maxId}`;
       }
 
       getRequest(url)
