@@ -1,15 +1,17 @@
 <template>
   <div class="problem-introduce" v-loading="loading">
-    <h2>题目推荐，这些好玩的题目，不来玩玩吗(。・∀・)ノ</h2>
-    <el-table :data="tableData" stripe>
-      <el-table-column label="题目" prop="title">
-        <template slot-scope="scope">
-          <span @click="showProblem(scope.row.id)" class="cursor-pointer">{{
-            scope.row.title
-          }}</span>
-        </template>
-      </el-table-column>
-    </el-table>
+    <h2>题目推荐</h2>
+    <el-card class="box-card" shadow="hover">
+      <el-table :data="tableData" stripe>
+        <el-table-column label="题目" prop="title">
+          <template slot-scope="scope">
+            <span @click="showProblem(scope.row.id)" class="cursor-pointer">{{
+              scope.row.title
+            }}</span>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-card>
   </div>
 </template>
 
@@ -26,11 +28,11 @@ export default {
   methods: {
     getPage() {
       this.loading = true;
-      this.getRequest("/getIndexProblem", {
-        size: this.pageSize,
+      this.getRequest("/api/problem/list", {
+        count: this.pageSize,
+        offset: 0,
       }).then((resp) => {
-        console.log(resp);
-        this.tableData = resp;
+        this.tableData = resp.payload.problems;
         this.loading = false;
       });
     },
@@ -48,5 +50,10 @@ export default {
 <style scoped>
 .cursor-pointer {
   cursor: pointer;
+}
+
+.box-card {
+  width: 100%;
+  border-radius: 10px;
 }
 </style>

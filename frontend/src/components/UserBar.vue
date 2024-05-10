@@ -2,12 +2,10 @@
   <div>
     <div class="user-bar">
       <div v-if="!this.$store.state.status.isLogin">
-        <el-button @click="Login" icon="el-icon-user" round type="primary"
+        <el-button @click="Login" icon="el-icon-user" type="primary"
           >登录</el-button
         >
-        <el-button @click="Register" icon="el-icon-edit" round type="success"
-          >注册</el-button
-        >
+        <el-button @click="Register" icon="el-icon-edit">注册</el-button>
       </div>
       <div v-else>
         <el-button

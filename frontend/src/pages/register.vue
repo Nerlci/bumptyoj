@@ -1,19 +1,18 @@
 <template>
   <div class="register" :style="backgroundStyle">
-    <div style="height: 20%">.</div>
-    <div style="width: 300px; margin-left: auto; margin-right: auto">
-      <el-form
-        :model="registerForm"
-        :rules="rules"
-        ref="registerForm"
-        v-loading="loading"
-        element-loading-text="正在提交信息..."
-        element-loading-spinner="el-icon-loading"
-        element-loading-background="rgba(0, 0, 0, 0.8)"
-        class="registerContainer"
-      >
-        <h3 class="registerTitle">Bumpty Oj 注册</h3>
+    <el-form
+      :model="registerForm"
+      :rules="rules"
+      ref="registerForm"
+      v-loading="loading"
+      element-loading-text="正在提交信息..."
+      element-loading-spinner="el-icon-loading"
+      element-loading-background="rgba(0, 0, 0, 0.8)"
+      class="registerContainer"
+    >
+      <p class="registerTitle">注册新用户</p>
 
+      <el-card class="box-card" shadow="hover">
         <el-form-item prop="username">
           <el-input
             v-model="registerForm.username"
@@ -50,17 +49,21 @@
           ></el-input>
         </el-form-item>
 
-        <el-form-item style="text-align: center">
+        <el-form-item style="margin: 0">
           <el-button
             type="primary"
             @click="submitForm('registerForm')"
-            class="submit_btn"
+            class="submitBtn"
             size="medium"
             >注册</el-button
           >
         </el-form-item>
-      </el-form>
-    </div>
+      </el-card>
+    </el-form>
+
+    <el-card class="login-prompt" shadow="hover">
+      已有帐户？<router-link to="/login" class="link">登录</router-link>
+    </el-card>
   </div>
 </template>
 
@@ -142,16 +145,6 @@ export default {
       },
     };
   },
-  computed: {
-    backgroundStyle: function () {
-      let high = window.innerHeight - 110;
-      return (
-        "background-image:url('../../image/bupt.jpg'); background-repeat: no-repeat; background-size: cover;background-position: center;height:" +
-        high +
-        "px;"
-      );
-    },
-  },
   created() {
     document.title = "Bumpty OJ 注册";
   },
@@ -198,20 +191,45 @@ body {
 }
 
 .register {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   width: 100%;
 }
 
 .registerContainer {
   border-radius: 5px;
   background-clip: padding-box;
-  width: 260px;
+  width: 80%;
+  max-width: 450px;
   padding: 5px 40px 5px 40px;
 }
 
 .registerTitle {
   margin: 20px auto 20px auto;
   text-align: center;
-  color: #0f9037;
   font-size: 26px;
+}
+
+.submitBtn {
+  width: 100%;
+}
+
+link {
+  color: #409eff;
+}
+.link:visited {
+  color: #409eff;
+}
+
+.login-prompt {
+  text-align: center;
+  margin-top: 20px;
+  border-radius: 10px;
+  max-width: 450px;
+  background: #f8f8f8;
+  background-clip: padding-box;
+  width: 80%;
 }
 </style>

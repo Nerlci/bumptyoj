@@ -1,18 +1,18 @@
 <template>
-  <div class="login" :style="backgroundStyle">
-    <div style="height: 20%">.</div>
-    <div style="width: 300px; margin-left: auto; margin-right: auto">
-      <el-form
-        :model="loginForm"
-        :rules="rules"
-        ref="loginForm"
-        v-loading="loading"
-        element-loading-text="正在登录..."
-        element-loading-spinner="el-icon-loading"
-        element-loading-background="rgba(0, 0, 0, 0.8)"
-        class="loginContainer"
-      >
-        <h3 class="loginTitle">Bumpty Oj 登录</h3>
+  <div class="login">
+    <el-form
+      :model="loginForm"
+      :rules="rules"
+      ref="loginForm"
+      v-loading="loading"
+      element-loading-text="正在登录..."
+      element-loading-spinner="el-icon-loading"
+      element-loading-background="rgba(0, 0, 0, 0.8)"
+      class="loginContainer"
+    >
+      <p class="loginTitle">登录你的账户</p>
+
+      <el-card class="box-card" shadow="hover">
         <el-form-item prop="email">
           <el-input
             v-model="loginForm.email"
@@ -29,17 +29,21 @@
             prefix-icon="el-icon-key"
           ></el-input>
         </el-form-item>
-        <el-form-item style="text-align: center">
+        <el-form-item style="margin: 0">
           <el-button
             type="primary"
             @click="submitForm('loginForm')"
-            class="submit_btn"
+            class="submitBtn"
             size="medium"
             >登录</el-button
           >
         </el-form-item>
-      </el-form>
-    </div>
+      </el-card>
+    </el-form>
+
+    <el-card class="register-prompt" shadow="hover">
+      新用户？<router-link to="/register" class="link">注册</router-link>
+    </el-card>
   </div>
 </template>
 
@@ -60,16 +64,6 @@ export default {
         password: [{ required: true, message: "请输入密码", trigger: "blur" }],
       },
     };
-  },
-  computed: {
-    backgroundStyle: function () {
-      let high = window.innerHeight - 110;
-      return (
-        "background-image:url('../../image/bupt.jpg'); background-repeat: no-repeat; background-size: cover;background-position: center;height:" +
-        high +
-        "px;"
-      );
-    },
   },
   created() {
     document.title = "Bumpty OJ";
@@ -110,20 +104,50 @@ body {
 }
 
 .login {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   width: 100%;
 }
 
 .loginContainer {
   border-radius: 5px;
   background-clip: padding-box;
-  width: 260px;
+  width: 80%;
+  max-width: 450px;
   padding: 5px 40px 5px 40px;
 }
 
 .loginTitle {
   margin: 20px auto 20px auto;
   text-align: center;
-  color: #52abff;
   font-size: 26px;
+}
+
+.submitBtn {
+  width: 100%;
+}
+
+.box-card {
+  border-radius: 10px;
+  background-clip: padding-box;
+}
+
+link {
+  color: #409eff;
+}
+.link:visited {
+  color: #409eff;
+}
+
+.register-prompt {
+  text-align: center;
+  margin-top: 20px;
+  border-radius: 10px;
+  max-width: 450px;
+  background: #f8f8f8;
+  background-clip: padding-box;
+  width: 80%;
 }
 </style>

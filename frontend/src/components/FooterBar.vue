@@ -1,20 +1,11 @@
 <template>
   <div class="footer-bar">
-    <el-menu mode="horizontal" background-color="black">
-      <el-menu-item class="footer-show">Created By:</el-menu-item>
-
-      <el-menu-item class="footer-show"
-        ><a class="no-decoration" href="https://cn.vuejs.org/index.html"
-          >vue</a
-        ></el-menu-item
-      >
-
-      <el-menu-item class="footer-show"
-        ><a class="no-decoration" href="https://element.eleme.cn"
-          >element-ui</a
-        ></el-menu-item
-      >
-    </el-menu>
+    <div class="footer-show">
+      <div class="footer-text">Bumpty OJ</div>
+      <a href="https://github.com/Nerlci/bumptyoj" class="footer-link">
+        <font-awesome-icon :icon="['fab', 'github']" />
+      </a>
+    </div>
   </div>
 </template>
 
@@ -30,17 +21,24 @@ export default {
   bottom: 0;
   left: 0;
   width: 100%;
-  background-color: black;
   text-align: center;
-  color: #52abff;
-  font-weight: bold;
+  margin-bottom: 10px;
 }
 
 .footer-show {
-  text-align: left;
+  text-align: center;
 }
 
-.no-decoration {
+.footer-text {
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: #888888;
+}
+
+.footer-link {
+  color: #999999;
+  font-size: 20px;
+  margin-bottom: 10px;
   text-decoration: none;
 }
 </style>
