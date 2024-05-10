@@ -122,3 +122,25 @@ export const comment = z.object({
   timestamp: z.date().default(() => new Date()),
 });
 export type Comment = z.infer<typeof comment>;
+
+export const problemSet = z
+  .object({
+    setId: z.number().default(0),
+    title: z.string(),
+    type: z.number().int().default(0),
+    contestType: z.number().int().default(0),
+    description: z.string().optional(),
+    startTime: z.date().optional(),
+    endTime: z.date().optional(),
+    problems: z.array(z.number()).default([]),
+  })
+  .refine(
+    (d) =>
+      d.startTime === undefined ||
+      d.endTime === undefined ||
+      d.endTime >= d.startTime,
+    {
+      message: "End time must be later than or equal to the start time",
+    },
+  );
+export type ProblemSet = z.infer<typeof problemSet>;
