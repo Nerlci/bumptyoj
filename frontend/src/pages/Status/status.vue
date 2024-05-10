@@ -25,9 +25,8 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
       :current-page="currentPage"
-      :page-sizes="[10, 15, 20]"
       :page-size="10"
-      layout="total, sizes, prev, pager, next, jumper"
+      layout="prev, pager, next"
       :total="total">
     </el-pagination>
   </div>
@@ -37,14 +36,12 @@
 .status-list {
     width: 90%;
     margin: auto;
-    /* 与问题列表的宽度设置保持一致 */
 }
 
 .search-input {
-    margin-right: 8px; /* 确保输入框之间有适当的间隔 */
+    margin-right: 8px;
 }
 </style>
-
 
 <script>
 import {getRequest} from '@/utils/request';
