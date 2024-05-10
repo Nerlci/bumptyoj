@@ -9,16 +9,15 @@
       </div>
       <div v-else>
         <el-button
-          round
           type="primary"
           @click="Manager"
           v-if="this.$store.state.status.canAdd"
           >添加</el-button
         >
-        <el-button round type="primary">{{
+        <el-button type="primary">{{
           this.$store.state.status.username
         }}</el-button>
-        <el-button @click="logout" round type="info">注销</el-button>
+        <el-button @click="logout" type="info">注销</el-button>
       </div>
     </div>
   </div>
