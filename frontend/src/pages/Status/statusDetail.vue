@@ -58,8 +58,8 @@
 </template>
 
 <script>
-import { getRequest } from "@/utils/request";
-import moment from "moment";
+import { getRequest } from '@/utils/request';
+import {DateTime} from 'luxon';
 
 export default {
   data() {
@@ -103,7 +103,8 @@ export default {
         });
     },
     formatTimestamp(value) {
-      return moment(value).fromNow();
+      const dt = DateTime.fromISO(value.timestamp, { zone: 'Asia/Shanghai' });
+      return dt.toRelative();
     },
     formatMemory(value) {
       console.log(value);
