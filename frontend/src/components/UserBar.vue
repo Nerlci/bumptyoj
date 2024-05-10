@@ -2,25 +2,22 @@
   <div>
     <div class="user-bar">
       <div v-if="!this.$store.state.status.isLogin">
-        <el-button @click="Login" icon="el-icon-user" round type="primary"
+        <el-button @click="Login" icon="el-icon-user" type="primary"
           >登录</el-button
         >
-        <el-button @click="Register" icon="el-icon-edit" round type="success"
-          >注册</el-button
-        >
+        <el-button @click="Register" icon="el-icon-edit">注册</el-button>
       </div>
       <div v-else>
         <el-button
-          round
           type="primary"
           @click="Manager"
           v-if="this.$store.state.status.canAdd"
           >添加</el-button
         >
-        <el-button round type="primary">{{
+        <el-button type="primary">{{
           this.$store.state.status.username
         }}</el-button>
-        <el-button @click="logout" round type="info">注销</el-button>
+        <el-button @click="logout" type="info">注销</el-button>
       </div>
     </div>
   </div>

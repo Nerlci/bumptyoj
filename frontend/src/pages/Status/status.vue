@@ -25,7 +25,10 @@
           type="primary"
           icon="el-icon-search"
           circle
-          @click="fetchTotal();fetchSubmissions()"
+          @click="
+            fetchTotal();
+            fetchSubmissions();
+          "
         ></el-button>
       </div>
     </div>
@@ -59,18 +62,20 @@
       ></el-table-column>
     </el-table>
 
-    <div style="display: flex; justify-content: center; margin-top: 20px;">
+    <div style="display: flex; justify-content: center; margin-top: 20px">
       <el-button
         type="primary"
         @click="handlePreClick"
         :disabled="currentPage <= 1"
-      >上一页</el-button>
-      <span style="margin: 10px 10px;">第 {{ currentPage }} 页</span>
+        >上一页</el-button
+      >
+      <span style="margin: 10px 10px">第 {{ currentPage }} 页</span>
       <el-button
         type="primary"
         @click="handleNextClick"
         :disabled="currentPage >= maxPage"
-      >下一页</el-button>
+        >下一页</el-button
+      >
     </div>
   </div>
 </template>
@@ -110,7 +115,7 @@ export default {
   methods: {
     fetchTotal() {
       let url = "/api/submission/count";
-      if(this.problemSearchQuery || this.userSearchQuery){
+      if (this.problemSearchQuery || this.userSearchQuery) {
         url += "?";
       }
       if (this.problemSearchQuery)
@@ -166,7 +171,7 @@ export default {
       if (this.currentPage > 1) {
         this.fetchSubmissions("prev");
         this.currentPage -= 1;
-      }else{
+      } else {
         this.$message.error("已经是第一页了！");
       }
     },
@@ -174,7 +179,7 @@ export default {
       if (this.currentPage < Math.ceil(this.total / this.pageSize)) {
         this.fetchSubmissions("next");
         this.currentPage += 1;
-      }else{
+      } else {
         this.$message.error("已经是最后一页了！");
       }
     },
