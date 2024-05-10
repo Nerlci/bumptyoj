@@ -7,4 +7,9 @@ leaderboardRouter.get("/count", leaderboardController.countLeaderboard);
 
 leaderboardRouter.get("/weighted", leaderboardController.weightedLeaderboard);
 
+leaderboardRouter.get(
+  "/problemset",
+  leaderboardController.problemsetLeaderboard,
+);
+
 export { leaderboardRouter };

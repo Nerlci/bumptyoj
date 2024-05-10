@@ -72,28 +72,30 @@ model SubmissionDetail {
 }
 
 model Submission {
-  id        Int                @id @default(autoincrement())
-  problem   Problem            @relation(fields: [problemId], references: [id])
-  problemId Int
-  user      User               @relation(fields: [userId], references: [id])
-  userId    Int
-  language  String
-  code      String
-  length    Int
-  status    String
-  time      Int
-  memory    Int
-  score     Int
-  timestamp DateTime           @default(now())
-  detail    SubmissionDetail[]
+  id         Int                @id @default(autoincrement())
+  problem    Problem            @relation(fields: [problemId], references: [id])
+  problemId  Int
+  user       User               @relation(fields: [userId], references: [id])
+  userId     Int
+  problemSet ProblemSet?        @relation(fields: [setId], references: [id])
+  setId      Int?
+  language   String
+  code       String
+  length     Int
+  status     String
+  time       Int
+  memory     Int
+  score      Int
+  timestamp  DateTime           @default(now())
+  detail     SubmissionDetail[]
 }
 
 model Class {
-  id        Int    @id @default(autoincrement())
-  name      String
-  teacher   User   @relation(name: "Teacher", fields: [teacherId], references: [id])
-  teacherId Int
-  students  User[] @relation(name: "Student")
+  id          Int          @id @default(autoincrement())
+  name        String
+  teacher     User         @relation(name: "Teacher", fields: [teacherId], references: [id])
+  teacherId   Int
+  students    User[]       @relation(name: "Student")
   problemSets ProblemSet[]
 }
 
@@ -119,14 +121,15 @@ model Comment {
 }
 
 model ProblemSet {
-  id            Int      @id @default(autoincrement())
-  title         String
-  type          Int      @default(0) // 0: homework, 1: contest
-  contestType   Int      @default(0) // 0: OI, 1: ACM
-  description   String   @default("")
-  startTime     DateTime?
-  endTime       DateTime?
-  problems      Problem[]
-  classes       Class[]
-  users         User[]    
+  id          Int          @id @default(autoincrement())
+  title       String
+  type        Int          @default(0) // 0: homework, 1: contest
+  contestType Int          @default(0) // 0: OI, 1: ACM
+  description String       @default("")
+  startTime   DateTime?
+  endTime     DateTime?
+  problems    Problem[]
+  classes     Class[]
+  users       User[]
+  submissions Submission[]
 }

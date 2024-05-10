@@ -42,9 +42,12 @@ const weightedLeaderboard = async (req: Request, res: Response) => {
   );
 };
 
+const problemsetLeaderboard = async (req: Request, res: Response) => {};
+
 const leaderboardController = {
   countLeaderboard,
   weightedLeaderboard,
+  problemsetLeaderboard,
 };
 
 export { leaderboardController };

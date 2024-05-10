@@ -3,11 +3,12 @@ import { submissionService } from "../service/submissionService";
 import { responseBase, submission } from "../schema";
 
 const postSubmit = async (req: Request, res: Response) => {
-  const { problemId, code, language } = req.body;
+  const { problemId, problemsetId, code, language } = req.body;
   const userId = res.locals.user.userId;
 
   const submissionData = submission.parse({
     problemId,
+    problemsetId,
     userId,
     code,
     language,
