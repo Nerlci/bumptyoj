@@ -148,11 +148,11 @@ const listSubmission = async (
     take: count,
     where: {
       id: {
-        ...(maxId ? { lt: maxId } : {}),
+        lt: maxId,
         equals: submissionId,
       },
-      ...(userId ? { userId: userId } : {}),
-      ...(problemId ? { problemId: problemId } : {}),
+      userId: userId,
+      problemId: problemId,
     },
   });
 };
@@ -163,8 +163,8 @@ const countSubmission = async (
 ) => {
   return prisma.submission.count({
     where: {
-      ...(userId ? { userId: userId } : {}),
-      ...(problemId ? { problemId: problemId } : {}),
+      userId: userId,
+      problemId: problemId,
     },
   });
 };
