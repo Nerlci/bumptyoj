@@ -20,6 +20,6 @@ app.get("/echo", async (req, res) => {
 
 app.use("/api", apiRouter);
 
-app.listen(8080, () => {
-  console.log("Server is running on http://localhost:8080");
+app.listen(8888, () => {
+  console.log("Server is running on http://localhost:8888");
 });

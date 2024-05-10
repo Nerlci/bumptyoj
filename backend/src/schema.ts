@@ -1,6 +1,15 @@
 import { timeStamp } from "node:console";
 import { z } from "zod";
 
+export const user = z.object({
+  userId: z.number().default(0),
+  email: z.string().email(),
+  username: z.string(),
+  type: z.number().default(0),
+  password: z.string(),
+});
+export type User = z.infer<typeof user>;
+
 export const responseBase = z.object({
   code: z
     .union([z.literal("200"), z.literal("400"), z.literal("500")])
@@ -51,7 +60,8 @@ export type Problem = z.infer<typeof problem>;
 export const class_ = z.object({
   classId: z.number().default(0),
   teacherId: z.number(),
-  students: z.array(z.number()),
+  name: z.string().optional(),
+  students: z.array(z.number()).default([]),
   className: z.string().default(""),
 });
 export type Class = z.infer<typeof class_>;
@@ -80,6 +90,7 @@ export const submission = z.object({
   submissionId: z.number().default(0),
   problemId: z.number(),
   userId: z.number(),
+  problemsetId: z.number().optional(),
   code: z.string(),
   language: z.string(),
   length: z.number().int(),
@@ -112,3 +123,25 @@ export const comment = z.object({
   timestamp: z.date().default(() => new Date()),
 });
 export type Comment = z.infer<typeof comment>;
+
+export const problemSet = z
+  .object({
+    setId: z.number().default(0),
+    title: z.string(),
+    type: z.number().int().default(0),
+    contestType: z.number().int().default(0),
+    description: z.string().optional(),
+    startTime: z.date().optional(),
+    endTime: z.date().optional(),
+    problems: z.array(z.number()).default([]),
+  })
+  .refine(
+    (d) =>
+      d.startTime === undefined ||
+      d.endTime === undefined ||
+      d.endTime >= d.startTime,
+    {
+      message: "End time must be later than or equal to the start time",
+    },
+  );
+export type ProblemSet = z.infer<typeof problemSet>;

@@ -3,6 +3,9 @@ import { userRouter } from "./userRouter";
 import { problemRouter } from "./problemRouter";
 import { submissionRouter } from "./submissionRouter";
 import { discussionRouter } from "./discussionRouter";
+import { classRouter } from "./classRouter";
+import { leaderboardRouter } from "./leaderboardRouter";
+import { problemSetRouter } from "./problemSetRouter";
 
 let apiRouter = express.Router();
 
@@ -17,5 +20,11 @@ apiRouter.use("/problem", problemRouter);
 apiRouter.use("/submission", submissionRouter);
 
 apiRouter.use("/discussion", discussionRouter);
+
+apiRouter.use("/class", classRouter);
+
+apiRouter.use("/leaderboard", leaderboardRouter);
+
+apiRouter.use("/problemset", problemSetRouter);
 
 export { apiRouter };

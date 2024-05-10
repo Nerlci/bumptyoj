@@ -3,11 +3,12 @@ import { submissionService } from "../service/submissionService";
 import { responseBase, submission } from "../schema";
 
 const postSubmit = async (req: Request, res: Response) => {
-  const { problemId, code, language } = req.body;
+  const { problemId, problemsetId, code, language } = req.body;
   const userId = res.locals.user.userId;
 
   const submissionData = submission.parse({
     problemId,
+    problemsetId,
     userId,
     code,
     language,
@@ -59,6 +60,7 @@ const getSubmission = async (req: Request, res: Response) => {
 const listSubmission = async (req: Request, res: Response) => {
   const count = Number(req.query.count);
   const maxId = Number(req.query.maxId) || undefined;
+  const minId = Number(req.query.minId) || undefined;
   const submissionId = Number(req.query.submissionId) || undefined;
   const userId = Number(req.query.userId) || undefined;
   const problemId = Number(req.query.problemId) || undefined;
@@ -66,6 +68,7 @@ const listSubmission = async (req: Request, res: Response) => {
   const result = await submissionService.listSubmission(
     count,
     maxId,
+    minId,
     submissionId,
     userId,
     problemId,

@@ -36,12 +36,10 @@ const getClass = async (req: Request, res: Response) => {
 
 const modifyClass = async (req: Request, res: Response) => {
   const { ...data } = req.body;
+  data.teacherId = Number(data.teacherId);
   const classBody = class_.parse(data);
 
-  const result = await classService.modifyClass(
-    Number(req.query.classId),
-    classBody,
-  );
+  const result = await classService.modifyClass(classBody.classId, classBody);
 
   res.send(
     responseBase.parse({
@@ -61,7 +59,23 @@ const deleteClass = async (req: Request, res: Response) => {
   res.send(
     responseBase.parse({
       code: "200",
-      payload: result,
+      payload: {},
+      error: {
+        msg: "",
+      },
+    }),
+  );
+};
+
+const listClass = async (req: Request, res: Response) => {
+  const userId = res.locals.user.userId;
+
+  const result = await classService.listClass(userId);
+
+  res.send(
+    responseBase.parse({
+      code: "200",
+      payload: { classes: result },
       error: {
         msg: "",
       },
@@ -74,4 +88,5 @@ export const classController = {
   getClass,
   modifyClass,
   deleteClass,
+  listClass,
 };

@@ -78,6 +78,12 @@ const handleJudge = async (data: Submission) => {
     },
   });
 
+  const problemData = problemService.mapResponseToProblem(
+    await problemService.getProblem(data.problemId),
+  );
+  problemData!.metadata.submissionCount += 1;
+  problemService.modifyProblem(data.problemId, problemData!);
+
   const submissionData = submission.parse({
     ...result,
     submissionId: result.id,
@@ -109,6 +115,14 @@ const resultCallback = async (data: Submission) => {
       },
     },
   });
+
+  if (data.status === "Accepted") {
+    const problemData = problemService.mapResponseToProblem(
+      await problemService.getProblem(data.problemId),
+    );
+    problemData!.metadata.acceptedCount += 1;
+    problemService.modifyProblem(data.problemId, problemData!);
+  }
 };
 
 const getSubmission = async (submissionId: number) => {
@@ -123,6 +137,7 @@ const getSubmission = async (submissionId: number) => {
 const listSubmission = async (
   count: number,
   maxId: number | undefined,
+  minId: number | undefined,
   submissionId: number | undefined,
   userId: number | undefined,
   problemId: number | undefined,
@@ -134,11 +149,12 @@ const listSubmission = async (
     take: count,
     where: {
       id: {
-        ...(maxId ? { lt: maxId } : {}),
+        lt: maxId,
+        gt: minId,
         equals: submissionId,
       },
-      ...(userId ? { userId: userId } : {}),
-      ...(problemId ? { problemId: problemId } : {}),
+      userId: userId,
+      problemId: problemId,
     },
   });
 };
@@ -149,8 +165,8 @@ const countSubmission = async (
 ) => {
   return prisma.submission.count({
     where: {
-      ...(userId ? { userId: userId } : {}),
-      ...(problemId ? { problemId: problemId } : {}),
+      userId: userId,
+      problemId: problemId,
     },
   });
 };
