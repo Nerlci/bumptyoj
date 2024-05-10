@@ -174,6 +174,7 @@ const getHomeworkList = async (
     skip: offset,
   });
 
+  // TODO: check 如果为空是否需要报错
   return result && result.length > 0
     ? mapProblemSetToResponseForHomework(result)
     : [];

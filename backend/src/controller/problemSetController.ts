@@ -1,26 +1,52 @@
 import { Request, Response } from "express";
+import { z } from "zod";
 
 import { responseBase, problem, problemSet } from "../schema";
 import { problemSetService } from "../service/problemSetService";
+import { send } from "process";
+
+const sendErrorMsg = (res: Response, msg: string) => {
+  res.send(
+    responseBase.parse({
+      code: "500",
+      payload: {},
+      error: {
+        msg,
+      },
+    }),
+  );
+};
 
 const createProblemSet = async (req: Request, res: Response) => {
   const { startTime, endTime, ...data } = req.body;
   data.startTime = startTime ? new Date(startTime) : null;
   data.endTime = endTime ? new Date(endTime) : null;
 
-  const problemSetBody = problemSet.parse(data);
+  try {
+    const problemSetBody = problemSet.parse(data);
+    const result = await problemSetService.createProblemSet(problemSetBody);
 
-  const result = await problemSetService.createProblemSet(problemSetBody);
-
-  res.send(
-    responseBase.parse({
-      code: "200",
-      payload: result,
-      error: {
-        msg: "",
-      },
-    }),
-  );
+    res.send(
+      responseBase.parse({
+        code: "200",
+        payload: result,
+        error: {
+          msg: "",
+        },
+      }),
+    );
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      // Handle Zod errors
+      sendErrorMsg(res, error.errors.map((e) => e.message).join("; "));
+    } else if (error instanceof Error) {
+      sendErrorMsg(res, error.message);
+    } else {
+      // Handle other errors
+      console.log(error);
+      sendErrorMsg(res, String(error));
+    }
+  }
 };
 
 const getProblemSet = async (req: Request, res: Response) => {
