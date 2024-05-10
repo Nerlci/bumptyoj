@@ -1,69 +1,51 @@
 <template>
-  <div class="post-detail-page">
-    <el-card class="box-card">
-      <div slot="header" class="clearfix">
-        <span>{{ post.title }}</span>
-        <el-button
-          style="float: right; padding: 3px 0"
-          type="text"
-          @click="backToList"
-          >返回列表</el-button
-        >
-      </div>
-      <div class="post-content">
-        <h3>作者: {{ post.author }}</h3>
-        <p>发布日期: {{ post.date }}</p>
-        <div class="content">
-          <p>{{ post.content }}</p>
-        </div>
-      </div>
-    </el-card>
+  <div class="post-detail">
+    <div class="post-content">
+      <h1>{{ post.title }}</h1>
+      <div>{{ post.content }}</div>
+      <div>{{ post.author }} - {{ post.timestamp }}</div>
+    </div>
+    <div class="comments">
+      <el-input type="textarea" v-model="newComment" placeholder="添加评论..."></el-input>
+      <el-button type="primary" @click="submitComment">提交评论</el-button>
+      <el-list v-for="comment in comments" :key="comment.commentId">
+        <el-list-item>{{ comment.author }}: {{ comment.content }}</el-list-item>
+      </el-list>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: "PostDetails",
   data() {
     return {
-      post: null,
+      post: {},
+      comments: [],
+      newComment: ''
     };
   },
   methods: {
-    fetchPostDetails() {
-      const postId = this.$route.params.id;
-      // Simulate fetching data
-      const fetchedPost = this.$store.state.posts.find(
-        (p) => p.id === parseInt(postId),
-      );
-      this.post = fetchedPost;
+    fetchPost() {
+      // API call to fetch post details
     },
-    backToList() {
-      this.$router.push({ name: "Discuss" });
+    fetchComments() {
+      // API call to fetch comments
     },
-  },
-  created() {
-    this.fetchPostDetails();
-  },
+    submitComment() {
+      // API call to submit a new comment
+    }
+  }
 };
 </script>
 
 <style scoped>
-.post-detail-page {
+.post-detail {
   margin: 20px;
 }
-
-.box-card {
-  border-radius: 4px;
+.post-content {
+  margin-bottom: 20px;
 }
-
-.post-content h3,
-.post-content p {
-  margin: 10px 0;
-}
-
-.content p {
-  white-space: pre-wrap;
-  word-wrap: break-word;
+.comments {
+  margin-top: 20px;
 }
 </style>
