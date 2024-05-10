@@ -59,6 +59,7 @@ const getSubmission = async (req: Request, res: Response) => {
 const listSubmission = async (req: Request, res: Response) => {
   const count = Number(req.query.count);
   const maxId = Number(req.query.maxId) || undefined;
+  const minId = Number(req.query.minId) || undefined;
   const submissionId = Number(req.query.submissionId) || undefined;
   const userId = Number(req.query.userId) || undefined;
   const problemId = Number(req.query.problemId) || undefined;
@@ -66,6 +67,7 @@ const listSubmission = async (req: Request, res: Response) => {
   const result = await submissionService.listSubmission(
     count,
     maxId,
+    minId,
     submissionId,
     userId,
     problemId,

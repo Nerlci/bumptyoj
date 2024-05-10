@@ -137,6 +137,7 @@ const getSubmission = async (submissionId: number) => {
 const listSubmission = async (
   count: number,
   maxId: number | undefined,
+  minId: number | undefined,
   submissionId: number | undefined,
   userId: number | undefined,
   problemId: number | undefined,
@@ -149,6 +150,7 @@ const listSubmission = async (
     where: {
       id: {
         lt: maxId,
+        gt: minId,
         equals: submissionId,
       },
       userId: userId,
