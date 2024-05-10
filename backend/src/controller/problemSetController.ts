@@ -110,7 +110,13 @@ const attendContest = async (req: Request, res: Response) => {
 
 const getHomeworkList = async (req: Request, res: Response) => {
   const classId = Number(req.query.classId);
-  const result = await problemSetService.getHomeworkList(classId);
+  const count = Number(req.query.count);
+  const offset = Number(req.query.offset);
+  const result = await problemSetService.getHomeworkList(
+    classId,
+    count,
+    offset,
+  );
 
   res.send(
     responseBase.parse({
@@ -124,9 +130,10 @@ const getHomeworkList = async (req: Request, res: Response) => {
 };
 
 const getContestList = async (req: Request, res: Response) => {
-  const userId = res.locals.user.userId;
+  const count = Number(req.query.count);
+  const offset = Number(req.query.offset);
 
-  const result = await problemSetService.getContestList(userId);
+  const result = await problemSetService.getContestList(count, offset);
 
   res.send(
     responseBase.parse({

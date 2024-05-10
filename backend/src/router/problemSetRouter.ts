@@ -42,11 +42,7 @@ problemSetRouter.post(
   problemSetController.issueHomework,
 );
 
-problemSetRouter.get(
-  "/contest",
-  authUserMiddleware,
-  problemSetController.getContestList,
-);
+problemSetRouter.get("/contest", problemSetController.getContestList);
 
 problemSetRouter.post(
   "/contest",
