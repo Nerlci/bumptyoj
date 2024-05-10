@@ -1,92 +1,97 @@
 <template>
-  <div class="status-detail" v-loading="loading" v-show="show">
-    <h2 id="solution-title">代码查看 - {{ solution.title }}</h2>
+  <div class="status-detail">
+    <el-card class="box-card">
+      <el-table :data="detailArray" style="width: 100%">
+      <el-table-column prop="submissionId" label="评测ID"></el-table-column>
+      <el-table-column prop="problemId" label="题目"></el-table-column>
+      <el-table-column prop="status" label="状态"></el-table-column>
+      <el-table-column prop="score" label="分数"></el-table-column>
+      <el-table-column prop="userId" label="用户"></el-table-column>
+      <el-table-column prop="time" label="运行时间" :formatter="formatRunTime"></el-table-column>
+      <el-table-column prop="memory" label="内存" :formatter="formatMemory"></el-table-column>
+      <el-table-column prop="length" label="代码长度"></el-table-column>
+      <el-table-column prop="language" label="语言"></el-table-column>
+      <el-table-column prop="timestamp" label="提交时间" :formatter="formatTimestamp"></el-table-column>
+    </el-table>
 
-    <div class="metadata">
-      <span
-        ><i class="el-icon-timer"></i>提交时间&nbsp;{{
-          solution.submitTime
-        }}</span
-      >&nbsp;|&nbsp;
-      <span :style="gao(solution.status)"
-        ><i class="el-icon-hot-water"></i>状态&nbsp;{{ solution.status }}</span
-      >
-      <span>语言: {{ solution.language }}</span
-      >&nbsp;|&nbsp; <span>内存使用: {{ solution.memory }}</span
-      >&nbsp;|&nbsp; <span>执行时间: {{ solution.time }}</span
-      >&nbsp;|&nbsp;
-      <span>得分: {{ solution.score }}</span>
-    </div>
-
-    <el-button
-      id="clip-button"
-      size="large"
-      v-clipboard:copy="solution.answer"
-      v-clipboard:error="onCopyError"
-      v-clipboard:success="onCopySuccess"
-      type="primary"
-      >复制代码
-    </el-button>
-
-    <el-card class="solution-answer" shadow="always">
-      <pre>{{ solution.answer }}</pre>
+      <el-descriptions column="1">
+        <el-description-item label="代码">
+          <el-input type="textarea" :rows="10" v-model="detail.code" auto-complete="off" readonly></el-input>
+        </el-description-item>
+      </el-descriptions>
     </el-card>
+
+    <el-table :data="detail.detail" style="width: 100%" stripe>
+      <el-table-column prop="testdataId" label="测试用例编号"></el-table-column>
+      <el-table-column prop="status" label="状态"></el-table-column>
+      <el-table-column prop="score" label="分数"></el-table-column>
+      <el-table-column prop="time" label="运行时间" :formatter="formatRunTime"></el-table-column>
+      <el-table-column prop="memory" label="内存使用" :formatter="formatMemory"></el-table-column>
+    </el-table>
   </div>
 </template>
 
 <script>
 import { getRequest } from '@/utils/request';
+import moment from 'moment';
 
 export default {
   data() {
     return {
-      detail: null,
-      loading: false,
-      error: null,
+      detail: {
+        submissionId: null,
+        userId: null,
+        problemId: null,
+        language: '',
+        code: '',
+        length: 0,
+        time: 0,
+        memory: 0,
+        score: 0,
+        status: '',
+        timestamp: '',
+        detail: []
+      }
     };
+  },
+  computed:{
+    detailArray(){
+      return [this.detail];
+    },
   },
   created() {
     this.fetchSubmissionDetail();
+    console.log(this.detail);
   },
   methods: {
     fetchSubmissionDetail() {
-      const submissionId = this.$route.params.submissionId; // 获取路由参数中的 submissionId
-      this.loading = true;
-      getRequest('/submission/submission', {
-        submissionId // 传递 submissionId 作为参数
-      }).then(response => {
-        if (response.code === "200") {
-          this.detail = response.payload;
-        } else {
-          this.error = response.error.msg;
-        }
-      }).catch(error => {
-        this.error = error.message || 'Failed to fetch data';
-      }).finally(() => {
-        this.loading = false;
-      });
-    }
+      const submissionId = this.$route.params.submissionId;
+      getRequest("/api/submission/submission", { submissionId })
+        .then(response => {
+          if (response.code === "200" && response.payload) {
+            this.detail = response.payload;
+          }
+        })
+        .catch(error => {
+          console.error("Failed to fetch submission details:", error);
+        });
+    },
+    formatTimestamp(value) {
+      return moment(value).fromNow();
+    },
+    formatMemory(value) {
+      console.log(value);
+      return (value.memory / 1024 / 1024).toFixed(2) + ' MB'; 
+    },
+    formatRunTime(value) {
+      return value.time + ' ms';
+    },
   }
 };
 </script>
 
 <style scoped>
 .status-detail {
-  width: 80%;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.metadata {
-  margin-top: 20px;
-  margin-bottom: 30px;
-}
-
-#clip-button {
-  margin-bottom: 30px;
-}
-
-.solution-answer {
-  text-align: left;
+  margin: 20px;
 }
 </style>
