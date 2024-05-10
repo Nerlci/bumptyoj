@@ -69,13 +69,29 @@ const deleteClass = async (req: Request, res: Response) => {
 
 const listClass = async (req: Request, res: Response) => {
   const userId = res.locals.user.userId;
+  const count = Number(req.query.count);
+  const offset = Number(req.query.offset);
 
-  const result = await classService.listClass(userId);
+  const result = await classService.listClass(userId, count, offset);
 
   res.send(
     responseBase.parse({
       code: "200",
       payload: { classes: result },
+      error: {
+        msg: "",
+      },
+    }),
+  );
+};
+
+const countClass = async (req: Request, res: Response) => {
+  const result = await classService.countClass();
+
+  res.send(
+    responseBase.parse({
+      code: "200",
+      payload: { count: result },
       error: {
         msg: "",
       },
@@ -89,4 +105,5 @@ export const classController = {
   modifyClass,
   deleteClass,
   listClass,
+  countClass,
 };
