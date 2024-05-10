@@ -122,6 +122,7 @@ model ProblemSet {
   id            Int      @id @default(autoincrement())
   title         String
   type          Int      @default(0) // 0: homework, 1: contest
+  contestType   Int      @default(0) // 0: OI, 1: ACM
   description   String   @default("")
   startTime     DateTime?
   endTime       DateTime?

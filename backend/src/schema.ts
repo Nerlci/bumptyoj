@@ -128,6 +128,7 @@ export const problemSet = z
     setId: z.number().default(0),
     title: z.string(),
     type: z.number().int().default(0),
+    contestType: z.number().int().default(0),
     description: z.string().optional(),
     startTime: z.date().optional(),
     endTime: z.date().optional(),
