@@ -149,7 +149,11 @@ const attendContest = async (setId: number, userId: number) => {
     : null;
 };
 
-const getHomeworkList = async (classId: number) => {
+const getHomeworkList = async (
+  classId: number,
+  count: number,
+  offset: number,
+) => {
   const result = await prisma.problemSet.findMany({
     where: {
       classes: {
@@ -158,33 +162,23 @@ const getHomeworkList = async (classId: number) => {
         },
       },
     },
-    include: {
-      problems: true,
-    },
+    take: count,
+    skip: offset,
   });
 
   return result ? mapProblemSetToResponseForHomework(result) : null;
 };
 
-const getContestList = async (userId: number) => {
+const getContestList = async (count: number, offset: number) => {
   const result = await prisma.problemSet.findMany({
     where: {
-      users: {
-        some: {
-          id: userId,
-        },
-      },
+      type: 0,
     },
+    take: count,
+    skip: offset,
   });
 
-  return result
-    ? result.map((res: any) => {
-        return {
-          ...mapProblemSetToResponseBase(res),
-          contestType: res.contestType,
-        };
-      })
-    : null;
+  return result ? result.map((res) => mapProblemSetToResponse(res)) : null;
 };
 
 const countHomework = async () => {
