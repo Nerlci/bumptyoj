@@ -1,15 +1,31 @@
 import { map, number } from "zod";
 import { prisma } from "../prisma";
-import { ProblemSet, Problem } from "../schema";
+import { ProblemSet, Problem, user } from "../schema";
+
+const mapProblemSetToResponseBase = (res: any) => ({
+  problemsetId: res.id,
+  title: res.title,
+  description: res.description,
+  type: res.type,
+  startTime: res.startTime || "",
+  endTime: res.endTime || "",
+});
+
+const mapDataToProblemSet = (data: ProblemSet) => {
+  return {
+    title: data.title,
+    description: data.description,
+    type: data.type,
+    contestType: data.contestType,
+    problems: {
+      connect: data.problems.map((id) => ({ id })),
+    },
+  };
+};
 
 const mapProblemSetToResponse = (result: any) => {
   return {
-    problemsetId: result.id,
-    title: result.title,
-    type: Number(result.type),
-    description: result.description,
-    startTime: result.startTime || "",
-    endTime: result.endTime || "",
+    ...mapProblemSetToResponseBase(result),
     problems: result.problems.map((problem: any) => {
       return problem.id;
     }),
@@ -17,16 +33,10 @@ const mapProblemSetToResponse = (result: any) => {
 };
 
 const mapProblemSetToResponseWithClass = (result: any) => {
-  console.log(result.classes);
   return {
     className: result.classes.map((cls: any) => cls.name),
     homework: {
-      problemsetId: result.id,
-      title: result.title,
-      type: Number(result.type),
-      description: result.description,
-      startTime: result.startTime || "",
-      endTime: result.endTime || "",
+      ...mapProblemSetToResponseBase(result),
       problems: result.problems.map((problem: any) => {
         return problem.id;
       }),
@@ -34,18 +44,19 @@ const mapProblemSetToResponseWithClass = (result: any) => {
   };
 };
 
-const createProblemSet = async (data: ProblemSet) => {
-  console.log(data);
+const mapProblemSetToResponseForHomework = (result: any) => {
+  return result.map((res: any) => {
+    return {
+      ...mapProblemSetToResponseBase(res),
+      problems: res.problems.map((prob: any) => prob.id),
+    };
+  });
+};
 
+const createProblemSet = async (data: ProblemSet) => {
   const result = await prisma.problemSet.create({
     data: {
-      title: data.title,
-      description: data.description,
-      type: data.type,
-      contestType: data.contestType,
-      problems: {
-        connect: data.problems.map((id) => ({ id })),
-      },
+      ...mapDataToProblemSet(data),
       startTime: data.startTime,
       endTime: data.endTime,
     },
@@ -70,19 +81,12 @@ const getProblemSet = async (setId: number) => {
 };
 
 const modifyProblemSet = async (data: ProblemSet) => {
-  console.log(data);
   const result = await prisma.problemSet.update({
     where: {
       id: data.setId,
     },
     data: {
-      title: data.title,
-      description: data.description,
-      startTime: data.startTime,
-      endTime: data.endTime,
-      problems: {
-        connect: data.problems.map((id) => ({ id })),
-      },
+      ...mapDataToProblemSet(data),
     },
     include: {
       problems: true,
@@ -108,7 +112,6 @@ const issueHomework = async (data: any) => {
     data: {
       classes: {
         connect: data.classIds.map((cls: number) => ({ id: cls })),
-        // connect: data.classIds,
       },
       startTime: data.startTime,
       endTime: data.endTime,
@@ -144,6 +147,43 @@ const attendContest = async (setId: number, userId: number) => {
     : null;
 };
 
+const getHomeworkList = async (classId: number) => {
+  const result = await prisma.problemSet.findMany({
+    where: {
+      classes: {
+        some: {
+          id: classId,
+        },
+      },
+    },
+    include: {
+      problems: true,
+    },
+  });
+
+  return result ? mapProblemSetToResponseForHomework(result) : null;
+};
+
+const getContestList = async (userId: number) => {
+  const result = await prisma.problemSet.findMany({
+    where: {
+      users: {
+        some: {
+          id: userId,
+        },
+      },
+    },
+  });
+
+  return result
+    ? result.map((res: any) => {
+        return {
+          ...mapProblemSetToResponseBase(res),
+        };
+      })
+    : null;
+};
+
 export const problemSetService = {
   createProblemSet,
   getProblemSet,
@@ -151,4 +191,6 @@ export const problemSetService = {
   deleteProblemSet,
   issueHomework,
   attendContest,
+  getHomeworkList,
+  getContestList,
 };

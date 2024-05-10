@@ -30,7 +30,11 @@ problemSetRouter.delete(
   problemSetController.deleteProblemSet,
 );
 
-// problemSetRouter.get("/homework", authUserMiddleware, problemSetController.getHomework);
+problemSetRouter.get(
+  "/homework",
+  authUserMiddleware,
+  problemSetController.getHomeworkList,
+);
 
 problemSetRouter.post(
   "/homework",
@@ -38,7 +42,11 @@ problemSetRouter.post(
   problemSetController.issueHomework,
 );
 
-// problemSetRouter.get("/contest", authUserMiddleware, problemSetController.getContest);
+problemSetRouter.get(
+  "/contest",
+  authUserMiddleware,
+  problemSetController.getContestList,
+);
 
 problemSetRouter.post(
   "/contest",

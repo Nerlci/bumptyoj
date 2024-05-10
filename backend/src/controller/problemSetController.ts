@@ -111,6 +111,37 @@ const attendContest = async (req: Request, res: Response) => {
   );
 };
 
+const getHomeworkList = async (req: Request, res: Response) => {
+  const classId = Number(req.query.classId);
+  const result = await problemSetService.getHomeworkList(classId);
+
+  res.send(
+    responseBase.parse({
+      code: "200",
+      payload: { homeworkSets: result },
+      error: {
+        msg: "",
+      },
+    }),
+  );
+};
+
+const getContestList = async (req: Request, res: Response) => {
+  const userId = res.locals.user.userId;
+
+  const result = await problemSetService.getContestList(userId);
+
+  res.send(
+    responseBase.parse({
+      code: "200",
+      payload: { contests: result },
+      error: {
+        msg: "",
+      },
+    }),
+  );
+};
+
 export const problemSetController = {
   createProblemSet,
   getProblemSet,
@@ -118,4 +149,6 @@ export const problemSetController = {
   deleteProblemSet,
   issueHomework,
   attendContest,
+  getHomeworkList,
+  getContestList,
 };
