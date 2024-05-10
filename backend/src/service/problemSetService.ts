@@ -190,7 +190,7 @@ const getContestList = async (count: number, offset: number) => {
 
   return result && result.length > 0
     ? mapProblemSetToResponseForContest(result)
-    : null;
+    : [];
 };
 
 const countHomework = async () => {
