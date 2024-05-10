@@ -49,7 +49,15 @@ const mapProblemSetToResponseForHomework = (result: any) => {
   return result.map((res: any) => {
     return {
       ...mapProblemSetToResponseBase(res),
-      problems: res.problems.map((prob: any) => prob.id),
+    };
+  });
+};
+
+const mapProblemSetToResponseForContest = (result: any) => {
+  return result.map((res: any) => {
+    return {
+      ...mapProblemSetToResponseBase(res),
+      contestType: res.contestType,
     };
   });
 };
@@ -166,7 +174,9 @@ const getHomeworkList = async (
     skip: offset,
   });
 
-  return result ? mapProblemSetToResponseForHomework(result) : null;
+  return result && result.length > 0
+    ? mapProblemSetToResponseForHomework(result)
+    : [];
 };
 
 const getContestList = async (count: number, offset: number) => {
@@ -178,7 +188,9 @@ const getContestList = async (count: number, offset: number) => {
     skip: offset,
   });
 
-  return result ? result.map((res) => mapProblemSetToResponse(res)) : null;
+  return result && result.length > 0
+    ? mapProblemSetToResponseForContest(result)
+    : null;
 };
 
 const countHomework = async () => {
