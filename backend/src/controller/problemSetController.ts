@@ -217,12 +217,12 @@ const countContest = async (req: Request, res: Response) => {
   );
 };
 
-const getContestStatus = async (req: Request, res: Response) => {
+const getProblemSetStatus = async (req: Request, res: Response) => {
   try {
     const setId = Number(req.query.problemsetId);
     const userId = res.locals.user.userId;
 
-    const result = await problemSetService.getContestStatus(setId, userId);
+    const result = await problemSetService.getProblemSetStatus(setId, userId);
 
     res.send(
       responseBase.parse({
@@ -250,5 +250,5 @@ export const problemSetController = {
   countProblemSet,
   countHomework,
   countContest,
-  getContestStatus,
+  getProblemSetStatus,
 };

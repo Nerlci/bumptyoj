@@ -119,7 +119,7 @@ export default {
         const contests = response.payload.contests;
         if (this.$store.state.status.isLogin) {
           const promises = contests.map((contest) => {
-            return this.getRequest("/api/problemset/contest/status", {
+            return this.getRequest("/api/problemset/problemset/status", {
               problemsetId: contest.problemsetId,
             }).then((response) => {
               contest.joined = response.payload.joined;

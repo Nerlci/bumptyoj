@@ -159,7 +159,7 @@ export default {
       this.loading = true;
       // 调用获取题目列表的API
       this.getRequest("/api/problemset/homework", {
-        classId: this.class_.classId,
+        classId: this.$route.params.id,
         offset: (index - 1) * this.pageSize,
         count: this.pageSize,
       }).then((response) => {
@@ -173,7 +173,7 @@ export default {
     },
     fetchItemCount() {
       this.getRequest("/api/problemset/homework/count", {
-        classId: this.class_.classId,
+        classId: this.$route.params.id,
       }).then((response) => {
         this.itemCount = response.payload.count;
       });
