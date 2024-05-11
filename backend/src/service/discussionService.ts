@@ -41,11 +41,19 @@ const modifyPost = async (postId: number, data: DiscussionPost) => {
 };
 
 const deletePost = async (postId: number) => {
-  return prisma.post.delete({
+  const deleteComments = prisma.comment.deleteMany({
+    where: {
+      postId: postId,
+    },
+  });
+
+  const deletePost = prisma.post.delete({
     where: {
       id: postId,
     },
   });
+
+  return prisma.$transaction([deleteComments, deletePost]);
 };
 
 const listPost = async (
