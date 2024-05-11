@@ -30,13 +30,7 @@
         ></el-table-column>
       </el-table>
 
-      <prism-editor
-        class="code-input height-300"
-        :lineNumbers="true"
-        v-model="detail.code"
-        :highlight="highlighter"
-        :readonly="true"
-      ></prism-editor>
+      <monaco ref="monaco" :opts="opts" :height="400"> </monaco>
     </el-card>
 
     <el-table :data="detail.detail" style="width: 100%" stripe>
@@ -61,11 +55,7 @@
 import { getRequest } from "@/utils/request";
 import { DateTime } from "luxon";
 
-import { PrismEditor } from "vue-prism-editor";
-import "vue-prism-editor/dist/prismeditor.min.css";
-import "prismjs/themes/prism-tomorrow.css";
-import { highlight, languages } from "prismjs/components/prism-core";
-import "prismjs/components/prism-autoit";
+import monaco from "../../components/MonacoEditor.vue";
 
 export default {
   data() {
@@ -84,10 +74,16 @@ export default {
         timestamp: "",
         detail: [],
       },
+      opts: {
+        value: "",
+        readOnly: true, // 是否可编辑
+        language: "javascript", // 语言类型
+        theme: "vs-dark", // 编辑器主题
+      },
     };
   },
   components: {
-    PrismEditor,
+    monaco,
   },
   computed: {
     detailArray() {
@@ -114,8 +110,21 @@ export default {
       }
       return { unit, threshold: thresholds[unit] };
     },
-    highlighter(code) {
-      return highlight(code, languages.autoit, "autoit");
+    fillCode(code, language) {
+      this.opts.value = code;
+      switch (language) {
+        case "C++":
+          this.opts.language = "cpp";
+          break;
+        case "Java":
+          this.opts.language = "java";
+          break;
+        case "Python":
+          this.opts.language = "python";
+          break;
+        default:
+          this.opts.language = "javascript";
+      }
     },
     fetchSubmissionDetail() {
       const submissionId = this.$route.params.submissionId;
@@ -123,6 +132,7 @@ export default {
         .then((response) => {
           if (response.code === "200" && response.payload) {
             this.detail = response.payload;
+            this.fillCode(this.detail.code, this.detail.language);
           }
         })
         .catch((error) => {

@@ -3,19 +3,18 @@
     <div class="problem-submit-answer">
       <!-- 改善选择语言框的位置和样式 -->
       <div class="language-select">
-        <el-select v-model="language" placeholder="请选择语言">
+        <el-select
+          v-model="language"
+          placeholder="请选择语言"
+          @change="changeLanguage"
+        >
           <el-option label="C++" value="C++"></el-option>
           <el-option label="Java" value="Java"></el-option>
           <el-option label="Python" value="Python"></el-option>
         </el-select>
       </div>
 
-      <prism-editor
-        class="code-input height-300"
-        :lineNumbers="true"
-        v-model="answer"
-        :highlight="highlighter"
-      ></prism-editor>
+      <monaco ref="monaco" :opts="opts" :height="600"> </monaco>
 
       <el-button @click="submitAnswer" id="submit-button" type="primary"
         >提交</el-button
@@ -25,27 +24,42 @@
 </template>
 
 <script>
-import { PrismEditor } from "vue-prism-editor";
-import "vue-prism-editor/dist/prismeditor.min.css";
-import "prismjs/themes/prism-tomorrow.css";
-import { highlight, languages } from "prismjs/components/prism-core";
-import "prismjs/components/prism-autoit";
+import monaco from "../MonacoEditor.vue";
 
 export default {
   name: "ProblemSubmit",
   props: ["pid", "psetid"], // 接收题目ID
   components: {
-    PrismEditor,
+    monaco,
   },
   data() {
     return {
       answer: "", // 用户编写的代码
       language: "", // 用户选择的编程语言
+      opts: {
+        value: "",
+        readOnly: false, // 是否可编辑
+        language: "javascript", // 语言类型
+        theme: "vs-dark", // 编辑器主题
+      },
     };
   },
   methods: {
-    highlighter(code) {
-      return highlight(code, languages.autoit, "autoit");
+    changeLanguage() {
+      // 根据用户选择的语言，调整编辑器的语言类型
+      switch (this.language) {
+        case "C++":
+          this.opts.language = "cpp";
+          break;
+        case "Java":
+          this.opts.language = "java";
+          break;
+        case "Python":
+          this.opts.language = "python";
+          break;
+        default:
+          this.opts.language = "javascript";
+      }
     },
     submitAnswer() {
       if (!this.$store.state.status.isLogin) {
@@ -62,7 +76,7 @@ export default {
         problemId: this.pid,
         ...(this.psetid ? { problemsetId: this.psetid } : {}),
         language: this.language,
-        code: this.answer,
+        code: this.$refs.monaco.getVal(),
       })
         .then((response) => {
           if (response.code !== "200") {
