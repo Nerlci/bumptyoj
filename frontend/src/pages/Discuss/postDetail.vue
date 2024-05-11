@@ -12,20 +12,11 @@
       </div>
     </div>
     <div class="post-content">
-      <el-descriptions :column="3" class="post-info">
-        <el-descriptions-item>
-          <template #label><span class="info-label">作者:</span></template>
-          <el-tag size="medium">{{ post.author }}</el-tag>
-        </el-descriptions-item>
-        <el-descriptions-item>
-          <template #label><span class="info-label">发布时间:</span></template>
-          <el-tag size="medium">{{ formatDate(post.timestamp) }}</el-tag>
-        </el-descriptions-item>
-        <el-descriptions-item>
-          <template #label><span class="info-label">板块:</span></template>
-          <el-tag size="medium">{{ post.category }}</el-tag>
-        </el-descriptions-item>
-      </el-descriptions>
+      <el-tag size="medium" class="info-tag">作者: {{ post.author }}</el-tag>
+      <el-tag size="medium" class="info-tag"
+        >发布时间:{{ formatDate(post.timestamp) }}</el-tag
+      >
+      <el-tag size="medium" class="info-tag">板块:{{ post.category }}</el-tag>
 
       <el-input
         type="textarea"
@@ -35,44 +26,32 @@
         class="content-textarea"
       ></el-input>
     </div>
+
     <div class="comments">
-      <div class="comment-input">
-        <el-input
-          type="textarea"
-          v-model="newComment"
-          placeholder="发布一条评论..."
-          class="new-comment"
-          :rows="4"
-        ></el-input>
-        <el-button type="primary" @click="submitComment" class="submit-button"
-          >评论</el-button
-        >
-      </div>
-      <el-list
+      <el-card
         v-for="comment in comments"
         :key="comment.commentId"
-        class="comment-list"
+        class="comment-card"
+        :body-style="{ padding: '20px' }"
       >
-        <el-card class="comment-card" :body-style="{ padding: '20px' }">
-          <div slot="header" class="clearfix">
-            <span style="float: left">{{ comment.author }}</span>
-            <span style="float: right">
-              <el-button
-                v-if="showCommentButtons(comment)"
-                type="text"
-                icon="el-icon-delete"
-                @click="deleteComment(comment.commentId)"
-                >删除</el-button
-              >
-            </span>
-          </div>
-          <div>{{ comment.content }}</div>
-          <div style="text-align: right; color: #8492a6; margin-top: 10px">
-            {{ formatDate(comment.timestamp) }}
-          </div>
-        </el-card>
-      </el-list>
-      <div style="display: flex; justify-content: center; margin-top: 20px">
+        <div slot="header" class="clearfix">
+          <span class="comment-username">{{ comment.author }}</span>
+          <el-button
+            v-if="showCommentButtons(comment)"
+            type="text"
+            icon="el-icon-delete"
+            @click="deleteComment(comment.commentId)"
+            style="float: right"
+          >
+            删除
+          </el-button>
+        </div>
+        <div>{{ comment.content }}</div>
+        <div style="text-align: right; color: #8492a6; margin-top: 10px">
+          {{ formatDate(comment.timestamp) }}
+        </div>
+      </el-card>
+      <div class="page-control">
         <el-button
           type="primary"
           @click="handlePreClick"
@@ -87,6 +66,17 @@
           >下一页</el-button
         >
       </div>
+      <el-card class="comment-input">
+        <el-input
+          type="textarea"
+          v-model="newComment"
+          placeholder="发布一条评论..."
+          class="new-comment"
+        ></el-input>
+        <el-button type="primary" @click="submitComment" class="submit-button">
+          评论
+        </el-button>
+      </el-card>
     </div>
     <el-dialog title="编辑帖子" :visible.sync="dialogVisible">
       <el-form :model="postForm">
@@ -146,6 +136,7 @@ export default {
       commentPage: 1,
       pageSize: 10,
       totalComments: 0,
+      maxPage: 0,
     };
   },
   created() {
@@ -379,13 +370,17 @@ export default {
 .post-content {
   margin-bottom: 20px;
 }
+.post-info {
+  margin-bottom: 20px;
+}
+.info-tag {
+  margin-right: 10px;
+}
 .comments {
   margin-top: 20px;
 }
-.content-textarea {
-  background-color: #f5f5f5;
-  border: solid 1px #ccc;
-  padding: 10px;
+.comment-username {
+  font-size: 14px;
 }
 .comment-input {
   display: flex;
@@ -394,8 +389,6 @@ export default {
 }
 .new-comment {
   margin-bottom: 10px;
-  border: solid 1px #ccc;
-  padding: 10px;
 }
 .submit-button {
   width: 100px;
@@ -408,6 +401,12 @@ export default {
 }
 .info-label {
   font-weight: bold;
+}
+.page-control {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 .back-to-top {
   position: fixed;

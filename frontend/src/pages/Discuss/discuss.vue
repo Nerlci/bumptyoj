@@ -1,7 +1,7 @@
 <template>
   <div class="discussion">
     <div class="header">
-      <div class="button-container">
+      <div class="posts-container">
         <el-button
           icon="el-icon-edit"
           type="primary"
@@ -24,12 +24,7 @@
       </el-menu>
     </div>
     <div class="content">
-      <el-table
-        :data="posts"
-        style="width: 90%"
-        stripe
-        @row-click="goToPostDetail"
-      >
+      <el-table :data="posts" stripe @row-click="goToPostDetail">
         <el-table-column prop="title" label="标题"></el-table-column>
         <el-table-column prop="author" label="作者"></el-table-column>
         <el-table-column
@@ -247,6 +242,7 @@ export default {
 .content {
   width: 100%;
 }
+
 .el-dialog {
   --el-input-width: 300px;
 }
