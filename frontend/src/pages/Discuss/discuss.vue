@@ -18,7 +18,7 @@
       </el-menu>
     </div>
     <div class="content">
-      <el-table :data="posts" style="width: 90%" @row-click="goToPostDetail">
+      <el-table :data="posts" style="width: 90%" stripe @row-click="goToPostDetail">
         <el-table-column prop="title" label="标题"></el-table-column>
         <el-table-column prop="author" label="作者"></el-table-column>
         <el-table-column
