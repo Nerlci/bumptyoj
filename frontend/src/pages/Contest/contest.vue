@@ -1,0 +1,170 @@
+<template>
+  <div>
+    <div class="problem-list">
+      <el-table
+        :data="tableData"
+        v-loading="loading"
+        stripe
+        style="height: 100%"
+      >
+        <el-table-column label="比赛名称 " prop="title">
+          <template slot-scope="scope">
+            <span
+              @click="showContest(scope.row.problemsetId)"
+              class="cursor-pointer"
+              >{{ scope.row.title }}</span
+            >
+          </template>
+        </el-table-column>
+
+        <el-table-column
+          label="开始时间"
+          prop="startTime"
+          width="240px"
+          :formatter="formatStartTime"
+        ></el-table-column>
+        <el-table-column
+          label="结束时间"
+          prop="startTime"
+          width="240px"
+          :formatter="formatEndTime"
+        ></el-table-column>
+
+        <el-table-column
+          label="描述"
+          prop="description"
+          width="360px"
+          :formatter="formatLongText"
+        ></el-table-column>
+
+        <el-table-column
+          label="操作"
+          v-if="true || this.$store.state.status.type == 0"
+          width="76px"
+        >
+          <template slot-scope="scope">
+            <span
+              @click="editContest(scope.row.problemsetId)"
+              class="contest-edit"
+              >编辑</span
+            >
+          </template>
+        </el-table-column>
+      </el-table>
+
+      <el-button
+        type="primary"
+        @click="addContest"
+        v-if="true || this.$store.state.status.type == 0"
+        class="add-contest-button"
+      >
+        新建比赛
+      </el-button>
+
+      <el-pagination
+        class="contest-pagination"
+        :page-size="pageSize"
+        :total="itemCount"
+        @current-change="getPage"
+        background
+        layout="prev, pager, next"
+        v-show="itemCount > pageSize"
+      >
+      </el-pagination>
+    </div>
+  </div>
+</template>
+
+<script>
+import { DateTime } from "luxon";
+
+export default {
+  name: "problems",
+  data() {
+    return {
+      loading: true,
+      itemCount: 0,
+      pageSize: 15,
+      tableData: [],
+    };
+  },
+  methods: {
+    getPage(index) {
+      this.loading = true;
+      // 调用获取题目列表的API
+      this.getRequest("/api/problemset/contest", {
+        offset: (index - 1) * this.pageSize,
+        count: this.pageSize,
+      }).then((response) => {
+        const contests = response.payload.contests;
+        this.tableData = contests;
+        this.loading = false;
+      });
+
+      this.fetchItemCount();
+    },
+    fetchItemCount() {
+      this.getRequest("/api/problem/count").then((response) => {
+        this.itemCount = response.payload.count;
+      });
+    },
+    showContest(id) {
+      this.$router.push({ name: "contestDetail", params: { id: id } });
+    },
+    editContest(id) {
+      this.$router.push({ name: "contestEdit", params: { id: id } });
+    },
+    addContest() {
+      this.$router.push({ name: "contestAdd" });
+    },
+    getPageInfo() {
+      this.getPage(1);
+    },
+    formatStartTime(value) {
+      const dt = DateTime.fromISO(value.startTime, { zone: "Asia/Shanghai" });
+      return dt.toFormat("yyyy-MM-dd HH:mm:ss");
+    },
+    formatEndTime(value) {
+      const dt = DateTime.fromISO(value.endTime, { zone: "Asia/Shanghai" });
+      return dt.toFormat("yyyy-MM-dd HH:mm:ss");
+    },
+    formatLongText(value) {
+      const desc = value.description;
+      return desc.length > 20 ? desc.slice(0, 20) + "..." : desc;
+    },
+  },
+  created() {
+    this.getPageInfo();
+  },
+};
+</script>
+
+<style scoped>
+.problem-list {
+  width: 80%;
+  height: 100%;
+  margin: auto;
+  font-weight: bold;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.contest-edit {
+  margin-top: 20px;
+  /* 添加顶部边距，根据需要调整 */
+  cursor: pointer;
+  color: #56a1f7;
+}
+.add-contest-button {
+  margin-top: 20px;
+  /* 添加顶部边距，根据需要调整 */
+  cursor: pointer;
+  color: #f4f9fb;
+}
+
+.contest-pagination {
+  margin-top: 40px;
+}
+</style>
