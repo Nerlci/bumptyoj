@@ -136,7 +136,7 @@ export default {
       if (this.problemSearchQuery && parseInt(this.problemSearchQuery))
         url += `&problemId=${encodeURIComponent(parseInt(this.problemSearchQuery))}`;
       if (this.userSearchQuery && parseInt(this.userSearchQuery))
-        url += `&userId=${encodeURIComponent(parseInt(this.problemSearchQuery))}`;
+        url += `&userId=${encodeURIComponent(parseInt(this.userSearchQuery))}`;
 
       getRequest(url)
         .then((response) => {
@@ -152,7 +152,7 @@ export default {
       if (this.problemSearchQuery && parseInt(this.problemSearchQuery))
         url += `&problemId=${encodeURIComponent(parseInt(this.problemSearchQuery))}`;
       if (this.userSearchQuery && parseInt(this.userSearchQuery))
-        url += `&userId=${encodeURIComponent(parseInt(this.problemSearchQuery))}`;
+        url += `&userId=${encodeURIComponent(parseInt(this.userSearchQuery))}`;
 
       if (direction === "next" && this.maxId) {
         url += `&maxId=${this.minId}`;
