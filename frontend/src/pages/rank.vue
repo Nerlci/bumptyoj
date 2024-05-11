@@ -84,7 +84,6 @@ export default {
   margin-left: auto;
   margin-right: auto;
   text-align: center;
-  font-weight: bold;
 }
 
 .cursor-pointer {

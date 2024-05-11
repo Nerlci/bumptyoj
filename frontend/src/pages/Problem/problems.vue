@@ -40,6 +40,7 @@
         <el-table-column
           label="创建时间"
           prop="createdAt"
+          :formatter="formatTimestamp"
           width="120px"
         ></el-table-column>
         <el-table-column
@@ -86,6 +87,8 @@
 </template>
 
 <script>
+import { DateTime } from "luxon";
+
 export default {
   name: "problems",
   data() {
@@ -140,6 +143,10 @@ export default {
     getPageInfo() {
       this.getPage(1);
     },
+    formatTimestamp(value) {
+      const dt = DateTime.fromISO(value.createdAt, { zone: "Asia/Shanghai" });
+      return dt.toISODate();
+    },
   },
   created() {
     this.getPageInfo();
@@ -152,7 +159,6 @@ export default {
   width: 90%;
   height: 100%;
   margin: auto;
-  font-weight: bold;
 }
 
 .cursor-pointer {
