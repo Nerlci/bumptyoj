@@ -67,11 +67,11 @@ jobs:
           # Private key part of an SSH key pair
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           # Remote host
-          REMOTE_HOST: 45.125.46.201
+          REMOTE_HOST: ${{ vars.REMOTE_HOST }}
           # Remote user
           REMOTE_USER: server
           # Remote port
-          REMOTE_PORT: 60976
+          REMOTE_PORT: ${{ vars.REMOTE_PORT }}
           # Source directory, path relative to `$GITHUB_WORKSPACE` root, eg: `dist/`
           SOURCE: ./
           # Target directory
