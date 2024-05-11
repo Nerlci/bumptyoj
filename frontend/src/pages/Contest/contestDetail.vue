@@ -11,7 +11,10 @@
       :format="() => ''"
     ></el-progress>
 
-    <span v-if="contest.type == 0" class="state-button">
+    <span
+      v-if="contest.type == 0 && this.$store.state.status.isLogin"
+      class="state-button"
+    >
       <el-button disabled type="info" v-if="checkTime(contest.endTime)">
         已结束
       </el-button>
