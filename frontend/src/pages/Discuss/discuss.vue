@@ -5,7 +5,7 @@
         <el-button icon="el-icon-edit" type="primary" @click="openPostDialog" class="post-button">发布帖子</el-button>
       </div>
       <el-menu
-        default-active="1"
+        default-active="0"
         mode="horizontal"
         class="el-menu-horizontal"
         @select="handleSelect"
@@ -18,7 +18,7 @@
       </el-menu>
     </div>
     <div class="content">
-      <el-table :data="posts" style="width: 90%" @row-click="goToPostDetail">
+      <el-table :data="posts" style="width: 90%" stripe @row-click="goToPostDetail">
         <el-table-column prop="title" label="标题"></el-table-column>
         <el-table-column prop="author" label="作者"></el-table-column>
         <el-table-column
@@ -91,7 +91,7 @@ export default {
       pageSize: 10,
       total: 0,
       maxPage: 1,
-      currentCategory: "题目讨论",
+      currentCategory: "全部帖子",
     };
   },
   created() {
@@ -184,7 +184,7 @@ export default {
       const postData = {
         title: this.postForm.title,
         category: this.postForm.category,
-        content: this.postForm.category,
+        content: this.postForm.content,
       };
       postRequest("/api/discussion/post", postData)
         .then((response) => {
