@@ -27,13 +27,13 @@ const validatePassword = async (
   return hash === originalHash;
 };
 
-const sendErrorMsg = (res: Response, msg: string) => {
+const sendError = (res: Response, msg: Object) => {
   res.send(
     responseBase.parse({
       code: "500",
       payload: {},
       error: {
-        msg,
+        ...msg,
       },
     }),
   );
@@ -41,18 +41,23 @@ const sendErrorMsg = (res: Response, msg: string) => {
 
 function handleErrors(error: unknown, res: Response<any, Record<string, any>>) {
   if (error instanceof z.ZodError) {
-    sendErrorMsg(res, error.errors.map((e) => e.message).join("; "));
+    sendError(res, { msg: error.errors.map((e) => e.message).join("; ") });
   } else if (error instanceof Prisma.PrismaClientKnownRequestError) {
-    const errorMessage = `Code: ${error.code}, Meta: ${JSON.stringify(error.meta)}`;
-    sendErrorMsg(res, errorMessage);
+    console.log(error.code, error.meta, error.message);
+    const err = {
+      code: error.code,
+      meta: error.meta,
+      msg: error.message,
+    };
+    sendError(res, err);
   } else if (error instanceof Prisma.PrismaClientUnknownRequestError) {
-    sendErrorMsg(res, error.message);
+    sendError(res, { msg: error.message });
   } else if (error instanceof Error) {
     console.log(error);
-    sendErrorMsg(res, error.message);
+    sendError(res, { msg: error.message });
   } else {
     console.log(error);
-    sendErrorMsg(res, String(error));
+    sendError(res, { msg: String(error) });
   }
 }
 

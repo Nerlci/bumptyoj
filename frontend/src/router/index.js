@@ -12,7 +12,11 @@ const problemDetail = () => import("../pages/Problem/problemDetail");
 const problemEdit = () => import("../pages/Problem/problemEdit");
 const problemAdd = () => import("../pages/Problem/problemAdd");
 const statusDetail = () => import("../pages/Status/statusDetail");
-const contest = () => import("../pages/contest");
+const contest = () => import("../pages/Contest/contest");
+const contestDetail = () => import("../pages/Contest/contestDetail");
+const contestEdit = () => import("../pages/Contest/contestEdit");
+const contestAdd = () => import("../pages/Contest/contestAdd");
+const contestRank = () => import("../pages/Contest/contestRank");
 const problemTestData = () => import("../pages/Problem/problemTestData");
 const discuss = () => import("../pages/Discuss/discuss");
 const postDetail = () => import("../pages/Discuss/postDetail");
@@ -55,7 +59,7 @@ const constRouter = [
     component: discuss,
   },
   {
-    path: "/post/detail/:id",
+    path: "/discuss/:postId",
     name: "postDetail",
     component: postDetail,
   },
@@ -98,6 +102,26 @@ const constRouter = [
     path: "/contest",
     name: "contest",
     component: contest,
+  },
+  {
+    path: "/contest/detail/:id",
+    name: "contestDetail",
+    component: contestDetail,
+  },
+  {
+    path: "/contest/edit/:id",
+    name: "contestEdit",
+    component: contestEdit,
+  },
+  {
+    path: "/contest/add",
+    name: "contestAdd",
+    component: contestAdd,
+  },
+  {
+    path: "/contest/rank/:id",
+    name: "contestRank",
+    component: contestRank,
   },
 ];
 

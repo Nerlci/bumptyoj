@@ -259,6 +259,24 @@ const deleteComment = async (req: Request, res: Response) => {
   }
 };
 
+const countComment = async (req: Request, res: Response) => {
+  const postId = Number(req.query.postId);
+
+  try {
+    const result = await discussionService.countComment(postId);
+
+    res.send(
+      responseBase.parse({
+        code: "200",
+        payload: { postId, count: result },
+        error: { msg: "" },
+      }),
+    );
+  } catch (error) {
+    handleErrors(error, res);
+  }
+};
+
 const discussionController = {
   getPost,
   createPost,
@@ -270,6 +288,7 @@ const discussionController = {
   createComment,
   modifyComment,
   deleteComment,
+  countComment,
 };
 
 export { discussionController };
