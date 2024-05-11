@@ -75,6 +75,7 @@ const constRouter = [
   },
   {
     path: "/problem/detail/:id",
+    query: { param: "problemsetId" },
     name: "problemDetail",
     component: problemDetail,
   },

@@ -92,7 +92,7 @@ export const submission = z.object({
   submissionId: z.number().default(0),
   problemId: z.number(),
   userId: z.number(),
-  problemsetId: z.number().optional(),
+  problemsetId: z.number().optional().nullable(),
   code: z.string(),
   language: z.string(),
   length: z.number().int(),

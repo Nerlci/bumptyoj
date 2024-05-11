@@ -2,7 +2,13 @@
   <div class="discussion">
     <div class="header">
       <div class="button-container">
-        <el-button icon="el-icon-edit" type="primary" @click="openPostDialog" class="post-button">发布帖子</el-button>
+        <el-button
+          icon="el-icon-edit"
+          type="primary"
+          @click="openPostDialog"
+          class="post-button"
+          >发布帖子</el-button
+        >
       </div>
       <el-menu
         default-active="0"
@@ -154,8 +160,8 @@ export default {
     },
     goToPostDetail(row) {
       console.log(row.postId);
-      this.$router.push({ 
-        name: "postDetail", 
+      this.$router.push({
+        name: "postDetail",
         params: { postId: row.postId },
       });
     },
@@ -243,4 +249,3 @@ export default {
   width: 100%;
 }
 </style>
-

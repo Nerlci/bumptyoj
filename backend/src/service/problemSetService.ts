@@ -17,6 +17,8 @@ const mapDataToProblemSet = (data: ProblemSet) => {
     description: data.description,
     type: data.type,
     contestType: data.contestType,
+    startTime: data.startTime,
+    endTime: data.endTime,
     problems: {
       connect: data.problems.map((id) => ({ id })),
     },

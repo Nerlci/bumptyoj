@@ -72,7 +72,8 @@ export default {
               problemId: problem,
             }).then((response) => {
               this.contest.problemData.push({
-                id: response.payload.metadata.displayId,
+                problemId: response.payload.metadata.problemId,
+                displayId: response.payload.metadata.displayId,
                 title: response.payload.metadata.title,
               });
             });

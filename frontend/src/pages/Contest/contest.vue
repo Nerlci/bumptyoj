@@ -20,13 +20,13 @@
         <el-table-column
           label="开始时间"
           prop="startTime"
-          width="240px"
+          width="200px"
           :formatter="formatStartTime"
         ></el-table-column>
         <el-table-column
           label="结束时间"
           prop="startTime"
-          width="240px"
+          width="200px"
           :formatter="formatEndTime"
         ></el-table-column>
 
@@ -36,6 +36,22 @@
           width="360px"
           :formatter="formatLongText"
         ></el-table-column>
+
+        <el-table-column
+          label="报名"
+          width="76px"
+          v-if="this.$store.state.status.isLogin"
+        >
+          <template slot-scope="scope">
+            <span disabled v-if="scope.row.joined">已报名</span>
+            <span
+              @click="joinContest(scope.row.problemsetId)"
+              class="contest-edit"
+              v-else
+              >报名
+            </span>
+          </template>
+        </el-table-column>
 
         <el-table-column
           label="操作"
@@ -97,8 +113,23 @@ export default {
         count: this.pageSize,
       }).then((response) => {
         const contests = response.payload.contests;
-        this.tableData = contests;
-        this.loading = false;
+        if (this.$store.state.status.isLogin) {
+          const promises = contests.map((contest) => {
+            return this.getRequest("/api/problemset/contest/status", {
+              problemsetId: contest.problemsetId,
+            }).then((response) => {
+              contest.joined = response.payload.joined;
+            });
+          });
+
+          Promise.all(promises).then(() => {
+            this.tableData = contests;
+            this.loading = false;
+          });
+        } else {
+          this.tableData = contests;
+          this.loading = false;
+        }
       });
 
       this.fetchItemCount();
@@ -107,6 +138,22 @@ export default {
       this.getRequest("/api/problemset/contest/count").then((response) => {
         this.itemCount = response.payload.count;
       });
+    },
+    joinContest(id) {
+      this.postRequest("/api/problemset/contest", { problemsetId: id }).then(
+        (response) => {
+          if (response.code === "200") {
+            this.$message.success("报名成功！");
+            this.tableData.map((contest) => {
+              if (contest.problemsetId === id) {
+                contest.joined = true;
+              }
+            });
+          } else {
+            this.$message.error("报名失败: " + response.error.msg);
+          }
+        },
+      );
     },
     showContest(id) {
       this.$router.push({ name: "contestDetail", params: { id: id } });

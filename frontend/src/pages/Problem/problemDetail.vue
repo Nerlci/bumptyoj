@@ -1,5 +1,8 @@
 <template>
   <div class="problem-detail" v-loading="loading" v-show="show">
+    <h2 id="problem-set-title" v-if="$route.query.problemsetId">
+      {{ problemsetTitle }}
+    </h2>
     <h2 id="problem-detail-title">{{ problem.title }}</h2>
     <div class="problem-metadata">
       <span id="problem-metadata-solve"
@@ -16,7 +19,7 @@
       <problem-info :problem="problem" />
     </div>
     <div class="problem-submit">
-      <problem-submit :pid="problem.problemId" />
+      <problem-submit :pid="problem.problemId" :psetid="problemsetId" />
     </div>
   </div>
 </template>
@@ -32,6 +35,8 @@ export default {
     return {
       show: false,
       loading: true,
+      problemsetTitle: "测试",
+      problemsetId: 0,
       problem: {
         problemId: 0,
         displayId: "",
@@ -88,6 +93,21 @@ export default {
     },
   },
   created() {
+    if (this.$route.query.problemsetId) {
+      this.problemsetId = Number(this.$route.query.problemsetId);
+      this.getRequest("/api/problemset/problemset", {
+        problemsetId: this.$route.query.problemsetId,
+      })
+        .then((response) => {
+          this.problemsetTitle =
+            (response.payload.type == 0 ? "比赛" : "作业") +
+            ":" +
+            response.payload.title;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
     this.updatePro();
   },
   mounted() {
@@ -102,6 +122,12 @@ export default {
   height: 100%;
   margin-left: auto;
   margin-right: auto;
+}
+
+#problem-set-title {
+  text-align: center;
+  font-weight: bold;
+  color: #56799c;
 }
 
 #problem-detail-title {

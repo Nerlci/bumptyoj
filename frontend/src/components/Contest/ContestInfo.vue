@@ -19,7 +19,7 @@
         <el-card class="box-card" shadow="hover">
           <el-table :data="contest.problemData" @row-click="handleRowClick">
             <el-table-column
-              prop="id"
+              prop="displayId"
               width="76px"
               label="题目 ID"
             ></el-table-column>
@@ -52,7 +52,7 @@ export default {
   methods: {
     handleRowClick(row) {
       this.$router.push({
-        path: `/problem/detail/${row.id}`,
+        path: `/problem/detail/${row.problemId}?problemsetId=${this.contest.problemsetId}`,
       });
     },
   },
