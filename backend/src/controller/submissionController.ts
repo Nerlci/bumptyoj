@@ -4,10 +4,10 @@ import { responseBase, submission } from "../schema";
 import { handleErrors } from "../utils/utils";
 
 const postSubmit = async (req: Request, res: Response) => {
-  const { problemId, problemsetId, code, language } = req.body;
-  const userId = res.locals.user.userId;
-
   try {
+    const { problemId, problemsetId, code, language } = req.body;
+    const userId = res.locals.user.userId;
+
     const submissionData = submission.parse({
       problemId,
       problemsetId,
@@ -38,9 +38,9 @@ const postSubmit = async (req: Request, res: Response) => {
 };
 
 const getSubmission = async (req: Request, res: Response) => {
-  const submissionId = Number(req.query.submissionId);
-
   try {
+    const submissionId = Number(req.query.submissionId);
+
     const result = await submissionService.getSubmission(submissionId);
     const { id, detail, ...rest } = result!;
     const detailData = detail.map((d) => {
@@ -67,14 +67,14 @@ const getSubmission = async (req: Request, res: Response) => {
 };
 
 const listSubmission = async (req: Request, res: Response) => {
-  const count = Number(req.query.count);
-  const maxId = Number(req.query.maxId) || undefined;
-  const minId = Number(req.query.minId) || undefined;
-  const submissionId = Number(req.query.submissionId) || undefined;
-  const userId = Number(req.query.userId) || undefined;
-  const problemId = Number(req.query.problemId) || undefined;
-
   try {
+    const count = Number(req.query.count);
+    const maxId = Number(req.query.maxId) || undefined;
+    const minId = Number(req.query.minId) || undefined;
+    const submissionId = Number(req.query.submissionId) || undefined;
+    const userId = Number(req.query.userId) || undefined;
+    const problemId = Number(req.query.problemId) || undefined;
+
     const result = await submissionService.listSubmission(
       count,
       maxId,
@@ -108,10 +108,10 @@ const listSubmission = async (req: Request, res: Response) => {
 };
 
 const countSubmission = async (req: Request, res: Response) => {
-  const userId = Number(req.query.userId) || undefined;
-  const problemId = Number(req.query.problemId) || undefined;
-
   try {
+    const userId = Number(req.query.userId) || undefined;
+    const problemId = Number(req.query.problemId) || undefined;
+
     const result = await submissionService.countSubmission(userId, problemId);
 
     res.send(
