@@ -138,6 +138,16 @@ const problemsetLeaderboard = async (setId: number) => {
           username: true,
         },
       },
+      classes: {
+        include: {
+          students: {
+            select: {
+              id: true,
+              username: true,
+            },
+          },
+        },
+      },
       submissions: {
         where: {
           status: "Accepted",
@@ -170,11 +180,17 @@ const problemsetLeaderboard = async (setId: number) => {
     {} as Record<number, number>,
   );
 
+  problemSet!.users = problemSet!.users.concat(
+    problemSet!.classes.flatMap((cls) => cls.students),
+  );
+
   const userScores = problemSet!.users.map((user) => ({
     userId: user.id,
     username: user.username!,
     score: scores[user.id] || 0,
   }));
+
+  userScores.sort((a, b) => b.score - a.score);
 
   return getLeaderboard(userScores);
 };

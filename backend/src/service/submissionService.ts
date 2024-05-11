@@ -67,6 +67,28 @@ const judge = setInterval(async () => {
 const handleJudge = async (data: Submission) => {
   const { submissionId, detail, ...rest } = data;
 
+  if (data.problemsetId) {
+    const problemSet = await prisma.problemSet.findUnique({
+      where: { id: data.problemsetId },
+      include: {
+        users: true,
+      },
+    });
+
+    const joined = problemSet!.users.some((user) => user.id === data.userId);
+    if (!joined) {
+      throw new Error("User not joined the problemset");
+    }
+
+    if (problemSet!.startTime! > new Date()) {
+      throw new Error("Problemset not started yet");
+    }
+
+    if (problemSet!.endTime! < new Date()) {
+      throw new Error("Problemset has ended");
+    }
+  }
+
   const result = await prisma.submission.create({
     data: {
       ...rest,

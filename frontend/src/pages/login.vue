@@ -83,7 +83,7 @@ export default {
             this.$db.save("USER", resp.payload);
             this.$db.save("LOGIN", "1");
             this.$store.commit("login", resp.payload);
-            this.$router.replace("/problems");
+            this.$router.replace("/home");
           } else {
             Message.error((resp && resp.error && resp.error.msg) || "登录失败");
           }

@@ -10,11 +10,7 @@ problemSetRouter.post(
   problemSetController.createProblemSet,
 );
 
-problemSetRouter.get(
-  "/problemset",
-  authUserMiddleware,
-  problemSetController.getProblemSet,
-);
+problemSetRouter.get("/problemset", problemSetController.getProblemSet);
 
 problemSetRouter.put(
   "/problemset",

@@ -36,6 +36,9 @@
           <el-menu-item index="/discuss"
             ><i class="el-icon-chat-line-square"></i>讨论</el-menu-item
           >
+          <el-menu-item index="/class"
+            ><i class="el-icon-user-solid el-icon--right"></i>班级</el-menu-item
+          >
         </el-menu>
       </el-col>
 

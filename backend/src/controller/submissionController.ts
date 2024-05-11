@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { submissionService } from "../service/submissionService";
 import { responseBase, submission } from "../schema";
 import { handleErrors } from "../utils/utils";
+import { problemSetService } from "../service/problemSetService";
 
 const postSubmit = async (req: Request, res: Response) => {
   try {
