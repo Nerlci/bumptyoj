@@ -1,6 +1,5 @@
 import Vue from "vue";
 import Router from "vue-router";
-import SearchClass from "../pages/Class/SearchClass";
 const login = () => import("../pages/login");
 const home = () => import("../pages/home");
 const problems = () => import("../pages/Problem/problems");
@@ -20,7 +19,10 @@ const contestRank = () => import("../pages/Contest/contestRank");
 const problemTestData = () => import("../pages/Problem/problemTestData");
 const discuss = () => import("../pages/Discuss/discuss");
 const postDetail = () => import("../pages/Discuss/postDetail");
-const ClassManage = () => import("../pages/Class/ClassManage");
+const class_ = () => import("../pages/Class/class");
+const classDetail = () => import("../pages/Class/classDetail");
+const classEdit = () => import("../pages/Class/classEdit");
+const classAdd = () => import("../pages/Class/classAdd");
 
 Vue.use(Router);
 
@@ -107,34 +109,45 @@ const constRouter = [
     component: contest,
   },
   {
-    path: "/class",
-    name: "ClassManage",
-    component: ClassManage,
-  },
-  {
-    path: "/class/search", // 添加新的路由
-    name: "SearchClass",
-    component: SearchClass,
-  },
-  {
-    path: "/contest/detail/:id",
+    path: "/problemset/detail/:id",
     name: "contestDetail",
     component: contestDetail,
   },
   {
-    path: "/contest/edit/:id",
+    path: "/problemset/edit/:id",
     name: "contestEdit",
     component: contestEdit,
   },
   {
-    path: "/contest/add",
+    path: "/problemset/add",
     name: "contestAdd",
+    query: { param: "type" },
     component: contestAdd,
   },
   {
-    path: "/contest/rank/:id",
+    path: "/problemset/rank/:id",
     name: "contestRank",
     component: contestRank,
+  },
+  {
+    path: "/class",
+    name: "class",
+    component: class_,
+  },
+  {
+    path: "/class/detail/:id",
+    name: "classDetail",
+    component: classDetail,
+  },
+  {
+    path: "/class/edit/:id",
+    name: "classEdit",
+    component: classEdit,
+  },
+  {
+    path: "/class/add",
+    name: "classAdd",
+    component: classAdd,
   },
 ];
 

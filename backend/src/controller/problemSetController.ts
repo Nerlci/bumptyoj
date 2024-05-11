@@ -188,7 +188,9 @@ const countProblemSet = async (req: Request, res: Response) => {
 };
 
 const countHomework = async (req: Request, res: Response) => {
-  const result = await problemSetService.countHomework();
+  const classId = Number(req.query.classId);
+
+  const result = await problemSetService.countHomework(classId);
 
   res.send(
     responseBase.parse({

@@ -176,6 +176,7 @@ const getHomeworkList = async (
 ) => {
   const result = await prisma.problemSet.findMany({
     where: {
+      type: 1,
       classes: {
         some: {
           id: classId,
@@ -206,10 +207,15 @@ const getContestList = async (count: number, offset: number) => {
     : [];
 };
 
-const countHomework = async () => {
+const countHomework = async (classId: number) => {
   return prisma.problemSet.count({
     where: {
-      type: 0,
+      classes: {
+        some: {
+          id: classId,
+        },
+      },
+      type: 1,
     },
   });
 };
@@ -217,7 +223,7 @@ const countHomework = async () => {
 const countContest = async () => {
   return prisma.problemSet.count({
     where: {
-      type: 1,
+      type: 0,
     },
   });
 };

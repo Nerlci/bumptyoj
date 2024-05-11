@@ -1,8 +1,13 @@
 <template>
   <div class="contest-add">
-    <h2 id="contest-edit-title">比赛添加</h2>
+    <h2 id="contest-edit-title">
+      {{ $route.query.type == 0 ? "比赛添加" : "作业添加" }}
+    </h2>
     <el-form ref="contestForm" :model="contest" label-width="120px">
-      <el-form-item label="比赛标题">
+      <el-form-item
+        :label="$route.query.type == 0 ? '比赛标题' : '作业名称'"
+        prop="title"
+      >
         <el-input v-model="contest.title"></el-input>
       </el-form-item>
 
@@ -68,7 +73,9 @@
         </el-table>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="submitContest">添加比赛</el-button>
+        <el-button type="primary" @click="submitContest">
+          {{ $route.query.type == 0 ? "添加比赛" : "添加作业" }}
+        </el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -100,6 +107,7 @@ export default {
       this.$refs["contestForm"].validate((valid) => {
         if (valid) {
           let contest = this.contest;
+          contest.type = parseInt(this.$route.query.type);
           delete contest.problemData;
           postRequest("/api/problemset/problemset", contest)
             .then((response) => {

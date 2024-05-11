@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="problem-list">
+    <div class="contest-list">
       <el-table
         :data="tableData"
         v-loading="loading"
@@ -166,7 +166,7 @@ export default {
       this.$router.push({ name: "contestEdit", params: { id: id } });
     },
     addContest() {
-      this.$router.push({ name: "contestAdd" });
+      this.$router.push({ name: "contestAdd", query: { type: 0 } });
     },
     getPageInfo() {
       this.getPage(1);
@@ -196,7 +196,7 @@ export default {
 </script>
 
 <style scoped>
-.problem-list {
+.contest-list {
   width: 80%;
   height: 100%;
   margin: auto;
@@ -212,6 +212,7 @@ export default {
   cursor: pointer;
   color: #56a1f7;
 }
+
 .add-contest-button {
   margin-top: 20px;
   /* 添加顶部边距，根据需要调整 */

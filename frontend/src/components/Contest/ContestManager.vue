@@ -6,7 +6,7 @@
       label-width="auto"
       ref="form"
     >
-      <el-form-item label="比赛标题">
+      <el-form-item :label="contest.type == 0 ? '比赛标题' : '作业名称'">
         <el-input v-model="contest.title"></el-input>
       </el-form-item>
 

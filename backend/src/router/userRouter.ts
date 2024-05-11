@@ -9,4 +9,6 @@ userRouter.post("/login", userController.loginUser);
 
 userRouter.get("/logout", userController.logoutUser);
 
+userRouter.get("/user", userController.getUser);
+
 export { userRouter };
