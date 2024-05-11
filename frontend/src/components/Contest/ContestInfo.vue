@@ -6,9 +6,10 @@
           <div class="collapse-title">描述</div>
         </template>
         <el-card class="box-card" shadow="hover">
-          <div class="collapse-content" v-html="contest.description">
-            {{ contest.description }}
-          </div>
+          <div
+            class="collapse-content"
+            v-html="md.render(contest.description)"
+          ></div>
         </el-card>
       </el-collapse-item>
       <el-collapse-item name="2">
@@ -31,6 +32,9 @@
 </template>
 
 <script>
+import MarkdownIt from "markdown-it";
+import markdownItKatex from "markdown-it-katex";
+
 export default {
   name: "ContestInfo",
   props: ["contest"],
@@ -38,6 +42,11 @@ export default {
     return {
       activeName: ["1", "2"],
       problemData: [],
+      md: new MarkdownIt({
+        html: true,
+        linkify: true,
+        typographer: true,
+      }).use(markdownItKatex),
     };
   },
   methods: {

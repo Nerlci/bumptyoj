@@ -144,7 +144,6 @@ export default {
   width: 80%;
   height: 100%;
   margin: auto;
-  font-weight: bold;
 }
 
 .cursor-pointer {
