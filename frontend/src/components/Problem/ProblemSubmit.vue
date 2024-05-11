@@ -33,7 +33,7 @@ import "prismjs/components/prism-autoit";
 
 export default {
   name: "ProblemSubmit",
-  props: ["pid"], // 接收题目ID
+  props: ["pid", "psetid"], // 接收题目ID
   components: {
     PrismEditor,
   },
@@ -60,6 +60,7 @@ export default {
       // 调整API路径和传输的数据结构
       this.postRequest("/api/submission/submit", {
         problemId: this.pid,
+        ...(this.psetid ? { problemsetId: this.psetid } : {}),
         language: this.language,
         code: this.answer,
       })

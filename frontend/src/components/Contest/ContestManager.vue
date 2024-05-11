@@ -166,7 +166,7 @@ export default {
                 type: "success",
                 message: "删除成功!",
               });
-              this.$router.replace("/problems");
+              this.$router.replace("/contest");
             } else {
               this.$message.error("删除失败: " + response.error.msg);
             }

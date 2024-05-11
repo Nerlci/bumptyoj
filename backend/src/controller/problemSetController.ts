@@ -4,9 +4,7 @@ import { problemSetService } from "../service/problemSetService";
 import { handleErrors } from "../utils/utils";
 
 const createProblemSet = async (req: Request, res: Response) => {
-  const { startTime, endTime, ...data } = req.body;
-  data.startTime = startTime ? new Date(startTime) : null;
-  data.endTime = endTime ? new Date(endTime) : null;
+  const data = req.body;
 
   try {
     const problemSetBody = problemSet.parse(data);

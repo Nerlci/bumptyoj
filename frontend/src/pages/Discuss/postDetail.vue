@@ -136,8 +136,9 @@ export default {
         });
     },
     formatDate(timestamp) {
-      return DateTime.fromISO(timestamp, { zone: 'Asia/Shanghai' })
-      .toFormat('yyyy-MM-dd HH:mm:ss');
+      return DateTime.fromISO(timestamp, { zone: "Asia/Shanghai" }).toFormat(
+        "yyyy-MM-dd HH:mm:ss",
+      );
     },
   },
 };
