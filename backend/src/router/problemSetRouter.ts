@@ -51,9 +51,9 @@ problemSetRouter.get("/homework/count", problemSetController.countHomework);
 problemSetRouter.get("/contest/count", problemSetController.countContest);
 
 problemSetRouter.get(
-  "/contest/status",
+  "/problemset/status",
   authUserMiddleware,
-  problemSetController.getContestStatus,
+  problemSetController.getProblemSetStatus,
 );
 
 export { problemSetRouter };

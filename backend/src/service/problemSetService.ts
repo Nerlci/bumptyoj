@@ -232,7 +232,12 @@ const countProblemSet = async () => {
   return prisma.problemSet.count();
 };
 
-const getContestStatus = async (setId: number, userId: number) => {
+const getProblemSetStatus = async (setId: number, userId: number) => {
+  const users = await getProblemSetUsers(setId);
+  return users.includes(userId);
+};
+
+const getProblemSetUsers = async (setId: number) => {
   const result = await prisma.problemSet.findUnique({
     where: {
       id: setId,
@@ -241,13 +246,27 @@ const getContestStatus = async (setId: number, userId: number) => {
       users: {
         select: {
           id: true,
+          username: true,
+        },
+      },
+      classes: {
+        include: {
+          students: {
+            select: {
+              id: true,
+              username: true,
+            },
+          },
         },
       },
     },
   });
-  if (!result) throw new Error("Problem set not found");
 
-  return result ? result.users.some((user) => user.id === userId) : false;
+  result!.users = result!.users.concat(
+    result!.classes.flatMap((cls) => cls.students),
+  );
+
+  return result ? result.users.map((user) => user.id) : [];
 };
 
 export const problemSetService = {
@@ -262,5 +281,6 @@ export const problemSetService = {
   countHomework,
   countContest,
   countProblemSet,
-  getContestStatus,
+  getProblemSetStatus,
+  getProblemSetUsers,
 };

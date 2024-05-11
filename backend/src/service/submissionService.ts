@@ -1,6 +1,7 @@
 import { prisma } from "../prisma";
 import { Submission, submission, submissionDetail } from "../schema";
 import { problemService } from "./problemService";
+import { problemSetService } from "./problemSetService";
 
 const judgeList: Submission[] = [];
 
@@ -68,14 +69,12 @@ const handleJudge = async (data: Submission) => {
   const { submissionId, detail, ...rest } = data;
 
   if (data.problemsetId) {
-    const problemSet = await prisma.problemSet.findUnique({
-      where: { id: data.problemsetId },
-      include: {
-        users: true,
-      },
-    });
+    const problemSet = await problemSetService.getProblemSet(data.problemsetId);
+    const joined = problemSetService.getProblemSetStatus(
+      data.problemsetId,
+      data.userId,
+    );
 
-    const joined = problemSet!.users.some((user) => user.id === data.userId);
     if (!joined) {
       throw new Error("User not joined the problemset");
     }

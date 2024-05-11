@@ -87,7 +87,7 @@ export default {
 
           this.percentage = this.getPercentage();
 
-          this.getRequest("/api/problemset/contest/status", {
+          this.getRequest("/api/problemset/problemset/status", {
             problemsetId: this.$route.params.id,
           }).then((response) => {
             this.contest.joined = response.payload.joined;
