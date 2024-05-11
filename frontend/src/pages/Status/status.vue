@@ -125,12 +125,17 @@ export default {
     },
     fetchTotal() {
       let url = "/api/submission/count";
-      if (this.problemSearchQuery || this.userSearchQuery) {
+      const allEmpty =
+        !this.problemSearchQuery &&
+        !this.userSearchQuery &&
+        !parseInt(this.problemSearchQuery) &&
+        !parseInt(this.userSearchQuery);
+      if (!allEmpty && (this.problemSearchQuery || this.userSearchQuery)) {
         url += "?";
       }
-      if (this.problemSearchQuery)
+      if (this.problemSearchQuery && parseInt(this.problemSearchQuery))
         url += `&problemId=${encodeURIComponent(this.problemSearchQuery)}`;
-      if (this.userSearchQuery)
+      if (this.userSearchQuery && parseInt(this.userSearchQuery))
         url += `&userId=${encodeURIComponent(this.userSearchQuery)}`;
 
       getRequest(url)
