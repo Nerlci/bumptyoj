@@ -40,7 +40,7 @@
         <el-input
           type="textarea"
           v-model="newComment"
-          placeholder="添加评论..."
+          placeholder="发布一条评论..."
           class="new-comment"
           :rows="4"
         ></el-input>
@@ -251,6 +251,7 @@ export default {
         .then((response) => {
           if (response.code === "200") {
             this.totalComments = response.payload.count;
+            this.maxPage = Math.ceil(this.totalComments / this.pageSize);
           } else {
             this.$message.error(response.error.msg);
           }
@@ -260,7 +261,12 @@ export default {
           this.$message.error("网络错误或服务器异常");
         });
     },
-    fetchComments() {
+    fetchComments(direction) {
+      if (direction === "prev") {
+        this.commentPage -= 1;
+      } else if (direction === "next") {
+        this.commentPage += 1;
+      }
       const offset = (this.commentPage - 1) * this.pageSize;
       getRequest(
         `/api/discussion/comment?count=${this.pageSize}&offset=${offset}&postId=${this.postId}`,
@@ -268,8 +274,6 @@ export default {
         .then((response) => {
           if (response.code === "200") {
             this.comments = response.payload.comments;
-            this.totalComments = response.payload.count;
-            this.maxPage = Math.ceil(this.totalComments / this.pageSize);
           } else {
             this.$message.error(response.error.msg);
           }
@@ -320,16 +324,14 @@ export default {
     },
     handlePreClick() {
       if (this.commentPage > 1) {
-        this.fetchSubmissions("prev");
-        this.commentPage -= 1;
+        this.fetchComments("prev");
       } else {
         this.$message.error("已经是第一页了！");
       }
     },
     handleNextClick() {
-      if (this.commentPage < Math.ceil(this.total / this.pageSize)) {
-        this.fetchSubmissions("next");
-        this.commentPage += 1;
+      if (this.commentPage < this.maxPage) {
+        this.fetchComments("next");
       } else {
         this.$message.error("已经是最后一页了！");
       }
