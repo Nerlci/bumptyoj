@@ -39,7 +39,7 @@
 
         <el-table-column
           label="操作"
-          v-if="true || this.$store.state.status.type == 0"
+          v-if="this.$store.state.status.type == 0"
           width="76px"
         >
           <template slot-scope="scope">
@@ -55,7 +55,7 @@
       <el-button
         type="primary"
         @click="addContest"
-        v-if="true || this.$store.state.status.type == 0"
+        v-if="this.$store.state.status.type == 0"
         class="add-contest-button"
       >
         新建比赛
@@ -104,7 +104,7 @@ export default {
       this.fetchItemCount();
     },
     fetchItemCount() {
-      this.getRequest("/api/problem/count").then((response) => {
+      this.getRequest("/api/problemset/contest/count").then((response) => {
         this.itemCount = response.payload.count;
       });
     },
