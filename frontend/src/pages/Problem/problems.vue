@@ -53,8 +53,8 @@
           label="操作"
           v-if="
             true ||
-            this.$store.state.status.type == 0 ||
-            this.$store.state.status.type == 2
+            $store.state.status.type == 0 ||
+            $store.state.status.type == 2
           "
           width="76px"
         >
