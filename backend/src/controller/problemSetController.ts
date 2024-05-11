@@ -65,10 +65,10 @@ const getProblemSet = async (req: Request, res: Response) => {
 };
 
 const modifyProblemSet = async (req: Request, res: Response) => {
-  const { problemsetId, startTime, endTime, ...data } = req.body;
+  const { startTime, endTime, ...data } = req.body;
   data.startTime = startTime ? new Date(startTime) : null;
   data.endTime = endTime ? new Date(endTime) : null;
-  data.setId = problemsetId;
+  data.setId = Number(req.query.problemsetId);
 
   const problemSetBody = problemSet.parse(data);
 

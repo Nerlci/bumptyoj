@@ -37,6 +37,7 @@ const getClass = async (req: Request, res: Response) => {
 const modifyClass = async (req: Request, res: Response) => {
   const { ...data } = req.body;
   data.teacherId = Number(data.teacherId);
+  data.classId = Number(req.query.classId);
   const classBody = class_.parse(data);
 
   const result = await classService.modifyClass(classBody.classId, classBody);
