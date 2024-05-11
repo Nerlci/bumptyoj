@@ -5,9 +5,11 @@
       <el-table :data="tableData" stripe>
         <el-table-column label="题目" prop="title">
           <template slot-scope="scope">
-            <span @click="showProblem(scope.row.id)" class="cursor-pointer">{{
-              scope.row.title
-            }}</span>
+            <span
+              @click="showProblem(scope.row.problemId)"
+              class="cursor-pointer"
+              >{{ scope.row.title }}</span
+            >
           </template>
         </el-table-column>
       </el-table>

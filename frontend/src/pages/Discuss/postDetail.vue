@@ -369,9 +369,6 @@ export default {
     backToTop() {
       window.scrollTo(0, 0);
     },
-    backToTop() {
-      window.scrollTo(0, 0);
-    },
   },
 };
 </script>

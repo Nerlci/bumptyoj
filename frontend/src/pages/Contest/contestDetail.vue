@@ -11,7 +11,10 @@
       :format="() => ''"
     ></el-progress>
 
-    <span v-if="contest.type == 0" class="state-button">
+    <span
+      v-if="contest.type == 0 && this.$store.state.status.isLogin"
+      class="state-button"
+    >
       <el-button disabled type="info" v-if="checkTime(contest.endTime)">
         已结束
       </el-button>
@@ -87,11 +90,13 @@ export default {
 
           this.percentage = this.getPercentage();
 
-          this.getRequest("/api/problemset/problemset/status", {
-            problemsetId: this.$route.params.id,
-          }).then((response) => {
-            this.contest.joined = response.payload.joined;
-          });
+          if (this.$store.state.status.isLogin) {
+            this.getRequest("/api/problemset/problemset/status", {
+              problemsetId: this.$route.params.id,
+            }).then((response) => {
+              this.contest.joined = response.payload.joined;
+            });
+          }
 
           this.contest.problems.forEach((problem) => {
             this.getRequest("/api/problem/problem", {
