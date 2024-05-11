@@ -18,7 +18,7 @@
         <el-input
           class="student-input"
           placeholder="学生用户 ID"
-          v-model="studentId"
+          v-model.number="studentId"
         ></el-input>
         <el-button type="primary" class="add-student" @click="addStudent">
           添加学生
@@ -104,11 +104,7 @@ export default {
       });
     },
     addStudent() {
-      const studentId = parseInt(this.studentId);
-      if (!studentId) {
-        this.$message.error("无效的用户ID");
-        return;
-      }
+      const studentId = this.studentId;
       if (this.class_.teacherId === studentId) {
         this.$message.error("教师不能同时是学生");
         this.studentId = "";

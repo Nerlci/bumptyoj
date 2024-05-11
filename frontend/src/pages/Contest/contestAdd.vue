@@ -41,7 +41,7 @@
         <el-input
           class="problem-input"
           placeholder="题目ID"
-          v-model="problemId"
+          v-model.number="problemId"
         ></el-input>
         <el-button type="primary" class="add-problem" @click="addProblem">
           添加题目
@@ -140,11 +140,7 @@ export default {
       });
     },
     addProblem() {
-      const problemId = parseInt(this.problemId);
-      if (!problemId) {
-        this.$message.error("无效的题目ID");
-        return;
-      }
+      const problemId = this.problemId;
       if (this.contest.problems.includes(problemId)) {
         this.$message.error("题目已存在");
         this.problemId = "";

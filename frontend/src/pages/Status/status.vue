@@ -3,12 +3,12 @@
     <div class="search-bar">
       <div>
         <el-input
-          v-model="problemSearchQuery"
+          v-model.number="problemSearchQuery"
           placeholder="以题目ID搜索评测记录..."
           class="search-input"
         ></el-input>
         <el-input
-          v-model="userSearchQuery"
+          v-model.number="userSearchQuery"
           placeholder="以用户ID搜索评测记录..."
           class="search-input"
         ></el-input>
@@ -125,18 +125,13 @@ export default {
     },
     fetchTotal() {
       let url = "/api/submission/count";
-      const allEmpty =
-        !this.problemSearchQuery &&
-        !this.userSearchQuery &&
-        !parseInt(this.problemSearchQuery) &&
-        !parseInt(this.userSearchQuery);
-      if (!allEmpty) {
+      if (this.problemSearchQuery || this.userSearchQuery) {
         url += "?";
       }
-      if (this.problemSearchQuery && parseInt(this.problemSearchQuery))
-        url += `&problemId=${encodeURIComponent(parseInt(this.problemSearchQuery))}`;
-      if (this.userSearchQuery && parseInt(this.userSearchQuery))
-        url += `&userId=${encodeURIComponent(parseInt(this.userSearchQuery))}`;
+      if (this.problemSearchQuery)
+        url += `&problemId=${encodeURIComponent(this.problemSearchQuery)}`;
+      if (this.userSearchQuery)
+        url += `&userId=${encodeURIComponent(this.userSearchQuery)}`;
 
       getRequest(url)
         .then((response) => {
@@ -149,10 +144,10 @@ export default {
     },
     fetchSubmissions(direction) {
       let url = `/api/submission/list?count=${this.pageSize}`;
-      if (this.problemSearchQuery && parseInt(this.problemSearchQuery))
-        url += `&problemId=${encodeURIComponent(parseInt(this.problemSearchQuery))}`;
-      if (this.userSearchQuery && parseInt(this.userSearchQuery))
-        url += `&userId=${encodeURIComponent(parseInt(this.userSearchQuery))}`;
+      if (this.problemSearchQuery)
+        url += `&problemId=${encodeURIComponent(this.problemSearchQuery)}`;
+      if (this.userSearchQuery)
+        url += `&userId=${encodeURIComponent(this.userSearchQuery)}`;
 
       if (direction === "next" && this.maxId) {
         url += `&maxId=${this.minId}`;
