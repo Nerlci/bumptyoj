@@ -51,7 +51,11 @@
 
         <el-table-column
           label="操作"
-          v-if="this.$store.state.status.type == 0"
+          v-if="
+            true ||
+            this.$store.state.status.type == 0 ||
+            this.$store.state.status.type == 2
+          "
           width="76px"
         >
           <template slot-scope="scope">
@@ -66,7 +70,7 @@
       <el-button
         type="primary"
         @click="addProblem"
-        v-if="this.$store.state.status.type == 0"
+        v-if="$store.state.status.type == 0 || $store.state.status.type == 2"
         class="add-problem-button"
       >
         新建题目

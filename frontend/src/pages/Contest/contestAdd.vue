@@ -111,15 +111,26 @@ export default {
           delete contest.problemData;
           postRequest("/api/problemset/problemset", contest)
             .then((response) => {
-              if (response.code === "200") {
-                this.$message({
-                  message: "比赛添加成功",
-                  type: "success",
-                });
-                // 通常在成功后会跳转到比赛列表或显示比赛详情
+              this.$message({
+                message: "比赛添加成功",
+                type: "success",
+              });
+              // 通常在成功后会跳转到比赛列表或显示比赛详情
+
+              if (this.$route.query.type == 0) {
                 this.$router.replace("/contest");
               } else {
-                this.$message.error("添加失败: " + response.data.error.msg);
+                postRequest("/api/problemset/homework", {
+                  classIds: [parseInt(this.$route.query.classId)],
+                  problemsetId: response.payload.problemsetId,
+                  startTime: this.contest.startTime,
+                  endTime: this.contest.endTime,
+                }).then(() => {
+                  this.$router.push({
+                    name: "classDetail",
+                    params: { id: parseInt(this.$route.query.classId) },
+                  });
+                });
               }
             })
             .catch((error) => {
@@ -132,6 +143,7 @@ export default {
       const problemId = parseInt(this.problemId);
       if (this.contest.problems.includes(problemId)) {
         this.$message.error("题目已存在");
+        this.problemId = "";
         return;
       }
       this.contest.problems.push(problemId);
@@ -142,6 +154,7 @@ export default {
             displayId: response.payload.metadata.displayId,
             title: response.payload.metadata.title,
           });
+          this.problemId = "";
         },
       );
     },

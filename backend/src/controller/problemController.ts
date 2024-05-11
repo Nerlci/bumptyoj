@@ -239,6 +239,7 @@ const createTestdata = async (req: Request, res: Response) => {
 
 const modifyTestdata = async (req: Request, res: Response) => {
   const testdataId = Number(req.query.testdataId);
+  const previous = await problemService.getTestdata(testdataId);
 
   const filesReq = req as TestdataRequest;
 
@@ -257,6 +258,7 @@ const modifyTestdata = async (req: Request, res: Response) => {
 
   try {
     const data = testdata.parse({
+      problemId: previous!.problemId,
       input: filesReq.files!.inputFile[0].path,
       output: filesReq.files!.outputFile[0].path,
       inputFilename: filesReq.files!.inputFile[0].originalname,

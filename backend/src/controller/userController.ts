@@ -121,7 +121,7 @@ const loginUser = async (req: Request, res: Response) => {
     process.env.JWT_SECRET!,
   );
 
-  res.cookie("token", token, { httpOnly: true });
+  res.cookie("token", token);
   res.json(response);
 };
 

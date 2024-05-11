@@ -1,41 +1,63 @@
 <template>
   <div class="test-data-manager">
     <h3>当前问题 ID: {{ problemId }}</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>评测数据 ID</th>
-          <th>输入文件名</th>
-          <th>输出文件名</th>
-          <th>操作</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="data in this.testData" :key="data.testdataId">
-          <td>{{ data.testdataId }}</td>
-          <td>{{ data.inputFilename }}</td>
-          <td>{{ data.outputFilename }}</td>
-          <td>
-            <!-- 编辑操作将需要选择文件，因此添加文件选择控件 -->
-            <input
-              type="file"
-              @change="handleEditInputFileChange($event, data)"
-            />
-            <input
-              type="file"
-              @change="handleEditOutputFileChange($event, data)"
-            />
-            <button @click="editData(data)">更新测试数据</button>
-            <button @click="deleteData(data.testdataId)">删除</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <el-table :data="testData">
+      <el-table-column prop="testdataId" label="评测数据 ID"></el-table-column>
+      <el-table-column
+        prop="inputFilename"
+        label="输入文件名"
+      ></el-table-column>
+      <el-table-column
+        prop="outputFilename"
+        label="输出文件名"
+      ></el-table-column>
+      <el-table-column label="操作">
+        <template slot-scope="scope">
+          <el-upload
+            auto-upload="false"
+            http-request="noAction"
+            :on-change="(file) => handleEditInputFileChange(file, scope.row)"
+          >
+            <el-button size="small" type="primary">选择输入文件</el-button>
+          </el-upload>
+          <el-upload
+            auto-upload="false"
+            http-request="noAction"
+            :on-change="(file) => handleEditOutputFileChange(file, scope.row)"
+          >
+            <el-button size="small" type="primary">选择输出文件</el-button>
+          </el-upload>
+          <el-button size="small" type="primary" @click="editData(scope.row)"
+            >更新测试数据</el-button
+          >
+          <el-button
+            size="small"
+            type="danger"
+            @click="deleteData(scope.row.testdataId)"
+            >删除</el-button
+          >
+        </template>
+      </el-table-column>
+    </el-table>
     <div>
       <h4>上传新的评测数据</h4>
-      <input type="file" id="inputFile" @change="handleInputFileChange" />
-      <input type="file" id="outputFile" @change="handleOutputFileChange" />
-      <button @click="addNewData">上传评测数据</button>
+      <el-upload
+        auto-upload="false"
+        http-request="noAction"
+        :on-change="(file) => handleInputFileChange(file)"
+      >
+        <el-button size="small" type="primary">选择输入文件</el-button>
+      </el-upload>
+      <el-upload
+        auto-upload="false"
+        http-request="noAction"
+        :on-change="(file) => handleOutputFileChange(file)"
+      >
+        <el-button size="small" type="primary">选择输出文件</el-button>
+      </el-upload>
+      <el-button size="small" type="success" @click="addNewData"
+        >上传评测数据</el-button
+      >
     </div>
   </div>
 </template>
@@ -133,11 +155,15 @@ export default {
         formData.append("inputFile", this.inputFile);
         formData.append("outputFile", this.outputFile);
 
-        postRequest(`/api/problem/testdata`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
+        postRequest(
+          `/api/problem/testdata?problemId=${this.problemId}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
           },
-        })
+        )
           .then((response) => {
             if (response.code === "200") {
               alert("评测数据上传成功！");
@@ -154,17 +180,20 @@ export default {
         alert("请确保输入文件和输出文件都已选择。");
       }
     },
-    handleInputFileChange(event) {
-      this.inputFile = event.target.files[0];
+    handleInputFileChange(file) {
+      this.inputFile = file.raw;
     },
-    handleOutputFileChange(event) {
-      this.outputFile = event.target.files[0];
+    handleOutputFileChange(file) {
+      this.outputFile = file.raw;
     },
-    handleEditInputFileChange(event, data) {
-      this.editInputs[data.testdataId] = event.target.files[0];
+    handleEditInputFileChange(file, data) {
+      this.editInputs[data.testdataId] = file.raw;
     },
-    handleEditOutputFileChange(event, data) {
-      this.editOutputs[data.testdataId] = event.target.files[0];
+    handleEditOutputFileChange(file, data) {
+      this.editOutputs[data.testdataId] = file.raw;
+    },
+    noAction() {
+      // 空方法，用于阻止 el-upload 组件自动上传文件
     },
   },
   mounted() {

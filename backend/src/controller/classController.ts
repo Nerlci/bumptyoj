@@ -88,8 +88,8 @@ const listClass = async (req: Request, res: Response) => {
   try {
     const count = Number(req.query.count);
     const offset = Number(req.query.offset);
-    const user = res.locals.user;
-    const result = await classService.listClass(user, count, offset);
+    const userId = res.locals.user.userId;
+    const result = await classService.listClass(userId, count, offset);
 
     res.send(
       responseBase.parse({
@@ -107,8 +107,8 @@ const listClass = async (req: Request, res: Response) => {
 
 const countClass = async (req: Request, res: Response) => {
   try {
-    const user = res.locals.user;
-    const result = await classService.countClass(user);
+    const userId = res.locals.user.userId;
+    const result = await classService.countClass(userId);
 
     res.send(
       responseBase.parse({
