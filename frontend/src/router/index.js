@@ -59,7 +59,7 @@ const constRouter = [
     component: discuss,
   },
   {
-    path: "/post/detail/:id",
+    path: "/discuss/:postId",
     name: "postDetail",
     component: postDetail,
   },

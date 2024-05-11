@@ -6,9 +6,10 @@
           <div class="collapse-title">题目描述</div>
         </template>
         <el-card class="box-card" shadow="hover">
-          <div class="collapse-content" v-html="problem.description">
-            {{ problem.description }}
-          </div>
+          <div
+            class="collapse-content"
+            v-html="md.render(problem.description)"
+          ></div>
         </el-card>
       </el-collapse-item>
       <el-collapse-item name="2">
@@ -16,9 +17,10 @@
           <div class="collapse-title">输入格式</div>
         </template>
         <el-card class="box-card" shadow="hover">
-          <div class="collapse-content" v-html="problem.inputFormat">
-            {{ problem.inputFormat }}
-          </div>
+          <div
+            class="collapse-content"
+            v-html="md.render(problem.inputFormat)"
+          ></div>
         </el-card>
       </el-collapse-item>
       <el-collapse-item name="3">
@@ -26,9 +28,10 @@
           <div class="collapse-title">输出格式</div>
         </template>
         <el-card class="box-card" shadow="hover">
-          <div class="collapse-content" v-html="problem.outputFormat">
-            {{ problem.outputFormat }}
-          </div>
+          <div
+            class="collapse-content"
+            v-html="md.render(problem.outputFormat)"
+          ></div>
         </el-card>
       </el-collapse-item>
       <el-collapse-item name="4">
@@ -49,9 +52,7 @@
           <div class="collapse-title">其他信息</div>
         </template>
         <el-card class="box-card" shadow="hover">
-          <div class="collapse-content" v-html="problem.other">
-            {{ problem.other }}
-          </div>
+          <div class="collapse-content" v-html="md.render(problem.other)"></div>
         </el-card>
       </el-collapse-item>
     </el-collapse>
@@ -59,16 +60,28 @@
 </template>
 
 <script>
+import MarkdownIt from "markdown-it";
+import markdownItKatex from "markdown-it-katex";
+
 export default {
   name: "ProblemInfo",
   props: ["problem"],
   data() {
     return {
-      activeName: ["1"],
+      md: new MarkdownIt({
+        html: true,
+        linkify: true,
+        typographer: true,
+      }).use(markdownItKatex),
+      activeName: ["1", "2", "3", "4", "5"],
     };
   },
 };
 </script>
+
+<style>
+@import url("https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/katex.min.css");
+</style>
 
 <style scoped>
 .problem-info {

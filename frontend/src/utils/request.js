@@ -55,6 +55,7 @@ export const postRequest = (url, params) => {
     method: "post",
     url: `${base}${url}`,
     data: params,
+    withCredentials: true,
   });
 };
 
@@ -64,6 +65,7 @@ export const getRequest = (url, params) => {
     method: "get",
     url: `${base}${url}`,
     params: params,
+    withCredentials: true,
   });
 };
 
@@ -72,6 +74,7 @@ export const putRequest = (url, params) => {
     method: "put",
     url: `${base}${url}`,
     data: params,
+    withCredentials: true,
   });
 };
 
@@ -80,5 +83,6 @@ export const deleteRequest = (url, params) => {
     method: "delete",
     url: `${base}${url}`,
     params: params,
+    withCredentials: true,
   });
 };
