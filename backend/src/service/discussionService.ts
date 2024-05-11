@@ -65,6 +65,9 @@ const listPost = async (
     where: {
       category: category,
     },
+    orderBy: {
+      id: "desc",
+    },
     skip: offset,
     take: count,
     include: {

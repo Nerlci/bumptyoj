@@ -141,6 +141,10 @@ export default {
     },
     addProblem() {
       const problemId = parseInt(this.problemId);
+      if (!problemId) {
+        this.$message.error("无效的题目ID");
+        return;
+      }
       if (this.contest.problems.includes(problemId)) {
         this.$message.error("题目已存在");
         this.problemId = "";

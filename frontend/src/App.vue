@@ -31,7 +31,6 @@ export default {
     HeaderBar,
   },
   created() {
-    console.log(document.cookie);
     const hasToken = document.cookie.includes("token=");
 
     if (

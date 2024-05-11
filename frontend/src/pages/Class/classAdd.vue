@@ -79,11 +79,10 @@ export default {
             .then((response) => {
               if (response.code === "200") {
                 this.$message({
-                  message: "比赛添加成功",
+                  message: "班级创建成功",
                   type: "success",
                 });
-                // 通常在成功后会跳转到比赛列表或显示比赛详情
-                this.$router.replace("/contest");
+                this.$router.replace("/class");
               } else {
                 this.$message.error("添加失败: " + response.data.error.msg);
               }
@@ -96,6 +95,10 @@ export default {
     },
     addStudent() {
       const studentId = parseInt(this.studentId);
+      if (!studentId) {
+        this.$message.error("无效的用户ID");
+        return;
+      }
       if (this.class_.teacherId === studentId) {
         this.$message.error("教师不能同时是学生");
         this.studentId = "";
