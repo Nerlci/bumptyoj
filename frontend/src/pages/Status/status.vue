@@ -149,10 +149,10 @@ export default {
     },
     fetchSubmissions(direction) {
       let url = `/api/submission/list?count=${this.pageSize}`;
-      if (this.problemSearchQuery)
-        url += `&problemId=${encodeURIComponent(this.problemSearchQuery)}`;
-      if (this.userSearchQuery)
-        url += `&userId=${encodeURIComponent(this.userSearchQuery)}`;
+      if (this.problemSearchQuery && parseInt(this.problemSearchQuery))
+        url += `&problemId=${encodeURIComponent(parseInt(this.problemSearchQuery))}`;
+      if (this.userSearchQuery && parseInt(this.userSearchQuery))
+        url += `&userId=${encodeURIComponent(parseInt(this.problemSearchQuery))}`;
 
       if (direction === "next" && this.maxId) {
         url += `&maxId=${this.minId}`;
