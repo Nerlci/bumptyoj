@@ -27,7 +27,7 @@
               v-if="
                 $store.state.status.type == 0 ||
                 ($store.state.status.type == 2 &&
-                  item.teacherId == $store.state.status.id)
+                  item.teacherId == $store.state.status.userId)
               "
             >
               编辑

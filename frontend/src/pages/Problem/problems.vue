@@ -52,7 +52,6 @@
         <el-table-column
           label="操作"
           v-if="
-            true ||
             this.$store.state.status.type == 0 ||
             this.$store.state.status.type == 2
           "

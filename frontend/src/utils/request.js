@@ -8,7 +8,7 @@ axios.interceptors.response.use(
   (success) => {
     if (!success.status || success.status !== 200) {
       Message.error({ message: success.data.err.msg });
-      return;
+      throw new Error(success.data.err.msg);
     }
     if (success.data.code !== "200") {
       const errorType = {
@@ -16,10 +16,9 @@ axios.interceptors.response.use(
         401: "未登录",
         500: "服务器错误",
       };
-      Message.error({
-        message: `${errorType[success.data.code]}: ${success.data.error.msg}`,
-      });
-      return;
+      const errorMessage = `${errorType[success.data.code]}: ${success.data.error.msg}`;
+      Message.error({ message: errorMessage });
+      throw new Error(errorMessage);
     }
     return success.data;
   },

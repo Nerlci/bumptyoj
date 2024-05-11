@@ -3,12 +3,12 @@
     <div class="search-bar">
       <div>
         <el-input
-          v-model="problemSearchQuery"
+          v-model.number="problemSearchQuery"
           placeholder="以题目ID搜索评测记录..."
           class="search-input"
         ></el-input>
         <el-input
-          v-model="userSearchQuery"
+          v-model.number="userSearchQuery"
           placeholder="以用户ID搜索评测记录..."
           class="search-input"
         ></el-input>

@@ -18,27 +18,29 @@
           ref="rootMenu"
           router
         >
-          <el-menu-item index="/home"
-            ><i class="el-icon-house"></i>首页</el-menu-item
-          >
-          <el-menu-item index="/problems"
-            ><i class="el-icon-files"></i>题目</el-menu-item
-          >
-          <el-menu-item index="/status"
-            ><i class="el-icon-coffee-cup"></i>状态</el-menu-item
-          >
-          <el-menu-item index="/rank"
-            ><i class="el-icon-trophy"></i>排名</el-menu-item
-          >
-          <el-menu-item index="/contest"
-            ><i class="el-icon-s-flag"></i>比赛</el-menu-item
-          >
-          <el-menu-item index="/discuss"
-            ><i class="el-icon-chat-line-square"></i>讨论</el-menu-item
-          >
-          <el-menu-item index="/class"
-            ><i class="el-icon-user-solid el-icon--right"></i>班级</el-menu-item
-          >
+          <el-menu-item index="/home">
+            <i class="el-icon-house"></i><span class="head-tag">首页</span>
+          </el-menu-item>
+          <el-menu-item index="/problems">
+            <i class="el-icon-files"></i><span class="head-tag">题目</span>
+          </el-menu-item>
+          <el-menu-item index="/status">
+            <i class="el-icon-coffee-cup"></i><span class="head-tag">状态</span>
+          </el-menu-item>
+          <el-menu-item index="/rank">
+            <i class="el-icon-trophy"></i><span class="head-tag">排名</span>
+          </el-menu-item>
+          <el-menu-item index="/contest">
+            <i class="el-icon-s-flag"></i><span class="head-tag">比赛</span>
+          </el-menu-item>
+          <el-menu-item index="/discuss">
+            <i class="el-icon-chat-line-square"></i
+            ><span class="head-tag">讨论</span>
+          </el-menu-item>
+          <el-menu-item index="/class">
+            <i class="el-icon-user-solid el-icon--right"></i
+            ><span class="head-tag">班级</span>
+          </el-menu-item>
         </el-menu>
       </el-col>
 
@@ -89,5 +91,20 @@ export default {
 .no-decoration {
   text-decoration: none;
   color: #52abff;
+}
+
+@media (max-width: 840px) {
+  .head-tag {
+    display: none;
+  }
+  .el-menu-item {
+    padding: 0 15px;
+  }
+}
+
+@media (max-width: 720px) {
+  .el-menu-item {
+    padding: 0 5px;
+  }
 }
 </style>

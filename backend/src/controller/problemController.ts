@@ -38,10 +38,22 @@ const createProblem = async (req: Request, res: Response) => {
 };
 
 const modifyProblem = async (req: Request, res: Response) => {
-  const data = req.body;
+  const { metadata, ...data } = req.body;
 
   try {
-    const prob = problem.parse(data);
+    const previous = await problemService.getProblem(
+      Number(req.query.problemId),
+    );
+
+    const prob = problem.parse({
+      metadata: {
+        acceptedCount: previous!.acceptedCount,
+        submissionCount: previous!.submissionCount,
+        createdAt: previous!.createdAt,
+        ...metadata,
+      },
+      ...data,
+    });
 
     const result = await problemService.modifyProblem(
       Number(req.query.problemId),

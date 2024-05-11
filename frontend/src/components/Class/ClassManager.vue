@@ -18,7 +18,7 @@
         <el-input
           class="student-input"
           placeholder="学生用户 ID"
-          v-model="studentId"
+          v-model.number="studentId"
         ></el-input>
         <el-button type="primary" class="add-student" @click="addStudent">
           添加学生
@@ -55,7 +55,7 @@
 
         <!-- 根据 operation 显示删除按钮 -->
         <el-button @click="deleteClass" type="danger" style="margin-left: 10px">
-          删除班级
+          解散班级
         </el-button>
       </el-form-item>
     </el-form>
@@ -104,7 +104,7 @@ export default {
       });
     },
     addStudent() {
-      const studentId = parseInt(this.studentId);
+      const studentId = this.studentId;
       if (this.class_.teacherId === studentId) {
         this.$message.error("教师不能同时是学生");
         this.studentId = "";
@@ -115,8 +115,8 @@ export default {
         this.studentId = "";
         return;
       }
-      this.class_.students.push(studentId);
       this.getRequest(`/api/user/user?userId=${studentId}`).then((response) => {
+        this.class_.students.push(studentId);
         this.class_.studentData.push({
           userId: response.payload.userId,
           username: response.payload.username,
@@ -126,7 +126,7 @@ export default {
     },
     deleteClass() {
       // 调用删除API
-      this.$confirm("确定要删除这个班级吗？操作不可恢复!", "警告", {
+      this.$confirm("确定要解散这个班级吗？操作不可恢复!", "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
@@ -137,11 +137,11 @@ export default {
               if (response.code === "200") {
                 this.$message({
                   type: "success",
-                  message: "删除成功!",
+                  message: "解散成功!",
                 });
                 this.$router.replace("/class");
               } else {
-                this.$message.error("删除失败: " + response.error.msg);
+                this.$message.error("解散失败: " + response.error.msg);
               }
             },
           );
@@ -149,7 +149,7 @@ export default {
         .catch(() => {
           this.$message({
             type: "info",
-            message: "已取消删除",
+            message: "已取消解散",
           });
         });
     },

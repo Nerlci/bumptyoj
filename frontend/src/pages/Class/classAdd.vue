@@ -14,7 +14,7 @@
         <el-input
           class="student-input"
           placeholder="学生用户 ID"
-          v-model="studentId"
+          v-model.number="studentId"
         ></el-input>
         <el-button type="primary" class="add-student" @click="addStudent">
           添加学生
@@ -79,11 +79,10 @@ export default {
             .then((response) => {
               if (response.code === "200") {
                 this.$message({
-                  message: "比赛添加成功",
+                  message: "班级创建成功",
                   type: "success",
                 });
-                // 通常在成功后会跳转到比赛列表或显示比赛详情
-                this.$router.replace("/contest");
+                this.$router.replace("/class");
               } else {
                 this.$message.error("添加失败: " + response.data.error.msg);
               }
@@ -106,8 +105,8 @@ export default {
         this.studentId = "";
         return;
       }
-      this.class_.students.push(studentId);
       getRequest(`/api/user/user?userId=${studentId}`).then((response) => {
+        this.class_.students.push(studentId);
         this.class_.studentData.push({
           userId: response.payload.userId,
           username: response.payload.username,

@@ -145,6 +145,19 @@ const getUser = async (req: Request, res: Response) => {
 
   const user = await userService.getUserById(userId);
 
+  if (!user) {
+    const response = responseBase.parse({
+      error: {
+        msg: "User not found",
+      },
+      code: "400",
+      payload: {},
+    });
+
+    res.json(response);
+    return;
+  }
+
   const response = responseBase.parse({
     error: {
       msg: "",
