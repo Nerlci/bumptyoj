@@ -146,9 +146,9 @@ export default {
         this.problemId = "";
         return;
       }
-      this.contest.problems.push(problemId);
       getRequest(`/api/problem/problem?problemId=${problemId}`).then(
         (response) => {
+          this.contest.problems.push(problemId);
           this.contest.problemData.push({
             problemId: response.payload.metadata.problemId,
             displayId: response.payload.metadata.displayId,

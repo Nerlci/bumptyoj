@@ -115,8 +115,8 @@ export default {
         this.studentId = "";
         return;
       }
-      this.class_.students.push(studentId);
       this.getRequest(`/api/user/user?userId=${studentId}`).then((response) => {
+        this.class_.students.push(studentId);
         this.class_.studentData.push({
           userId: response.payload.userId,
           username: response.payload.username,
