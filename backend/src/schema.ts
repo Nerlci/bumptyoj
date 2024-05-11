@@ -14,9 +14,11 @@ export const responseBase = z.object({
   code: z
     .union([z.literal("200"), z.literal("400"), z.literal("500")])
     .default("200"),
-  error: z.object({
-    msg: z.string().default(""),
-  }),
+  error: z
+    .object({
+      msg: z.string().default(""),
+    })
+    .passthrough(),
   payload: z.object({}).passthrough(),
 });
 
