@@ -14,9 +14,11 @@ export const responseBase = z.object({
   code: z
     .union([z.literal("200"), z.literal("400"), z.literal("500")])
     .default("200"),
-  error: z.object({
-    msg: z.string().default(""),
-  }),
+  error: z
+    .object({
+      msg: z.string().default(""),
+    })
+    .passthrough(),
   payload: z.object({}).passthrough(),
 });
 
@@ -128,8 +130,20 @@ export const problemSet = z
   .object({
     setId: z.number().default(0),
     title: z.string(),
-    type: z.number().int().default(0),
-    contestType: z.number().int().default(0),
+    type: z
+      .number()
+      .int()
+      .refine((value) => value === 0 || value === 1, {
+        message: "type can only be 0 or 1",
+      })
+      .default(0),
+    contestType: z
+      .number()
+      .int()
+      .refine((value) => value === 0 || value === 1, {
+        message: "contestType can only be 0 or 1",
+      })
+      .default(0),
     description: z.string().optional(),
     startTime: z.date().optional(),
     endTime: z.date().optional(),

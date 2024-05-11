@@ -6,12 +6,12 @@
       href="../../public/image/favicon.ico"
     />
     <el-row>
-      <el-col :span="2">
+      <el-col :span="4">
         <div class="nav_bar_name">
           <a :href="'/home'" class="no-decoration">Bumpty OJ</a>
         </div>
       </el-col>
-      <el-col :span="14">
+      <el-col :span="12">
         <el-menu
           :default-active="activeIndex"
           mode="horizontal"

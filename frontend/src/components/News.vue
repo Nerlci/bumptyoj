@@ -61,7 +61,7 @@ export default {
 <style scoped>
 .new-course {
   background-color: #f8f9fa;
-  border-radius: 15px;
+  border-radius: 10px;
   height: auto;
   width: auto;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
@@ -78,10 +78,19 @@ export default {
   font-size: 18px;
 }
 
+.carousel-item-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
 .carousel-item-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
   height: 100%;
   width: 80%;
   margin: auto;
-  padding: 20px;
 }
 </style>

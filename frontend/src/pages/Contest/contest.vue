@@ -7,15 +7,10 @@
         stripe
         style="height: 100%"
       >
-        <el-table-column
-          label="ID"
-          prop="displayId"
-          width="76px"
-        ></el-table-column>
-        <el-table-column label="题目" prop="title">
+        <el-table-column label="比赛名称 " prop="title">
           <template slot-scope="scope">
             <span
-              @click="showProblem(scope.row.problemId)"
+              @click="showContest(scope.row.problemsetId)"
               class="cursor-pointer"
               >{{ scope.row.title }}</span
             >
@@ -23,30 +18,23 @@
         </el-table-column>
 
         <el-table-column
-          label="AC"
-          prop="acceptedCount"
-          width="76px"
+          label="开始时间"
+          prop="startTime"
+          width="240px"
+          :formatter="formatStartTime"
         ></el-table-column>
         <el-table-column
-          label="提交"
-          prop="submissionCount"
-          width="76px"
+          label="结束时间"
+          prop="startTime"
+          width="240px"
+          :formatter="formatEndTime"
         ></el-table-column>
+
         <el-table-column
-          label="通过率"
-          prop="ratio"
-          width="76px"
-        ></el-table-column>
-        <el-table-column
-          label="创建时间"
-          prop="createdAt"
-          :formatter="formatTimestamp"
-          width="120px"
-        ></el-table-column>
-        <el-table-column
-          label="难度"
-          prop="difficulty"
-          width="76px"
+          label="描述"
+          prop="description"
+          width="360px"
+          :formatter="formatLongText"
         ></el-table-column>
 
         <el-table-column
@@ -55,25 +43,26 @@
           width="76px"
         >
           <template slot-scope="scope">
-            <span @click="editProblem(scope.row.problemId)" class="problem-edit"
+            <span
+              @click="editContest(scope.row.problemsetId)"
+              class="contest-edit"
               >编辑</span
             >
           </template>
         </el-table-column>
       </el-table>
 
-      <!-- 新建题目按钮 -->
       <el-button
         type="primary"
-        @click="addProblem"
+        @click="addContest"
         v-if="this.$store.state.status.type == 0"
-        class="add-problem-button"
+        class="add-contest-button"
       >
-        新建题目
+        新建比赛
       </el-button>
 
       <el-pagination
-        class="problem-pagination"
+        class="contest-pagination"
         :page-size="pageSize"
         :total="itemCount"
         @current-change="getPage"
@@ -103,49 +92,45 @@ export default {
     getPage(index) {
       this.loading = true;
       // 调用获取题目列表的API
-      this.getRequest("/api/problem/list", {
+      this.getRequest("/api/problemset/contest", {
         offset: (index - 1) * this.pageSize,
         count: this.pageSize,
       }).then((response) => {
-        const problems = response.payload.problems;
-        problems.forEach((problem) => {
-          if (problem.submissionCount === 0) problem.ratio = "0%";
-          else
-            problem.ratio =
-              Math.round(
-                (problem.acceptedCount / problem.submissionCount) * 100 * 100,
-              ) /
-                100 +
-              "%";
-        });
-        this.tableData = problems;
+        const contests = response.payload.contests;
+        this.tableData = contests;
         this.loading = false;
       });
-      // 调用获取总题目数的API
+
       this.fetchItemCount();
     },
     fetchItemCount() {
-      this.getRequest("/api/problem/count").then((response) => {
-        if (response.code === "200") {
-          this.itemCount = response.payload.count;
-        }
+      this.getRequest("/api/problemset/contest/count").then((response) => {
+        this.itemCount = response.payload.count;
       });
     },
-    showProblem(id) {
-      this.$router.push({ name: "problemDetail", params: { id: id } });
+    showContest(id) {
+      this.$router.push({ name: "contestDetail", params: { id: id } });
     },
-    editProblem(id) {
-      this.$router.push({ name: "problemEdit", params: { id: id } });
+    editContest(id) {
+      this.$router.push({ name: "contestEdit", params: { id: id } });
     },
-    addProblem() {
-      this.$router.push({ name: "problemAdd" });
+    addContest() {
+      this.$router.push({ name: "contestAdd" });
     },
     getPageInfo() {
       this.getPage(1);
     },
-    formatTimestamp(value) {
-      const dt = DateTime.fromISO(value.createdAt, { zone: "Asia/Shanghai" });
-      return dt.toISODate();
+    formatStartTime(value) {
+      const dt = DateTime.fromISO(value.startTime, { zone: "Asia/Shanghai" });
+      return dt.toFormat("yyyy-MM-dd HH:mm:ss");
+    },
+    formatEndTime(value) {
+      const dt = DateTime.fromISO(value.endTime, { zone: "Asia/Shanghai" });
+      return dt.toFormat("yyyy-MM-dd HH:mm:ss");
+    },
+    formatLongText(value) {
+      const desc = value.description;
+      return desc.length > 20 ? desc.slice(0, 20) + "..." : desc;
     },
   },
   created() {
@@ -156,7 +141,7 @@ export default {
 
 <style scoped>
 .problem-list {
-  width: 90%;
+  width: 80%;
   height: 100%;
   margin: auto;
 }
@@ -165,20 +150,20 @@ export default {
   cursor: pointer;
 }
 
-.problem-edit {
+.contest-edit {
   margin-top: 20px;
   /* 添加顶部边距，根据需要调整 */
   cursor: pointer;
   color: #56a1f7;
 }
-.add-problem-button {
+.add-contest-button {
   margin-top: 20px;
   /* 添加顶部边距，根据需要调整 */
   cursor: pointer;
   color: #f4f9fb;
 }
 
-.problem-pagination {
+.contest-pagination {
   margin-top: 40px;
 }
 </style>

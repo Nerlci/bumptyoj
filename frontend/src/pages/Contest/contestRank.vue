@@ -1,9 +1,6 @@
 <template>
   <div class="rank-list" v-loading="loading" v-show="show">
-    <el-radio-group v-model="rankType" @input="handleRankTypeChange">
-      <el-radio-button label="count">通过数排名</el-radio-button>
-      <el-radio-button label="weighted">加权排名</el-radio-button>
-    </el-radio-group>
+    <h3>{{ title }}</h3>
     <el-table :data="tableData" stripe style="height: 100%">
       <el-table-column label="排名" prop="rank" width="80px"></el-table-column>
 
@@ -35,7 +32,6 @@ export default {
   name: "rank",
   data() {
     return {
-      rankType: "count",
       loading: true,
       tableData: [],
       pageSize: 10,
@@ -54,7 +50,14 @@ export default {
       );
     },
     getPageInfo() {
-      this.getRequest(`/api/leaderboard/${this.rankType}`).then((resp) => {
+      this.getRequest("/api/problemset/problemset", {
+        problemsetId: this.$route.params.id,
+      }).then((response) => {
+        this.title = response.payload.title;
+      });
+      this.getRequest(`/api/leaderboard/problemset`, {
+        problemsetId: this.$route.params.id,
+      }).then((resp) => {
         this.leaderboard = resp.payload.leaderboard;
         this.itemCount = this.leaderboard.length;
         this.getPage(1);
@@ -84,6 +87,7 @@ export default {
   margin-left: auto;
   margin-right: auto;
   text-align: center;
+  font-weight: bold;
 }
 
 .cursor-pointer {

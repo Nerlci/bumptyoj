@@ -10,14 +10,18 @@
         <el-table-column
           prop="time"
           label="运行时间"
-          :formatter="formatRunTime"
+          :formatter="formatTime"
         ></el-table-column>
         <el-table-column
           prop="memory"
           label="内存"
           :formatter="formatMemory"
         ></el-table-column>
-        <el-table-column prop="length" label="代码长度"></el-table-column>
+        <el-table-column
+          prop="length"
+          label="代码长度"
+          :formatter="formatCodeLength"
+        ></el-table-column>
         <el-table-column prop="language" label="语言"></el-table-column>
         <el-table-column
           prop="timestamp"
@@ -26,17 +30,13 @@
         ></el-table-column>
       </el-table>
 
-      <el-descriptions column="1">
-        <el-description-item label="代码">
-          <el-input
-            type="textarea"
-            :rows="10"
-            v-model="detail.code"
-            auto-complete="off"
-            readonly
-          ></el-input>
-        </el-description-item>
-      </el-descriptions>
+      <prism-editor
+        class="code-input height-300"
+        :lineNumbers="true"
+        v-model="detail.code"
+        :highlight="highlighter"
+        :readonly="true"
+      ></prism-editor>
     </el-card>
 
     <el-table :data="detail.detail" style="width: 100%" stripe>
@@ -46,7 +46,7 @@
       <el-table-column
         prop="time"
         label="运行时间"
-        :formatter="formatRunTime"
+        :formatter="formatTime"
       ></el-table-column>
       <el-table-column
         prop="memory"
@@ -58,8 +58,14 @@
 </template>
 
 <script>
-import { getRequest } from '@/utils/request';
-import {DateTime} from 'luxon';
+import { getRequest } from "@/utils/request";
+import { DateTime } from "luxon";
+
+import { PrismEditor } from "vue-prism-editor";
+import "vue-prism-editor/dist/prismeditor.min.css";
+import "prismjs/themes/prism-tomorrow.css";
+import { highlight, languages } from "prismjs/components/prism-core";
+import "prismjs/components/prism-autoit";
 
 export default {
   data() {
@@ -80,6 +86,9 @@ export default {
       },
     };
   },
+  components: {
+    PrismEditor,
+  },
   computed: {
     detailArray() {
       return [this.detail];
@@ -87,9 +96,27 @@ export default {
   },
   created() {
     this.fetchSubmissionDetail();
-    console.log(this.detail);
   },
   methods: {
+    getMemoryUnit(value) {
+      const thresholds = {
+        B: 1,
+        KB: 1024,
+        MB: 1024 * 1024,
+      };
+      let unit = "B";
+      for (const [key, threshold] of Object.entries(thresholds)) {
+        if (value >= threshold) {
+          unit = key;
+        } else {
+          break;
+        }
+      }
+      return { unit, threshold: thresholds[unit] };
+    },
+    highlighter(code) {
+      return highlight(code, languages.autoit, "autoit");
+    },
     fetchSubmissionDetail() {
       const submissionId = this.$route.params.submissionId;
       getRequest("/api/submission/submission", { submissionId })
@@ -103,21 +130,52 @@ export default {
         });
     },
     formatTimestamp(value) {
-      const dt = DateTime.fromISO(value.timestamp, { zone: 'Asia/Shanghai' });
+      const dt = DateTime.fromISO(value.timestamp, { zone: "Asia/Shanghai" });
       return dt.toRelative();
     },
-    formatMemory(value) {
-      console.log(value);
-      return (value.memory / 1024 / 1024).toFixed(2) + " MB";
+    formatTime(value) {
+      if (value.time > 1000) {
+        return `${(value.time / 1000).toFixed(2)} s`;
+      } else {
+        return `${value.time} ms`;
+      }
     },
-    formatRunTime(value) {
-      return value.time + " ms";
+    formatMemory(value) {
+      let length = value.memory;
+      const { unit, threshold } = this.getMemoryUnit(length);
+      length = length / threshold;
+      return `${unit === "B" ? length : length.toFixed(2)} ${unit}`;
+    },
+    formatCodeLength(value) {
+      let length = value.length;
+      const { unit, threshold } = this.getMemoryUnit(length);
+      length = length / threshold;
+      return `${unit === "B" ? length : length.toFixed(2)} ${unit}`;
     },
   },
 };
 </script>
 
 <style scoped>
+.code-input {
+  background: #2d2d2d;
+  color: #ccc;
+  font-family:
+    Fira code,
+    Fira Mono,
+    Consolas,
+    Menlo,
+    Courier,
+    monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  padding: 5px;
+}
+
+.height-300 {
+  height: calc(400 / 19.2 * 1vw);
+}
+
 .status-detail {
   margin: 20px;
 }

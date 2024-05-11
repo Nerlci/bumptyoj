@@ -48,4 +48,6 @@ discussionRouter.delete(
   discussionController.deleteComment,
 );
 
+discussionRouter.get("/comment/count", discussionController.countComment);
+
 export { discussionRouter };

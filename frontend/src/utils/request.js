@@ -6,26 +6,26 @@ import * as config from "../utils/config";
 
 axios.interceptors.response.use(
   (success) => {
-    if (
-      success.status &&
-      success.status === 200 &&
-      success.data.status === 500
-    ) {
-      Message.error({ message: success.data.msg });
+    if (!success.status || success.status !== 200) {
+      Message.error({ message: success.data.err.msg });
       return;
     }
-    if (success.data.msg) {
-      if (success.data.code === 200) {
-        Message.success({ message: success.data.msg });
-      } else {
-        Message.warning({ message: success.data.msg });
-      }
+    if (success.data.code !== "200") {
+      const errorType = {
+        400: "请求错误",
+        401: "未登录",
+        500: "服务器错误",
+      };
+      Message.error({
+        message: `${errorType[success.data.code]}: ${success.data.error.msg}`,
+      });
+      return;
     }
     return success.data;
   },
   (error) => {
     if (error.response.status === 504 || error.response.status === 404) {
-      Message.error({ message: "服务器凉了" });
+      Message.error({ message: "服务器错误" });
     } else if (error.response.status === 403) {
       Message.error({ message: "权限不足" });
     } else if (error.response.status === 401) {
@@ -55,6 +55,7 @@ export const postRequest = (url, params) => {
     method: "post",
     url: `${base}${url}`,
     data: params,
+    withCredentials: true,
   });
 };
 
@@ -64,6 +65,7 @@ export const getRequest = (url, params) => {
     method: "get",
     url: `${base}${url}`,
     params: params,
+    withCredentials: true,
   });
 };
 
@@ -71,7 +73,8 @@ export const putRequest = (url, params) => {
   return axios({
     method: "put",
     url: `${base}${url}`,
-    params: params,
+    data: params,
+    withCredentials: true,
   });
 };
 
@@ -80,5 +83,6 @@ export const deleteRequest = (url, params) => {
     method: "delete",
     url: `${base}${url}`,
     params: params,
+    withCredentials: true,
   });
 };

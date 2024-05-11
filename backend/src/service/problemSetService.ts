@@ -49,7 +49,15 @@ const mapProblemSetToResponseForHomework = (result: any) => {
   return result.map((res: any) => {
     return {
       ...mapProblemSetToResponseBase(res),
-      problems: res.problems.map((prob: any) => prob.id),
+    };
+  });
+};
+
+const mapProblemSetToResponseForContest = (result: any) => {
+  return result.map((res: any) => {
+    return {
+      ...mapProblemSetToResponseBase(res),
+      contestType: res.contestType,
     };
   });
 };
@@ -149,7 +157,11 @@ const attendContest = async (setId: number, userId: number) => {
     : null;
 };
 
-const getHomeworkList = async (classId: number) => {
+const getHomeworkList = async (
+  classId: number,
+  count: number,
+  offset: number,
+) => {
   const result = await prisma.problemSet.findMany({
     where: {
       classes: {
@@ -158,33 +170,66 @@ const getHomeworkList = async (classId: number) => {
         },
       },
     },
-    include: {
-      problems: true,
-    },
+    take: count,
+    skip: offset,
   });
 
-  return result ? mapProblemSetToResponseForHomework(result) : null;
+  // TODO: check 如果为空是否需要报错
+  return result && result.length > 0
+    ? mapProblemSetToResponseForHomework(result)
+    : [];
 };
 
-const getContestList = async (userId: number) => {
+const getContestList = async (count: number, offset: number) => {
   const result = await prisma.problemSet.findMany({
     where: {
+      type: 0,
+    },
+    take: count,
+    skip: offset,
+  });
+
+  return result && result.length > 0
+    ? mapProblemSetToResponseForContest(result)
+    : [];
+};
+
+const countHomework = async () => {
+  return prisma.problemSet.count({
+    where: {
+      type: 0,
+    },
+  });
+};
+
+const countContest = async () => {
+  return prisma.problemSet.count({
+    where: {
+      type: 1,
+    },
+  });
+};
+
+const countProblemSet = async () => {
+  return prisma.problemSet.count();
+};
+
+const getContestStatus = async (setId: number, userId: number) => {
+  const result = await prisma.problemSet.findUnique({
+    where: {
+      id: setId,
+    },
+    include: {
       users: {
-        some: {
-          id: userId,
+        select: {
+          id: true,
         },
       },
     },
   });
+  if (!result) throw new Error("Problem set not found");
 
-  return result
-    ? result.map((res: any) => {
-        return {
-          ...mapProblemSetToResponseBase(res),
-          contestType: res.contestType,
-        };
-      })
-    : null;
+  return result ? result.users.some((user) => user.id === userId) : false;
 };
 
 export const problemSetService = {
@@ -196,4 +241,8 @@ export const problemSetService = {
   attendContest,
   getHomeworkList,
   getContestList,
+  countHomework,
+  countContest,
+  countProblemSet,
+  getContestStatus,
 };
