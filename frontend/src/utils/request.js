@@ -17,7 +17,7 @@ axios.interceptors.response.use(
         500: "服务器错误",
       };
       Message.error({
-        message: `${errorType[success.data.code]}: ${success.data.msg}`,
+        message: `${errorType[success.data.code]}: ${success.data.error.msg}`,
       });
       return;
     }
@@ -73,7 +73,7 @@ export const putRequest = (url, params) => {
   return axios({
     method: "put",
     url: `${base}${url}`,
-    params: params,
+    data: params,
     withCredentials: true,
   });
 };
