@@ -5,6 +5,7 @@ import archiver from "archiver";
 
 import { problemService } from "../service/problemService";
 import { problem, responseBase, testdata } from "../schema";
+import { handleErrors } from "../utils/utils";
 
 interface TestdataRequest extends Request {
   files: {
@@ -16,86 +17,102 @@ interface TestdataRequest extends Request {
 const createProblem = async (req: Request, res: Response) => {
   const data = req.body;
 
-  const prob = problem.parse(data);
+  try {
+    const prob = problem.parse(data);
 
-  const result = await problemService.createProblem(prob);
+    const result = await problemService.createProblem(prob);
 
-  const resProb = problemService.mapResponseToProblem(result);
-  res.send(
-    responseBase.parse({
-      code: "200",
-      payload: resProb,
-      error: {
-        msg: "",
-      },
-    }),
-  );
+    const resProb = problemService.mapResponseToProblem(result);
+    res.send(
+      responseBase.parse({
+        code: "200",
+        payload: resProb,
+        error: {
+          msg: "",
+        },
+      }),
+    );
+  } catch (error) {
+    handleErrors(error, res);
+  }
 };
 
 const modifyProblem = async (req: Request, res: Response) => {
   const data = req.body;
 
-  const prob = problem.parse(data);
+  try {
+    const prob = problem.parse(data);
 
-  const result = await problemService.modifyProblem(
-    Number(req.query.problemId),
-    prob,
-  );
+    const result = await problemService.modifyProblem(
+      Number(req.query.problemId),
+      prob,
+    );
 
-  const resProb = problemService.mapResponseToProblem(result);
-  res.send(
-    responseBase.parse({
-      code: "200",
-      payload: resProb,
-      error: {
-        msg: "",
-      },
-    }),
-  );
+    const resProb = problemService.mapResponseToProblem(result);
+    res.send(
+      responseBase.parse({
+        code: "200",
+        payload: resProb,
+        error: {
+          msg: "",
+        },
+      }),
+    );
+  } catch (error) {
+    handleErrors(error, res);
+  }
 };
 
 const getProblem = async (req: Request, res: Response) => {
   const problemId = Number(req.query.problemId);
-  const result = await problemService.getProblem(problemId);
+  try {
+    const result = await problemService.getProblem(problemId);
 
-  const resProb = problemService.mapResponseToProblem(result);
+    const resProb = problemService.mapResponseToProblem(result);
 
-  if (!resProb) {
+    if (!resProb) {
+      res.send(
+        responseBase.parse({
+          code: "400",
+          payload: {},
+          error: {
+            msg: "Problem not found",
+          },
+        }),
+      );
+      return;
+    }
+
     res.send(
       responseBase.parse({
-        code: "400",
-        payload: {},
+        code: "200",
+        payload: resProb,
         error: {
-          msg: "Problem not found",
+          msg: "",
         },
       }),
     );
-    return;
+  } catch (error) {
+    handleErrors(error, res);
   }
-
-  res.send(
-    responseBase.parse({
-      code: "200",
-      payload: resProb,
-      error: {
-        msg: "",
-      },
-    }),
-  );
 };
 
 const deleteProblem = async (req: Request, res: Response) => {
   const problemId = Number(req.query.problemId);
-  const result = await problemService.deleteProblem(problemId);
-  res.send(
-    responseBase.parse({
-      code: "200",
-      payload: {},
-      error: {
-        msg: "",
-      },
-    }),
-  );
+  try {
+    const result = await problemService.deleteProblem(problemId);
+    res.send(
+      responseBase.parse({
+        code: "200",
+        payload: {},
+        error: {
+          msg: "",
+        },
+      }),
+    );
+  } catch (error) {
+    handleErrors(error, res);
+  }
 };
 
 const countProblem = async (req: Request, res: Response) => {
@@ -116,23 +133,27 @@ const countProblem = async (req: Request, res: Response) => {
 const listProblem = async (req: Request, res: Response) => {
   const count = Number(req.query.count),
     offset = Number(req.query.offset);
-  const result = await problemService.listProblem(count, offset);
+  try {
+    const result = await problemService.listProblem(count, offset);
 
-  const resProb = result.map((result: any) =>
-    problemService.mapResponseToProblemMetadata(result),
-  );
-  res.send(
-    responseBase.parse({
-      code: "200",
-      payload: {
-        count: resProb.length,
-        problems: resProb,
-      },
-      error: {
-        msg: "",
-      },
-    }),
-  );
+    const resProb = result.map((result: any) =>
+      problemService.mapResponseToProblemMetadata(result),
+    );
+    res.send(
+      responseBase.parse({
+        code: "200",
+        payload: {
+          count: resProb.length,
+          problems: resProb,
+        },
+        error: {
+          msg: "",
+        },
+      }),
+    );
+  } catch (error) {
+    handleErrors(error, res);
+  }
 };
 
 const deletePreviousFiles = async (testdataId: number) => {
@@ -150,29 +171,33 @@ const deletePreviousFiles = async (testdataId: number) => {
 
 const getTestdata = async (req: Request, res: Response) => {
   const problemId = Number(req.query.problemId);
-  const result = await problemService.getTestdataByProblemId(problemId);
+  try {
+    const result = await problemService.getTestdataByProblemId(problemId);
 
-  const resTestdata = result.map((result: any) => {
-    return {
-      testdataId: result.id,
-      inputFilename: result.inputFilename,
-      outputFilename: result.outputFilename,
-    };
-  });
+    const resTestdata = result.map((result: any) => {
+      return {
+        testdataId: result.id,
+        inputFilename: result.inputFilename,
+        outputFilename: result.outputFilename,
+      };
+    });
 
-  res.send(
-    responseBase.parse({
-      code: "200",
-      payload: {
-        count: resTestdata.length,
-        problemId,
-        testdata: resTestdata,
-      },
-      error: {
-        msg: "",
-      },
-    }),
-  );
+    res.send(
+      responseBase.parse({
+        code: "200",
+        payload: {
+          count: resTestdata.length,
+          problemId,
+          testdata: resTestdata,
+        },
+        error: {
+          msg: "",
+        },
+      }),
+    );
+  } catch (error) {
+    handleErrors(error, res);
+  }
 };
 
 // TODO: move score, time and memory setting to testdata
@@ -180,44 +205,42 @@ const createTestdata = async (req: Request, res: Response) => {
   const problemId = Number(req.body.problemId);
 
   const filesReq = req as TestdataRequest;
-  const data = testdata.parse({
-    problemId,
-    input: filesReq.files!.inputFile[0].path,
-    output: filesReq.files!.outputFile[0].path,
-    inputFilename: filesReq.files!.inputFile[0].originalname,
-    outputFilename: filesReq.files!.outputFile[0].originalname,
-  });
+  try {
+    const data = testdata.parse({
+      problemId,
+      input: filesReq.files!.inputFile[0].path,
+      output: filesReq.files!.outputFile[0].path,
+      inputFilename: filesReq.files!.inputFile[0].originalname,
+      outputFilename: filesReq.files!.outputFile[0].originalname,
+    });
 
-  const result = await problemService.createTestdata(data);
+    const result = await problemService.createTestdata(data);
 
-  res.send(
-    responseBase.parse({
-      code: "200",
-      payload: {
-        problemId: result.problemId,
-        testdata: {
-          testdataId: result.id,
-          inputFilename: result.inputFilename,
-          outputFilename: result.outputFilename,
+    res.send(
+      responseBase.parse({
+        code: "200",
+        payload: {
+          problemId: result.problemId,
+          testdata: {
+            testdataId: result.id,
+            inputFilename: result.inputFilename,
+            outputFilename: result.outputFilename,
+          },
         },
-      },
-      error: {
-        msg: "",
-      },
-    }),
-  );
+        error: {
+          msg: "",
+        },
+      }),
+    );
+  } catch (error) {
+    handleErrors(error, res);
+  }
 };
 
 const modifyTestdata = async (req: Request, res: Response) => {
   const testdataId = Number(req.query.testdataId);
 
   const filesReq = req as TestdataRequest;
-  const data = testdata.parse({
-    input: filesReq.files!.inputFile[0].path,
-    output: filesReq.files!.outputFile[0].path,
-    inputFilename: filesReq.files!.inputFile[0].originalname,
-    outputFilename: filesReq.files!.outputFile[0].originalname,
-  });
 
   if (!(await deletePreviousFiles(testdataId))) {
     res.send(
@@ -232,24 +255,35 @@ const modifyTestdata = async (req: Request, res: Response) => {
     return;
   }
 
-  const result = await problemService.modifyTestdata(testdataId, data);
+  try {
+    const data = testdata.parse({
+      input: filesReq.files!.inputFile[0].path,
+      output: filesReq.files!.outputFile[0].path,
+      inputFilename: filesReq.files!.inputFile[0].originalname,
+      outputFilename: filesReq.files!.outputFile[0].originalname,
+    });
 
-  res.send(
-    responseBase.parse({
-      code: "200",
-      payload: {
-        problemId: result.problemId,
-        testdata: {
-          testdataId: result.id,
-          inputFilename: result.inputFilename,
-          outputFilename: result.outputFilename,
+    const result = await problemService.modifyTestdata(testdataId, data);
+
+    res.send(
+      responseBase.parse({
+        code: "200",
+        payload: {
+          problemId: result.problemId,
+          testdata: {
+            testdataId: result.id,
+            inputFilename: result.inputFilename,
+            outputFilename: result.outputFilename,
+          },
         },
-      },
-      error: {
-        msg: "",
-      },
-    }),
-  );
+        error: {
+          msg: "",
+        },
+      }),
+    );
+  } catch (error) {
+    handleErrors(error, res);
+  }
 };
 
 const deleteTestdata = async (req: Request, res: Response) => {
@@ -268,51 +302,63 @@ const deleteTestdata = async (req: Request, res: Response) => {
     return;
   }
 
-  const result = await problemService.deleteTestdata(testdataId);
-  res.send(
-    responseBase.parse({
-      code: "200",
-      payload: {},
-      error: {
-        msg: "",
-      },
-    }),
-  );
+  try {
+    const result = await problemService.deleteTestdata(testdataId);
+    res.send(
+      responseBase.parse({
+        code: "200",
+        payload: {},
+        error: {
+          msg: "",
+        },
+      }),
+    );
+  } catch (error) {
+    handleErrors(error, res);
+  }
 };
 
 const downloadTestdata = async (req: Request, res: Response) => {
   const testdataId = Number(req.query.testdataId);
   const file = Number(req.query.file);
-  const result = await problemService.getTestdata(testdataId);
+  try {
+    const result = await problemService.getTestdata(testdataId);
 
-  if (file === 0) {
-    res.download(result!.input, result!.inputFilename);
-  } else {
-    res.download(result!.output, result!.outputFilename);
+    if (file === 0) {
+      res.download(result!.input, result!.inputFilename);
+    } else {
+      res.download(result!.output, result!.outputFilename);
+    }
+  } catch (error) {
+    handleErrors(error, res);
   }
 };
 
 const downloadAllTestdata = async (req: Request, res: Response) => {
   const problemId = Number(req.query.problemId);
-  const results = await problemService.getTestdataByProblemId(problemId);
+  try {
+    const results = await problemService.getTestdataByProblemId(problemId);
 
-  res.setHeader(
-    "Content-Disposition",
-    `attachment; filename=testdata_${problemId}.zip`,
-  );
-  const archive = archiver("zip");
-  archive.pipe(res);
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename=testdata_${problemId}.zip`,
+    );
+    const archive = archiver("zip");
+    archive.pipe(res);
 
-  results.forEach((result) => {
-    archive.append(fs.createReadStream(result.input), {
-      name: result.inputFilename,
+    results.forEach((result) => {
+      archive.append(fs.createReadStream(result.input), {
+        name: result.inputFilename,
+      });
+      archive.append(fs.createReadStream(result.output), {
+        name: result.outputFilename,
+      });
     });
-    archive.append(fs.createReadStream(result.output), {
-      name: result.outputFilename,
-    });
-  });
 
-  await archive.finalize();
+    await archive.finalize();
+  } catch (error) {
+    handleErrors(error, res);
+  }
 };
 
 const problemController = {
