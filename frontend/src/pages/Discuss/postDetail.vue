@@ -12,67 +12,55 @@
       </div>
     </div>
     <div class="post-content">
-      <el-descriptions :column="3" class="post-info">
-        <el-descriptions-item>
-          <template #label><span class="info-label">作者:</span></template>
-          <el-tag size="medium">{{ post.author }}</el-tag>
-        </el-descriptions-item>
-        <el-descriptions-item>
-          <template #label><span class="info-label">发布时间:</span></template>
-          <el-tag size="medium">{{ formatDate(post.timestamp) }}</el-tag>
-        </el-descriptions-item>
-        <el-descriptions-item>
-          <template #label><span class="info-label">板块:</span></template>
-          <el-tag size="medium">{{ post.category }}</el-tag>
-        </el-descriptions-item>
-      </el-descriptions>
+      <el-tag size="medium" class="info-tag">作者: {{ post.author }}</el-tag>
+      <el-tag size="medium" class="info-tag"
+        >发布时间:{{ formatDate(post.timestamp) }}</el-tag
+      >
+      <el-tag size="medium" class="info-tag">板块:{{ post.category }}</el-tag>
 
-      <el-input
-        type="textarea"
-        v-model="post.content"
-        :rows="10"
-        readonly
-        class="content-textarea"
-      ></el-input>
+      <el-card class="content-card" shadow="hover">
+        <div class="collapse-content" v-html="md.render(post.content)"></div>
+      </el-card>
     </div>
+
     <div class="comments">
-      <div class="comment-input">
+      <el-card class="comment-input">
+        <div slot="header" class="clearfix">
+          <span>{{ this.totalComments }} 评论</span>
+        </div>
         <el-input
           type="textarea"
           v-model="newComment"
+          :rows="3"
           placeholder="发布一条评论..."
           class="new-comment"
-          :rows="4"
         ></el-input>
-        <el-button type="primary" @click="submitComment" class="submit-button"
-          >评论</el-button
+        <el-button type="primary" @click="submitComment" class="submit-button">
+          发布评论
+        </el-button>
+        <div
+          v-for="comment in comments"
+          :key="comment.commentId"
+          class="comment-card"
         >
-      </div>
-      <el-list
-        v-for="comment in comments"
-        :key="comment.commentId"
-        class="comment-list"
-      >
-        <el-card class="comment-card" :body-style="{ padding: '20px' }">
-          <div slot="header" class="clearfix">
-            <span style="float: left">{{ comment.author }}</span>
-            <span style="float: right">
-              <el-button
-                v-if="showCommentButtons(comment)"
-                type="text"
-                icon="el-icon-delete"
-                @click="deleteComment(comment.commentId)"
-                >删除</el-button
-              >
-            </span>
+          <div class="comment-header">
+            <span class="comment-username">{{ comment.author }}</span>
+            <span class="comment-time">{{ formatDate(comment.timestamp) }}</span>
+            <el-button
+              v-if="showCommentButtons(comment)"
+              type="text"
+              icon="el-icon-delete"
+              @click="deleteComment(comment.commentId)"
+              style="float: right"
+            >
+              删除
+            </el-button>
           </div>
-          <div>{{ comment.content }}</div>
-          <div style="text-align: right; color: #8492a6; margin-top: 10px">
-            {{ formatDate(comment.timestamp) }}
-          </div>
-        </el-card>
-      </el-list>
-      <div style="display: flex; justify-content: center; margin-top: 20px">
+          <div class="comment-content">{{ comment.content }}</div>
+          <hr v-if="comment !== comments[comments.length - 1]"  class="comment-divider"/>
+        </div>
+      </el-card>
+      <div class="page-control">
         <el-button
           type="primary"
           @click="handlePreClick"
@@ -129,10 +117,17 @@ import { postRequest } from "@/utils/request";
 import { deleteRequest } from "@/utils/request";
 import { putRequest } from "@/utils/request";
 import { DateTime } from "luxon";
+import MarkdownIt from "markdown-it";
+import markdownItKatex from "markdown-it-katex";
 
 export default {
   data() {
     return {
+      md: new MarkdownIt({
+        html: true,
+        linkify: true,
+        typographer: true,
+      }).use(markdownItKatex),
       dialogVisible: false,
       postForm: {
         title: "",
@@ -146,6 +141,7 @@ export default {
       commentPage: 1,
       pageSize: 10,
       totalComments: 0,
+      maxPage: 0,
     };
   },
   created() {
@@ -368,36 +364,73 @@ export default {
         "yyyy-MM-dd HH:mm:ss",
       );
     },
+    backToTop() {
+      window.scrollTo(0, 0);
+    },
   },
 };
 </script>
 
 <style scoped>
+.comment-divider {
+  border: none;
+  height: 1px;
+  background-color: #ccc;
+  margin-top: 10px;
+}
+.content-card {
+  margin-top: 30px;
+  border: 1px solid #52abff;
+}
+.collapse-content {
+  font-size: 14px;
+  text-align: left;
+}
+.post-content {
+  font-size: 14px;
+}
 .post-detail {
   margin: 20px;
 }
-.post-content {
+.post-info {
   margin-bottom: 20px;
+}
+.info-tag {
+  margin-right: 10px;
+}
+.comment-header{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
 }
 .comments {
   margin-top: 20px;
 }
-.content-textarea {
-  background-color: #f5f5f5;
-  border: solid 1px #ccc;
-  padding: 10px;
+.comment-username {
+  font-size: 14px;
+}
+.comment-card {
+  margin-top: 10px;
+}
+.comment-username{
+  font-weight: bold;
+  color: #52abff;
+}
+.comment-time {
+  font-size: 12px;
+  color: #666;
+}
+.comment-content {
+  margin-top: 10px;
 }
 .comment-input {
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
-}
-.new-comment {
-  margin-bottom: 10px;
-  border: solid 1px #ccc;
-  padding: 10px;
+  text-align: left;
 }
 .submit-button {
+  margin-top: 10px;
   width: 100px;
 }
 .pagination {
@@ -408,6 +441,12 @@ export default {
 }
 .info-label {
   font-weight: bold;
+}
+.page-control {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 .back-to-top {
   position: fixed;
