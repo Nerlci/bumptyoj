@@ -1,38 +1,7 @@
 import { Request, Response } from "express";
-import { z } from "zod";
-import { Prisma } from "@prisma/client";
 import { responseBase, problem, problemSet } from "../schema";
 import { problemSetService } from "../service/problemSetService";
-import { send } from "process";
-
-const sendErrorMsg = (res: Response, msg: string) => {
-  res.send(
-    responseBase.parse({
-      code: "500",
-      payload: {},
-      error: {
-        msg,
-      },
-    }),
-  );
-};
-
-function handleErrors(error: unknown, res: Response<any, Record<string, any>>) {
-  if (error instanceof z.ZodError) {
-    sendErrorMsg(res, error.errors.map((e) => e.message).join("; "));
-  } else if (error instanceof Prisma.PrismaClientKnownRequestError) {
-    const errorMessage = `Code: ${error.code}, Meta: ${JSON.stringify(error.meta)}`;
-    sendErrorMsg(res, errorMessage);
-  } else if (error instanceof Prisma.PrismaClientUnknownRequestError) {
-    sendErrorMsg(res, error.message);
-  } else if (error instanceof Error) {
-    console.log(error);
-    sendErrorMsg(res, error.message);
-  } else {
-    console.log(error);
-    sendErrorMsg(res, String(error));
-  }
-}
+import { handleErrors } from "../utils/utils";
 
 const createProblemSet = async (req: Request, res: Response) => {
   const { startTime, endTime, ...data } = req.body;

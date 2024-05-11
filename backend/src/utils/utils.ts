@@ -1,4 +1,8 @@
 import crypto from "crypto";
+import { Response } from "express";
+import { Prisma } from "@prisma/client";
+import { responseBase } from "../schema";
+import { z } from "zod";
 
 const encryptPassword = async (password: string): Promise<string> => {
   const salt = crypto.randomBytes(16).toString("hex");
@@ -23,4 +27,33 @@ const validatePassword = async (
   return hash === originalHash;
 };
 
-export { encryptPassword, validatePassword };
+const sendErrorMsg = (res: Response, msg: string) => {
+  res.send(
+    responseBase.parse({
+      code: "500",
+      payload: {},
+      error: {
+        msg,
+      },
+    }),
+  );
+};
+
+function handleErrors(error: unknown, res: Response<any, Record<string, any>>) {
+  if (error instanceof z.ZodError) {
+    sendErrorMsg(res, error.errors.map((e) => e.message).join("; "));
+  } else if (error instanceof Prisma.PrismaClientKnownRequestError) {
+    const errorMessage = `Code: ${error.code}, Meta: ${JSON.stringify(error.meta)}`;
+    sendErrorMsg(res, errorMessage);
+  } else if (error instanceof Prisma.PrismaClientUnknownRequestError) {
+    sendErrorMsg(res, error.message);
+  } else if (error instanceof Error) {
+    console.log(error);
+    sendErrorMsg(res, error.message);
+  } else {
+    console.log(error);
+    sendErrorMsg(res, String(error));
+  }
+}
+
+export { encryptPassword, validatePassword, handleErrors };
