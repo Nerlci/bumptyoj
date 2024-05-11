@@ -19,7 +19,7 @@ const getUserByEmail = (email: string) => {
 };
 
 const getUserById = (id: number) => {
-  return prisma.user.findFirst({
+  return prisma.user.findUnique({
     where: {
       id,
     },

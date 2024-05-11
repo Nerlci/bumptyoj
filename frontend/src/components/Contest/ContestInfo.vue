@@ -56,7 +56,9 @@ export default {
         return;
       }
       this.$router.push({
-        path: `/problem/detail/${row.problemId}?problemsetId=${this.contest.problemsetId}`,
+        name: "problem",
+        params: { problemId: row.problemId },
+        query: { problemsetId: this.contest.problemsetId },
       });
     },
   },

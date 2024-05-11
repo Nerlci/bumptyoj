@@ -11,7 +11,7 @@
           <a :href="'/home'" class="no-decoration">Bumpty OJ</a>
         </div>
       </el-col>
-      <el-col :span="12">
+      <el-col :span="15">
         <el-menu
           :default-active="activeIndex"
           mode="horizontal"
@@ -42,7 +42,7 @@
         </el-menu>
       </el-col>
 
-      <el-col :span="8">
+      <el-col :span="5">
         <UserBar></UserBar>
       </el-col>
     </el-row>

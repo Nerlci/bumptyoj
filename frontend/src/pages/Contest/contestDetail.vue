@@ -1,6 +1,8 @@
 <template>
   <div class="contest-detail" v-loading="loading" v-show="show">
-    <h2 id="contest-detail-title">{{ contest.title }}</h2>
+    <h2 id="contest-detail-title">
+      {{ contest.type == 0 ? "比赛" : "作业" }}: {{ contest.title }}
+    </h2>
     <p>开始时间: {{ startString }} 结束时间: {{ endString }}</p>
     <p>赛制：{{ contest.contestType === 0 ? "OI" : "ACM" }}</p>
     <el-progress
@@ -9,21 +11,20 @@
       :format="() => ''"
     ></el-progress>
 
-    <el-button disabled type="info" v-if="checkTime(contest.endTime)">
-      已结束
-    </el-button>
-    <el-button disabled type="info" v-else-if="contest.joined">
-      已报名
-    </el-button>
-    <el-button disabled type="info" v-else-if="checkTime(contest.startTime)">
-      已开始
-    </el-button>
-    <el-button
-      @click="joinContest(contest.problemsetId)"
-      class="join-contest-button"
-      v-else
-      >报名
-    </el-button>
+    <span v-if="contest.type == 0" class="state-button">
+      <el-button disabled type="info" v-if="checkTime(contest.endTime)">
+        已结束
+      </el-button>
+      <el-button disabled type="info" v-else-if="contest.joined">
+        已报名
+      </el-button>
+      <el-button disabled type="info" v-else-if="checkTime(contest.startTime)">
+        已开始
+      </el-button>
+      <el-button @click="joinContest(contest.problemsetId)" v-else
+        >报名
+      </el-button>
+    </span>
 
     <el-button
       @click="showRank(contest.problemsetId)"
@@ -124,6 +125,18 @@ export default {
         return ((now - start) / (end - start)) * 100;
       }
     },
+    joinContest(id) {
+      this.postRequest("/api/problemset/contest", { problemsetId: id }).then(
+        (response) => {
+          if (response.code === "200") {
+            this.$message.success("报名成功！");
+            this.contest.joined = true;
+          } else {
+            this.$message.error("报名失败: " + response.error.msg);
+          }
+        },
+      );
+    },
     showRank(problemsetId) {
       this.$router.push({ name: "contestRank", params: { id: problemsetId } });
     },
@@ -147,6 +160,10 @@ export default {
 </script>
 
 <style scoped>
+.state-button {
+  margin-right: 10px;
+}
+
 .contest-detail {
   width: 80%;
   height: 100%;

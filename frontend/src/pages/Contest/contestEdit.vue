@@ -1,6 +1,8 @@
 <template>
   <div class="contest-edit">
-    <h2 id="contest-edit-title">比赛编辑</h2>
+    <h2 id="contest-edit-title">
+      {{ contest.type == 0 ? "比赛" : "作业" }}编辑
+    </h2>
     <contest-manager :contest="contest" :operation="'更新'" />
   </div>
 </template>
