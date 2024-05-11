@@ -105,8 +105,14 @@ export default {
     },
     addStudent() {
       const studentId = parseInt(this.studentId);
+      if (this.class_.teacherId === studentId) {
+        this.$message.error("教师不能同时是学生");
+        this.studentId = "";
+        return;
+      }
       if (this.class_.students.includes(studentId)) {
         this.$message.error("学生已存在");
+        this.studentId = "";
         return;
       }
       this.class_.students.push(studentId);
@@ -115,6 +121,7 @@ export default {
           userId: response.payload.userId,
           username: response.payload.username,
         });
+        this.studentId = "";
       });
     },
     deleteClass() {

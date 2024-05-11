@@ -47,7 +47,6 @@ export default {
             this.getRequest("/api/problem/problem", {
               problemId: problem,
             }).then((response) => {
-              console.log(response);
               this.contest.problemData.push({
                 problemId: response.payload.metadata.problemId,
                 displayId: response.payload.metadata.displayId,

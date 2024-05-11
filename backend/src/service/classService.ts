@@ -91,60 +91,48 @@ const deleteClass = async (classId: number) => {
     },
   });
 };
-const listClass = async (user: any, count: number, offset: number) => {
+
+const listClass = async (userId: number, count: number, offset: number) => {
   let result;
-  // 2: teacher, 1: student
-  if (user.type === 2) {
-    result = await prisma.class.findMany({
-      where: {
-        teacherId: user.userId,
-      },
-      include: {
-        students: {
-          select: {
-            id: true,
+  result = await prisma.class.findMany({
+    where: {
+      OR: [
+        {
+          students: {
+            some: {
+              id: userId,
+            },
           },
         },
-      },
-      take: count,
-      skip: offset,
-    });
-  } else if (user.type === 1) {
-    result = await prisma.class.findMany({
-      where: {
-        students: {
-          some: {
-            id: user.userId,
-          },
+        {
+          teacherId: userId,
         },
-      },
-      take: count,
-      skip: offset,
-    });
-  }
+      ],
+    },
+    take: count,
+    skip: offset,
+  });
 
   return mapClassToResponseNoStu(result);
 };
 
-const countClass = async (user: any) => {
-  if (user.type === 2) {
-    return prisma.class.count({
-      where: {
-        teacherId: user.userId,
-      },
-    });
-  }
-  if (user.type === 1) {
-    return prisma.class.count({
-      where: {
-        students: {
-          some: {
-            id: user.userId,
+const countClass = async (userId: number) => {
+  return prisma.class.count({
+    where: {
+      OR: [
+        {
+          students: {
+            some: {
+              id: userId,
+            },
           },
         },
-      },
-    });
-  }
+        {
+          teacherId: userId,
+        },
+      ],
+    },
+  });
 };
 
 export const classService = {

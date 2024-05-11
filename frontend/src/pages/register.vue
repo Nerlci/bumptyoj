@@ -158,7 +158,6 @@ export default {
               this.loading = false;
               // 首先确认resp不为空，且有code属性
               if (resp && resp.code === "200") {
-                console.log("注册成功！");
                 this.$router.replace("/login");
               } else {
                 // 如果error对象和msg都存在，则显示错误信息，否则显示通用错误信息
@@ -175,7 +174,6 @@ export default {
               console.log(error);
             });
         } else {
-          console.log("表单验证失败");
           Message.error("表单验证失败");
           return false;
         }

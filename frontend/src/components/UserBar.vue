@@ -39,8 +39,8 @@ export default {
       this.getRequest("/api/user/logout").then(() => {
         this.$store.commit("logout");
         Message.info("注销成功");
+        location.reload();
       });
-      location.reload();
     },
     Manager() {
       this.$router.push({ name: "problemAdd" });

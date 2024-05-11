@@ -156,7 +156,6 @@ export default {
       }
     },
     goToPostDetail(row) {
-      console.log(row.postId);
       this.$router.push({
         name: "postDetail",
         params: { postId: row.postId },

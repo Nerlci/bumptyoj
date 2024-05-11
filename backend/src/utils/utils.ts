@@ -41,6 +41,7 @@ const sendError = (res: Response, msg: Object) => {
 
 function handleErrors(error: unknown, res: Response<any, Record<string, any>>) {
   if (error instanceof z.ZodError) {
+    console.log(error);
     sendError(res, { msg: error.errors.map((e) => e.message).join("; ") });
   } else if (error instanceof Prisma.PrismaClientKnownRequestError) {
     console.log(error.code, error.meta, error.message);
@@ -51,6 +52,7 @@ function handleErrors(error: unknown, res: Response<any, Record<string, any>>) {
     };
     sendError(res, err);
   } else if (error instanceof Prisma.PrismaClientUnknownRequestError) {
+    console.log(error);
     sendError(res, { msg: error.message });
   } else if (error instanceof Error) {
     console.log(error);

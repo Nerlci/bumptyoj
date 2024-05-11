@@ -24,6 +24,11 @@
               icon="el-icon-edit"
               @click="editClass(item.classId)"
               class="class-edit"
+              v-if="
+                $store.state.status.type == 0 ||
+                ($store.state.status.type == 2 &&
+                  item.teacherId == $store.state.status.id)
+              "
             >
               编辑
             </el-button>
@@ -43,7 +48,7 @@
         type="primary"
         @click="addClass"
         class="add-class-button"
-        v-if="this.$store.state.status.type == 0"
+        v-if="$store.state.status.type == 0 || $store.state.status.type == 2"
       >
         新建班级
       </el-button>
@@ -82,7 +87,6 @@ export default {
       });
     },
     showClass(id) {
-      console.log(id);
       this.$router.push({ name: "classDetail", params: { id: id } });
     },
     editClass(id) {

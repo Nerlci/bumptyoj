@@ -102,7 +102,6 @@ export default {
     update() {
       this.$refs["form"].validate((valid) => {
         if (valid) {
-          console.log(this.contest.startTime);
           const requestData = {
             problemsetId: this.contest.problemsetId,
             title: this.contest.title,
@@ -137,6 +136,7 @@ export default {
       const problemId = parseInt(this.problemId);
       if (this.contest.problems.includes(problemId)) {
         this.$message.error("题目已存在");
+        this.problemId = "";
         return;
       }
       this.contest.problems.push(problemId);
@@ -147,6 +147,7 @@ export default {
             displayId: response.payload.metadata.displayId,
             title: response.payload.metadata.title,
           });
+          this.problemId = "";
         },
       );
     },

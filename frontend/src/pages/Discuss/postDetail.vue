@@ -45,7 +45,9 @@
         >
           <div class="comment-header">
             <span class="comment-username">{{ comment.author }}</span>
-            <span class="comment-time">{{ formatDate(comment.timestamp) }}</span>
+            <span class="comment-time">{{
+              formatDate(comment.timestamp)
+            }}</span>
             <el-button
               v-if="showCommentButtons(comment)"
               type="text"
@@ -57,7 +59,10 @@
             </el-button>
           </div>
           <div class="comment-content">{{ comment.content }}</div>
-          <hr v-if="comment !== comments[comments.length - 1]"  class="comment-divider"/>
+          <hr
+            v-if="comment !== comments[comments.length - 1]"
+            class="comment-divider"
+          />
         </div>
       </el-card>
       <div class="page-control">
@@ -398,11 +403,10 @@ export default {
 .info-tag {
   margin-right: 10px;
 }
-.comment-header{
+.comment-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-
 }
 .comments {
   margin-top: 20px;
@@ -413,7 +417,7 @@ export default {
 .comment-card {
   margin-top: 10px;
 }
-.comment-username{
+.comment-username {
   font-weight: bold;
   color: #52abff;
 }

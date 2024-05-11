@@ -118,12 +118,14 @@ const createTestdata = async (data: Testdata) => {
 };
 
 const modifyTestdata = async (testdataId: number, data: Testdata) => {
+  const { testdataId: _, ...rest } = data;
+
   return prisma.testdata.update({
     where: {
       id: testdataId,
     },
     data: {
-      ...data,
+      ...rest,
     },
   });
 };

@@ -121,7 +121,7 @@ const constRouter = [
   {
     path: "/problemset/add",
     name: "contestAdd",
-    query: { param: "type" },
+    query: [{ param: "type" }, { param: "classId" }],
     component: contestAdd,
   },
   {
