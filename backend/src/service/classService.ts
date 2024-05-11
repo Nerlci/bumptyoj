@@ -11,6 +11,7 @@ const mapClassToResponse = (result: any) => {
 };
 
 const mapClassToResponseNoStu = (result: any) => {
+  if (!result) return null;
   return result.map((item: any) => {
     return {
       classId: item.id,
@@ -89,10 +90,13 @@ const deleteClass = async (classId: number) => {
     },
   });
 };
-const listClass = async (userId: number) => {
+const listClass = async (userId: number, count: number, offset: number) => {
   const user = await prisma.user.findUnique({
     where: {
       id: userId,
+    },
+    select: {
+      type: true,
     },
   });
   if (!user) return null;
@@ -111,6 +115,8 @@ const listClass = async (userId: number) => {
           },
         },
       },
+      take: count,
+      skip: offset,
     });
   } else if (user.type === 1) {
     result = await prisma.class.findMany({
@@ -121,10 +127,16 @@ const listClass = async (userId: number) => {
           },
         },
       },
+      take: count,
+      skip: offset,
     });
   }
 
   return mapClassToResponseNoStu(result);
+};
+
+const countClass = async () => {
+  return prisma.class.count();
 };
 
 export const classService = {
@@ -133,4 +145,5 @@ export const classService = {
   modifyClass,
   deleteClass,
   listClass,
+  countClass,
 };

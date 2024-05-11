@@ -49,7 +49,15 @@ const mapProblemSetToResponseForHomework = (result: any) => {
   return result.map((res: any) => {
     return {
       ...mapProblemSetToResponseBase(res),
-      problems: res.problems.map((prob: any) => prob.id),
+    };
+  });
+};
+
+const mapProblemSetToResponseForContest = (result: any) => {
+  return result.map((res: any) => {
+    return {
+      ...mapProblemSetToResponseBase(res),
+      contestType: res.contestType,
     };
   });
 };
@@ -166,7 +174,10 @@ const getHomeworkList = async (
     skip: offset,
   });
 
-  return result ? mapProblemSetToResponseForHomework(result) : null;
+  // TODO: check 如果为空是否需要报错
+  return result && result.length > 0
+    ? mapProblemSetToResponseForHomework(result)
+    : [];
 };
 
 const getContestList = async (count: number, offset: number) => {
@@ -178,7 +189,29 @@ const getContestList = async (count: number, offset: number) => {
     skip: offset,
   });
 
-  return result ? result.map((res) => mapProblemSetToResponse(res)) : null;
+  return result && result.length > 0
+    ? mapProblemSetToResponseForContest(result)
+    : [];
+};
+
+const countHomework = async () => {
+  return prisma.problemSet.count({
+    where: {
+      type: 0,
+    },
+  });
+};
+
+const countContest = async () => {
+  return prisma.problemSet.count({
+    where: {
+      type: 1,
+    },
+  });
+};
+
+const countProblemSet = async () => {
+  return prisma.problemSet.count();
 };
 
 export const problemSetService = {
@@ -190,4 +223,7 @@ export const problemSetService = {
   attendContest,
   getHomeworkList,
   getContestList,
+  countHomework,
+  countContest,
+  countProblemSet,
 };

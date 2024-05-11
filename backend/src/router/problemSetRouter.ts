@@ -4,8 +4,6 @@ import { problemSetController } from "../controller/problemSetController";
 
 let problemSetRouter = express.Router();
 
-// problemSetRouter.get("/problemset", authUserMiddleware, problemSetController.getProblemSet);
-
 problemSetRouter.post(
   "/problemset",
   authUserMiddleware,
@@ -49,5 +47,11 @@ problemSetRouter.post(
   authUserMiddleware,
   problemSetController.attendContest,
 );
+
+problemSetRouter.get("/count", problemSetController.countProblemSet);
+
+problemSetRouter.get("/homework/count", problemSetController.countHomework);
+
+problemSetRouter.get("/contest/count", problemSetController.countContest);
 
 export { problemSetRouter };
