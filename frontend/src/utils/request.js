@@ -73,7 +73,7 @@ export const putRequest = (url, params) => {
   return axios({
     method: "put",
     url: `${base}${url}`,
-    params: params,
+    data: params,
     withCredentials: true,
   });
 };

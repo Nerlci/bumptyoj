@@ -5,7 +5,7 @@
         <el-button icon="el-icon-edit" type="primary" @click="openPostDialog" class="post-button">发布帖子</el-button>
       </div>
       <el-menu
-        default-active="1"
+        default-active="0"
         mode="horizontal"
         class="el-menu-horizontal"
         @select="handleSelect"
@@ -91,7 +91,7 @@ export default {
       pageSize: 10,
       total: 0,
       maxPage: 1,
-      currentCategory: "题目讨论",
+      currentCategory: "全部帖子",
     };
   },
   created() {
@@ -184,7 +184,7 @@ export default {
       const postData = {
         title: this.postForm.title,
         category: this.postForm.category,
-        content: this.postForm.category,
+        content: this.postForm.content,
       };
       postRequest("/api/discussion/post", postData)
         .then((response) => {
