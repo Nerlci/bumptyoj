@@ -1,6 +1,6 @@
 import Vue from "vue";
 import Router from "vue-router";
-
+import SearchClass from "../pages/Class/SearchClass";
 const login = () => import("../pages/login");
 const home = () => import("../pages/home");
 const problems = () => import("../pages/Problem/problems");
@@ -16,6 +16,8 @@ const contest = () => import("../pages/contest");
 const problemTestData = () => import("../pages/Problem/problemTestData");
 const discuss = () => import("../pages/Discuss/discuss");
 const postDetail = () => import("../pages/Discuss/postDetail");
+const ClassManage = () => import("../pages/Class/ClassManage");
+
 Vue.use(Router);
 
 const constRouter = [
@@ -98,6 +100,16 @@ const constRouter = [
     path: "/contest",
     name: "contest",
     component: contest,
+  },
+  {
+    path: "/class",
+    name: "ClassManage",
+    component: ClassManage,
+  },
+  {
+    path: "/class/search", // 添加新的路由
+    name: "SearchClass",
+    component: SearchClass,
   },
 ];
 
