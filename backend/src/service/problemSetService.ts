@@ -137,6 +137,16 @@ const issueHomework = async (data: any) => {
 };
 
 const attendContest = async (setId: number, userId: number) => {
+  const problemSet = await prisma.problemSet.findUnique({
+    where: {
+      id: setId,
+    },
+  });
+
+  if (problemSet!.startTime! < new Date()) {
+    throw new Error("Problemset already started");
+  }
+
   const result = await prisma.problemSet.update({
     where: {
       id: setId,

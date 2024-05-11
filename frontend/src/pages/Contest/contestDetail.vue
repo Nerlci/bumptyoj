@@ -1,13 +1,30 @@
 <template>
   <div class="contest-detail" v-loading="loading" v-show="show">
     <h2 id="contest-detail-title">{{ contest.title }}</h2>
-    <p>开始时间: {{ startString }} 结束时间: {{ startString }}</p>
+    <p>开始时间: {{ startString }} 结束时间: {{ endString }}</p>
     <p>赛制：{{ contest.contestType === 0 ? "OI" : "ACM" }}</p>
     <el-progress
       class="contest-progress"
       :percentage="percentage"
       :format="() => ''"
     ></el-progress>
+
+    <el-button disabled type="info" v-if="checkTime(contest.endTime)">
+      已结束
+    </el-button>
+    <el-button disabled type="info" v-else-if="contest.joined">
+      已报名
+    </el-button>
+    <el-button disabled type="info" v-else-if="checkTime(contest.startTime)">
+      已开始
+    </el-button>
+    <el-button
+      @click="joinContest(contest.problemsetId)"
+      class="join-contest-button"
+      v-else
+      >报名
+    </el-button>
+
     <el-button
       @click="showRank(contest.problemsetId)"
       type="primary"
@@ -15,6 +32,7 @@
     >
       排行榜
     </el-button>
+
     <div class="contest-detail-main">
       <contest-info :contest="contest" />
     </div>
@@ -45,6 +63,7 @@ export default {
         type: 0,
         contestType: 0,
       },
+      joined: false,
       startString: "",
       endString: "",
       percentage: 0,
@@ -66,6 +85,12 @@ export default {
           this.endString = this.formatTime(this.contest.endTime);
 
           this.percentage = this.getPercentage();
+
+          this.getRequest("/api/problemset/contest/status", {
+            problemsetId: this.$route.params.id,
+          }).then((response) => {
+            this.contest.joined = response.payload.joined;
+          });
 
           this.contest.problems.forEach((problem) => {
             this.getRequest("/api/problem/problem", {
@@ -101,6 +126,11 @@ export default {
     },
     showRank(problemsetId) {
       this.$router.push({ name: "contestRank", params: { id: problemsetId } });
+    },
+    checkTime(time) {
+      const now = DateTime.now();
+      const dt = DateTime.fromISO(time, { zone: "Asia/Shanghai" });
+      return dt <= now;
     },
     formatTime(value) {
       const dt = DateTime.fromISO(value, { zone: "Asia/Shanghai" });

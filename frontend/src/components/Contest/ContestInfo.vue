@@ -51,6 +51,10 @@ export default {
   },
   methods: {
     handleRowClick(row) {
+      if (!this.contest.joined) {
+        this.$message.error("请先报名比赛");
+        return;
+      }
       this.$router.push({
         path: `/problem/detail/${row.problemId}?problemsetId=${this.contest.problemsetId}`,
       });

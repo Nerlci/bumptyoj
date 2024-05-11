@@ -43,7 +43,11 @@
           v-if="this.$store.state.status.isLogin"
         >
           <template slot-scope="scope">
-            <span disabled v-if="scope.row.joined">已报名</span>
+            <span disabled v-if="checkTime(scope.row.endTime)"> 已结束 </span>
+            <span disabled v-else-if="scope.row.joined"> 已报名 </span>
+            <span disabled v-else-if="checkTime(scope.row.startTime)">
+              已开始
+            </span>
             <span
               @click="joinContest(scope.row.problemsetId)"
               class="contest-edit"
@@ -166,6 +170,11 @@ export default {
     },
     getPageInfo() {
       this.getPage(1);
+    },
+    checkTime(time) {
+      const now = DateTime.now();
+      const dt = DateTime.fromISO(time, { zone: "Asia/Shanghai" });
+      return dt <= now;
     },
     formatStartTime(value) {
       const dt = DateTime.fromISO(value.startTime, { zone: "Asia/Shanghai" });
