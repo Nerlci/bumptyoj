@@ -4,9 +4,8 @@ import { comment, discussionPost, responseBase } from "../schema";
 import { handleErrors } from "../utils/utils";
 
 const getPost = async (req: Request, res: Response) => {
-  const postId = Number(req.query.postId);
-
   try {
+    const postId = Number(req.query.postId);
     const result = await discussionService.getPost(postId);
 
     const resultData = discussionPost.parse({
@@ -29,10 +28,9 @@ const getPost = async (req: Request, res: Response) => {
 };
 
 const createPost = async (req: Request, res: Response) => {
-  const userId = Number(res.locals.user.userId);
-  const username = String(res.locals.user.username);
-
   try {
+    const userId = Number(res.locals.user.userId);
+    const username = String(res.locals.user.username);
     const data = discussionPost.parse({
       ...req.body,
       userId,
@@ -58,12 +56,12 @@ const createPost = async (req: Request, res: Response) => {
 };
 
 const modifyPost = async (req: Request, res: Response) => {
-  // TODO: check if the post is created by current user
-  const userId = Number(res.locals.user.userId);
-  const username = String(res.locals.user.username);
-  const postId = Number(req.query.postId);
-
   try {
+    // TODO: check if the post is created by current user
+    const userId = Number(res.locals.user.userId);
+    const username = String(res.locals.user.username);
+    const postId = Number(req.query.postId);
+
     const data = discussionPost.parse({
       ...req.body,
       userId,
@@ -89,10 +87,10 @@ const modifyPost = async (req: Request, res: Response) => {
 };
 
 const deletePost = async (req: Request, res: Response) => {
-  // TODO: check if the post is created by current user
-  const postId = Number(req.query.postId);
-
   try {
+    // TODO: check if the post is created by current user
+    const postId = Number(req.query.postId);
+
     const result = await discussionService.deletePost(postId);
 
     res.send(
@@ -108,11 +106,11 @@ const deletePost = async (req: Request, res: Response) => {
 };
 
 const listPost = async (req: Request, res: Response) => {
-  const category = String(req.query.category) || undefined;
-  const offset = Number(req.query.offset);
-  const count = Number(req.query.count);
-
   try {
+    const category = String(req.query.category) || undefined;
+    const offset = Number(req.query.offset);
+    const count = Number(req.query.count);
+
     const result = await discussionService.listPost(category, offset, count);
 
     const resultData = result.map((post) =>
@@ -155,11 +153,10 @@ const countPost = async (req: Request, res: Response) => {
 };
 
 const getComment = async (req: Request, res: Response) => {
-  const postId = Number(req.query.postId);
-  const offset = Number(req.query.offset);
-  const count = Number(req.query.count);
-
   try {
+    const postId = Number(req.query.postId);
+    const offset = Number(req.query.offset);
+    const count = Number(req.query.count);
     const result = await discussionService.getComment(postId, offset, count);
 
     const resultData = result.map((c) =>
@@ -184,9 +181,10 @@ const getComment = async (req: Request, res: Response) => {
 };
 
 const createComment = async (req: Request, res: Response) => {
-  const userId = Number(res.locals.user.userId);
-  const username = String(res.locals.user.username);
   try {
+    const userId = Number(res.locals.user.userId);
+    const username = String(res.locals.user.username);
+
     const data = comment.parse({
       ...req.body,
       userId,
@@ -212,11 +210,12 @@ const createComment = async (req: Request, res: Response) => {
 };
 
 const modifyComment = async (req: Request, res: Response) => {
-  // TODO: check if the comment is created by current user
-  const userId = Number(res.locals.user.userId);
-  const username = String(res.locals.user.username);
-  const commentId = Number(req.query.commentId);
   try {
+    // TODO: check if the comment is created by current user
+    const userId = Number(res.locals.user.userId);
+    const username = String(res.locals.user.username);
+    const commentId = Number(req.query.commentId);
+
     const data = comment.parse({
       ...req.body,
       userId,
@@ -242,10 +241,10 @@ const modifyComment = async (req: Request, res: Response) => {
 };
 
 const deleteComment = async (req: Request, res: Response) => {
-  // TODO: check if the comment is created by current user
-  const commentId = Number(req.query.commentId);
-
   try {
+    // TODO: check if the comment is created by current user
+    const commentId = Number(req.query.commentId);
+
     const result = await discussionService.deleteComment(commentId);
 
     res.send(
