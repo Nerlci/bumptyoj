@@ -1,4 +1,9 @@
+const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
+
 module.exports = {
+  configureWebpack: {
+    plugins: [new MonacoWebpackPlugin()],
+  },
   devServer: {
     port: 8083, // 开发服务器运行端口
     proxy: {
