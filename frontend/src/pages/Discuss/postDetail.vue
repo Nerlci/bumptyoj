@@ -18,37 +18,46 @@
       >
       <el-tag size="medium" class="info-tag">板块:{{ post.category }}</el-tag>
 
-      <el-input
-        type="textarea"
-        v-model="post.content"
-        :rows="10"
-        readonly
-        class="content-textarea"
-      ></el-input>
+      <el-card class="content-card" shadow="hover">
+        <div class="collapse-content" v-html="md.render(post.content)"></div>
+      </el-card>
     </div>
 
     <div class="comments">
-      <el-card
-        v-for="comment in comments"
-        :key="comment.commentId"
-        class="comment-card"
-        :body-style="{ padding: '20px' }"
-      >
+      <el-card class="comment-input">
         <div slot="header" class="clearfix">
-          <span class="comment-username">{{ comment.author }}</span>
-          <el-button
-            v-if="showCommentButtons(comment)"
-            type="text"
-            icon="el-icon-delete"
-            @click="deleteComment(comment.commentId)"
-            style="float: right"
-          >
-            删除
-          </el-button>
+          <span>{{ this.totalComments }} 评论</span>
         </div>
-        <div>{{ comment.content }}</div>
-        <div style="text-align: right; color: #8492a6; margin-top: 10px">
-          {{ formatDate(comment.timestamp) }}
+        <el-input
+          type="textarea"
+          v-model="newComment"
+          :rows="3"
+          placeholder="发布一条评论..."
+          class="new-comment"
+        ></el-input>
+        <el-button type="primary" @click="submitComment" class="submit-button">
+          发布评论
+        </el-button>
+        <div
+          v-for="comment in comments"
+          :key="comment.commentId"
+          class="comment-card"
+        >
+          <div class="comment-header">
+            <span class="comment-username">{{ comment.author }}</span>
+            <span class="comment-time">{{ formatDate(comment.timestamp) }}</span>
+            <el-button
+              v-if="showCommentButtons(comment)"
+              type="text"
+              icon="el-icon-delete"
+              @click="deleteComment(comment.commentId)"
+              style="float: right"
+            >
+              删除
+            </el-button>
+          </div>
+          <div class="comment-content">{{ comment.content }}</div>
+          <hr v-if="comment !== comments[comments.length - 1]"  class="comment-divider"/>
         </div>
       </el-card>
       <div class="page-control">
@@ -66,17 +75,6 @@
           >下一页</el-button
         >
       </div>
-      <el-card class="comment-input">
-        <el-input
-          type="textarea"
-          v-model="newComment"
-          placeholder="发布一条评论..."
-          class="new-comment"
-        ></el-input>
-        <el-button type="primary" @click="submitComment" class="submit-button">
-          评论
-        </el-button>
-      </el-card>
     </div>
     <el-dialog title="编辑帖子" :visible.sync="dialogVisible">
       <el-form :model="postForm">
@@ -119,10 +117,17 @@ import { postRequest } from "@/utils/request";
 import { deleteRequest } from "@/utils/request";
 import { putRequest } from "@/utils/request";
 import { DateTime } from "luxon";
+import MarkdownIt from "markdown-it";
+import markdownItKatex from "markdown-it-katex";
 
 export default {
   data() {
     return {
+      md: new MarkdownIt({
+        html: true,
+        linkify: true,
+        typographer: true,
+      }).use(markdownItKatex),
       dialogVisible: false,
       postForm: {
         title: "",
@@ -359,16 +364,33 @@ export default {
         "yyyy-MM-dd HH:mm:ss",
       );
     },
+    backToTop() {
+      window.scrollTo(0, 0);
+    },
   },
 };
 </script>
 
 <style scoped>
-.post-detail {
-  margin: 20px;
+.comment-divider {
+  border: none;
+  height: 1px;
+  background-color: #ccc;
+  margin-top: 10px;
+}
+.content-card {
+  margin-top: 30px;
+  border: 1px solid #52abff;
+}
+.collapse-content {
+  font-size: 14px;
+  text-align: left;
 }
 .post-content {
-  margin-bottom: 20px;
+  font-size: 14px;
+}
+.post-detail {
+  margin: 20px;
 }
 .post-info {
   margin-bottom: 20px;
@@ -376,21 +398,39 @@ export default {
 .info-tag {
   margin-right: 10px;
 }
+.comment-header{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+}
 .comments {
   margin-top: 20px;
 }
 .comment-username {
   font-size: 14px;
 }
+.comment-card {
+  margin-top: 10px;
+}
+.comment-username{
+  font-weight: bold;
+  color: #52abff;
+}
+.comment-time {
+  font-size: 12px;
+  color: #666;
+}
+.comment-content {
+  margin-top: 10px;
+}
 .comment-input {
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
-}
-.new-comment {
-  margin-bottom: 10px;
+  text-align: left;
 }
 .submit-button {
+  margin-top: 10px;
   width: 100px;
 }
 .pagination {
