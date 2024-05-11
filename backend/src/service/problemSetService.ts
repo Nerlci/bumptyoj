@@ -214,6 +214,24 @@ const countProblemSet = async () => {
   return prisma.problemSet.count();
 };
 
+const getContestStatus = async (setId: number, userId: number) => {
+  const result = await prisma.problemSet.findUnique({
+    where: {
+      id: setId,
+    },
+    include: {
+      users: {
+        select: {
+          id: true,
+        },
+      },
+    },
+  });
+  if (!result) throw new Error("Problem set not found");
+
+  return result ? result.users.some((user) => user.id === userId) : false;
+};
+
 export const problemSetService = {
   createProblemSet,
   getProblemSet,
@@ -226,4 +244,5 @@ export const problemSetService = {
   countHomework,
   countContest,
   countProblemSet,
+  getContestStatus,
 };

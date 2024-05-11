@@ -4,11 +4,11 @@ import { problemSetService } from "../service/problemSetService";
 import { handleErrors } from "../utils/utils";
 
 const createProblemSet = async (req: Request, res: Response) => {
-  const { startTime, endTime, ...data } = req.body;
-  data.startTime = startTime ? new Date(startTime) : null;
-  data.endTime = endTime ? new Date(endTime) : null;
-
   try {
+    const { startTime, endTime, ...data } = req.body;
+    data.startTime = startTime ? new Date(startTime) : null;
+    data.endTime = endTime ? new Date(endTime) : null;
+
     const problemSetBody = problemSet.parse(data);
     const result = await problemSetService.createProblemSet(problemSetBody);
 
@@ -27,8 +27,8 @@ const createProblemSet = async (req: Request, res: Response) => {
 };
 
 const getProblemSet = async (req: Request, res: Response) => {
-  const setId = Number(req.query.problemsetId);
   try {
+    const setId = Number(req.query.problemsetId);
     const result = await problemSetService.getProblemSet(setId);
 
     res.send(
@@ -46,12 +46,11 @@ const getProblemSet = async (req: Request, res: Response) => {
 };
 
 const modifyProblemSet = async (req: Request, res: Response) => {
-  const { startTime, endTime, ...data } = req.body;
-  data.startTime = startTime ? new Date(startTime) : null;
-  data.endTime = endTime ? new Date(endTime) : null;
-  data.setId = Number(req.query.problemsetId);
-
   try {
+    const { startTime, endTime, ...data } = req.body;
+    data.startTime = startTime ? new Date(startTime) : null;
+    data.endTime = endTime ? new Date(endTime) : null;
+    data.setId = Number(req.query.problemsetId);
     const problemSetBody = problemSet.parse(data);
     const result = await problemSetService.modifyProblemSet(problemSetBody);
 
@@ -70,8 +69,8 @@ const modifyProblemSet = async (req: Request, res: Response) => {
 };
 
 const deleteProblemSet = async (req: Request, res: Response) => {
-  const setId = Number(req.query.problemsetId);
   try {
+    const setId = Number(req.query.problemsetId);
     const result = await problemSetService.deleteProblemSet(setId);
 
     res.send(
@@ -110,10 +109,9 @@ const issueHomework = async (req: Request, res: Response) => {
 };
 
 const attendContest = async (req: Request, res: Response) => {
-  const setId = req.body.problemsetId;
-  const userId = res.locals.user.userId;
-
   try {
+    const setId = req.body.problemsetId;
+    const userId = res.locals.user.userId;
     const result = await problemSetService.attendContest(setId, userId);
 
     res.send(
@@ -131,10 +129,10 @@ const attendContest = async (req: Request, res: Response) => {
 };
 
 const getHomeworkList = async (req: Request, res: Response) => {
-  const classId = Number(req.query.classId);
-  const count = Number(req.query.count);
-  const offset = Number(req.query.offset);
   try {
+    const classId = Number(req.query.classId);
+    const count = Number(req.query.count);
+    const offset = Number(req.query.offset);
     const result = await problemSetService.getHomeworkList(
       classId,
       count,
@@ -156,10 +154,9 @@ const getHomeworkList = async (req: Request, res: Response) => {
 };
 
 const getContestList = async (req: Request, res: Response) => {
-  const count = Number(req.query.count);
-  const offset = Number(req.query.offset);
-
   try {
+    const count = Number(req.query.count);
+    const offset = Number(req.query.offset);
     const result = await problemSetService.getContestList(count, offset);
 
     res.send(
@@ -218,6 +215,27 @@ const countContest = async (req: Request, res: Response) => {
   );
 };
 
+const getContestStatus = async (req: Request, res: Response) => {
+  try {
+    const setId = Number(req.query.problemsetId);
+    const userId = res.locals.user.userId;
+
+    const result = await problemSetService.getContestStatus(setId, userId);
+
+    res.send(
+      responseBase.parse({
+        code: "200",
+        payload: { joined: result },
+        error: {
+          msg: "",
+        },
+      }),
+    );
+  } catch (error) {
+    handleErrors(error, res);
+  }
+};
+
 export const problemSetController = {
   createProblemSet,
   getProblemSet,
@@ -230,4 +248,5 @@ export const problemSetController = {
   countProblemSet,
   countHomework,
   countContest,
+  getContestStatus,
 };
