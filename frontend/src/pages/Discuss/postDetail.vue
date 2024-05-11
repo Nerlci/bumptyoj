@@ -246,7 +246,7 @@ export default {
           this.$message.info("已取消删除");
         });
     },
-    fetchCommentsCount(){
+    fetchCommentsCount() {
       getRequest(`/api/discussion/comment/count?postId=${this.postId}`)
         .then((response) => {
           if (response.code === "200") {
