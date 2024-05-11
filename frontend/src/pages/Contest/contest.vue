@@ -40,7 +40,7 @@
         <el-table-column
           label="报名"
           width="76px"
-          v-if="true || this.$store.state.status.isLogin"
+          v-if="this.$store.state.status.isLogin"
         >
           <template slot-scope="scope">
             <span disabled v-if="scope.row.joined">已报名</span>
@@ -113,18 +113,23 @@ export default {
         count: this.pageSize,
       }).then((response) => {
         const contests = response.payload.contests;
-        const promises = contests.map((contest) => {
-          return this.getRequest("/api/problemset/contest/status", {
-            problemsetId: contest.problemsetId,
-          }).then((response) => {
-            contest.joined = response.payload.joined;
+        if (this.$store.state.status.isLogin) {
+          const promises = contests.map((contest) => {
+            return this.getRequest("/api/problemset/contest/status", {
+              problemsetId: contest.problemsetId,
+            }).then((response) => {
+              contest.joined = response.payload.joined;
+            });
           });
-        });
 
-        Promise.all(promises).then(() => {
+          Promise.all(promises).then(() => {
+            this.tableData = contests;
+            this.loading = false;
+          });
+        } else {
           this.tableData = contests;
           this.loading = false;
-        });
+        }
       });
 
       this.fetchItemCount();
