@@ -1,24 +1,15 @@
 <template>
   <div class="status-list">
-    <div
-      style="
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-      "
-    >
+    <div class="search-bar">
       <div>
         <el-input
           v-model="problemSearchQuery"
           placeholder="以题目ID搜索评测记录..."
-          style="width: 200px"
           class="search-input"
         ></el-input>
         <el-input
           v-model="userSearchQuery"
           placeholder="以用户ID搜索评测记录..."
-          style="width: 200px"
           class="search-input"
         ></el-input>
         <el-button
@@ -36,24 +27,29 @@
     <el-table
       :data="submissions"
       style="width: 100%"
+      stripe
       @row-click="handleRowClick"
     >
       <el-table-column prop="submissionId" label="评测ID"></el-table-column>
       <el-table-column prop="problemId" label="题目"></el-table-column>
-      <el-table-column
-        prop="status"
-        label="状态"
-        :formatter="formatStatus"
-      ></el-table-column>
+      <el-table-column prop="status" label="状态"></el-table-column>
       <el-table-column prop="score" label="分数"></el-table-column>
       <el-table-column prop="userId" label="用户"></el-table-column>
-      <el-table-column prop="time" label="运行时间(ms)"></el-table-column>
+      <el-table-column
+        prop="time"
+        label="运行时间"
+        :formatter="formatTime"
+      ></el-table-column>
       <el-table-column
         prop="memory"
-        label="内存(MB)"
+        label="内存"
         :formatter="formatMemory"
       ></el-table-column>
-      <el-table-column prop="length" label="代码长度"></el-table-column>
+      <el-table-column
+        prop="length"
+        label="代码长度"
+        :formatter="formatCodeLength"
+      ></el-table-column>
       <el-table-column prop="language" label="语言"></el-table-column>
       <el-table-column
         prop="timestamp"
@@ -113,6 +109,22 @@ export default {
     this.fetchSubmissions();
   },
   methods: {
+    getMemoryUnit(value) {
+      const thresholds = {
+        B: 1,
+        KB: 1024,
+        MB: 1024 * 1024,
+      };
+      let unit = "B";
+      for (const [key, threshold] of Object.entries(thresholds)) {
+        if (value >= threshold) {
+          unit = key;
+        } else {
+          break;
+        }
+      }
+      return { unit, threshold: thresholds[unit] };
+    },
     fetchTotal() {
       let url = "/api/submission/count";
       if (this.problemSearchQuery || this.userSearchQuery) {
@@ -187,9 +199,43 @@ export default {
       const dt = DateTime.fromISO(value.timestamp, { zone: "Asia/Shanghai" });
       return dt.toRelative();
     },
+    formatTime(value) {
+      if (value.time > 1000) {
+        return `${(value.time / 1000).toFixed(2)} s`;
+      } else {
+        return `${value.time} ms`;
+      }
+    },
     formatMemory(value) {
-      return (value.memory / 1024 / 1024).toFixed(2);
+      let length = value.memory;
+      const { unit, threshold } = this.getMemoryUnit(length);
+      length = length / threshold;
+      return `${unit === "B" ? length : length.toFixed(2)} ${unit}`;
+    },
+    formatCodeLength(value) {
+      let length = value.length;
+      const { unit, threshold } = this.getMemoryUnit(length);
+      length = length / threshold;
+      return `${unit === "B" ? length : length.toFixed(2)} ${unit}`;
     },
   },
 };
 </script>
+
+<style scoped>
+.status-list {
+  width: 90%;
+  margin: auto;
+}
+
+.search-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.search-input {
+  width: 200px;
+}
+</style>

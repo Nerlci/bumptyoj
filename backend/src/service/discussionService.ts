@@ -123,6 +123,14 @@ const deleteComment = async (commentId: number) => {
   });
 };
 
+const countComment = async (postId: number) => {
+  return prisma.comment.count({
+    where: {
+      postId: postId,
+    },
+  });
+};
+
 const discussionService = {
   getPost,
   createPost,
@@ -134,6 +142,7 @@ const discussionService = {
   createComment,
   modifyComment,
   deleteComment,
+  countComment,
 };
 
 export { discussionService };

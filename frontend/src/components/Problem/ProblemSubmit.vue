@@ -9,15 +9,13 @@
           <el-option label="Python" value="Python"></el-option>
         </el-select>
       </div>
-      <!-- 增加输入框的行数 -->
-      <el-input
-        :rows="20"
-        type="textarea"
-        placeholder="请输入答案"
+
+      <prism-editor
+        class="code-input height-300"
+        :lineNumbers="true"
         v-model="answer"
-        class="code-input"
-      >
-      </el-input>
+        :highlight="highlighter"
+      ></prism-editor>
 
       <el-button @click="submitAnswer" id="submit-button" type="primary"
         >提交</el-button
@@ -27,9 +25,18 @@
 </template>
 
 <script>
+import { PrismEditor } from "vue-prism-editor";
+import "vue-prism-editor/dist/prismeditor.min.css";
+import "prismjs/themes/prism-tomorrow.css";
+import { highlight, languages } from "prismjs/components/prism-core";
+import "prismjs/components/prism-autoit";
+
 export default {
   name: "ProblemSubmit",
   props: ["pid"], // 接收题目ID
+  components: {
+    PrismEditor,
+  },
   data() {
     return {
       answer: "", // 用户编写的代码
@@ -37,6 +44,9 @@ export default {
     };
   },
   methods: {
+    highlighter(code) {
+      return highlight(code, languages.autoit, "autoit");
+    },
     submitAnswer() {
       if (!this.$store.state.status.isLogin) {
         this.$message.error("请登录！");
@@ -72,7 +82,27 @@ export default {
   },
 };
 </script>
+
 <style scoped>
+.code-input {
+  background: #2d2d2d;
+  color: #ccc;
+  font-family:
+    Fira code,
+    Fira Mono,
+    Consolas,
+    Menlo,
+    Courier,
+    monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  padding: 5px;
+}
+
+.height-300 {
+  height: calc(400 / 19.2 * 1vw);
+}
+
 .problem-submit {
   text-align: center;
   width: 90%;

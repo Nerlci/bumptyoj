@@ -17,7 +17,7 @@ axios.interceptors.response.use(
         500: "服务器错误",
       };
       Message.error({
-        message: `${errorType[success.data.code]}: ${success.data.msg}`,
+        message: `${errorType[success.data.code]}: ${success.data.error.msg}`,
       });
       return;
     }
