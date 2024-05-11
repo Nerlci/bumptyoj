@@ -19,10 +19,7 @@
       <problem-info :problem="problem" />
     </div>
     <div class="problem-submit">
-      <problem-submit
-        :pid="problem.problemId"
-        :psetId="$route.query.problemsetId"
-      />
+      <problem-submit :pid="problem.problemId" :psetid="problemsetId" />
     </div>
   </div>
 </template>
@@ -39,6 +36,7 @@ export default {
       show: false,
       loading: true,
       problemsetTitle: "测试",
+      problemsetId: 0,
       problem: {
         problemId: 0,
         displayId: "",
@@ -96,14 +94,15 @@ export default {
   },
   created() {
     if (this.$route.query.problemsetId) {
+      this.problemsetId = Number(this.$route.query.problemsetId);
       this.getRequest("/api/problemset/problemset", {
         problemsetId: this.$route.query.problemsetId,
       })
         .then((response) => {
           this.problemsetTitle =
-            response.payload.type == 0
-              ? "比赛"
-              : "作业" + ":" + response.payload.title;
+            (response.payload.type == 0 ? "比赛" : "作业") +
+            ":" +
+            response.payload.title;
         })
         .catch((error) => {
           console.log(error);
