@@ -59,19 +59,12 @@
     </el-table>
 
     <div style="display: flex; justify-content: center; margin-top: 20px">
-      <el-button
-        type="primary"
-        @click="handlePreClick"
-        :disabled="currentPage <= 1"
-        >上一页</el-button
-      >
-      <span style="margin: 10px 10px">第 {{ currentPage }} 页</span>
-      <el-button
-        type="primary"
-        @click="handleNextClick"
-        :disabled="currentPage >= maxPage"
-        >下一页</el-button
-      >
+      <Pagination
+        :currentPage="currentPage"
+        :maxPage="maxPage"
+        @pre-click="handlePreClick"
+        @next-click="handleNextClick"
+      ></Pagination>
     </div>
   </div>
 </template>
@@ -90,7 +83,12 @@
 <script>
 import { getRequest } from "@/utils/request";
 import { DateTime } from "luxon";
+import Pagination from "../../components/Pagination";
+
 export default {
+  components: {
+    Pagination,
+  },
   data() {
     return {
       maxPage: 0,

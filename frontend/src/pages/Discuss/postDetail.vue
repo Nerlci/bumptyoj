@@ -73,19 +73,12 @@
         </el-card>
       </el-list>
       <div style="display: flex; justify-content: center; margin-top: 20px">
-        <el-button
-          type="primary"
-          @click="handlePreClick"
-          :disabled="commentPage <= 1"
-          >上一页</el-button
-        >
-        <span style="margin: 10px 10px">第 {{ commentPage }} 页</span>
-        <el-button
-          type="primary"
-          @click="handleNextClick"
-          :disabled="commentPage >= maxPage"
-          >下一页</el-button
-        >
+        <Pagination
+          :currentPage="commentPage"
+          :maxPage="maxPage"
+          @pre-click="handlePreClick"
+          @next-click="handleNextClick"
+        ></Pagination>
       </div>
     </div>
     <el-dialog title="编辑帖子" :visible.sync="dialogVisible">
@@ -128,9 +121,13 @@ import { getRequest } from "@/utils/request";
 import { postRequest } from "@/utils/request";
 import { deleteRequest } from "@/utils/request";
 import { putRequest } from "@/utils/request";
+import Pagination from "../../components/Pagination";
 import { DateTime } from "luxon";
 
 export default {
+  components: {
+    Pagination,
+  },
   data() {
     return {
       dialogVisible: false,
@@ -367,6 +364,9 @@ export default {
       return DateTime.fromISO(timestamp, { zone: "Asia/Shanghai" }).toFormat(
         "yyyy-MM-dd HH:mm:ss",
       );
+    },
+    backToTop() {
+      window.scrollTo(0, 0);
     },
   },
 };
