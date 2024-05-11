@@ -130,13 +130,13 @@ export default {
         !this.userSearchQuery &&
         !parseInt(this.problemSearchQuery) &&
         !parseInt(this.userSearchQuery);
-      if (!allEmpty && (this.problemSearchQuery || this.userSearchQuery)) {
+      if (!allEmpty) {
         url += "?";
       }
       if (this.problemSearchQuery && parseInt(this.problemSearchQuery))
-        url += `&problemId=${encodeURIComponent(this.problemSearchQuery)}`;
+        url += `&problemId=${encodeURIComponent(parseInt(this.problemSearchQuery))}`;
       if (this.userSearchQuery && parseInt(this.userSearchQuery))
-        url += `&userId=${encodeURIComponent(this.userSearchQuery)}`;
+        url += `&userId=${encodeURIComponent(parseInt(this.problemSearchQuery))}`;
 
       getRequest(url)
         .then((response) => {
