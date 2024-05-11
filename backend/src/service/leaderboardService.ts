@@ -190,6 +190,8 @@ const problemsetLeaderboard = async (setId: number) => {
     score: scores[user.id] || 0,
   }));
 
+  userScores.sort((a, b) => b.score - a.score);
+
   return getLeaderboard(userScores);
 };
 
