@@ -18,9 +18,7 @@
       <el-button disabled type="info" v-if="checkTime(contest.endTime)">
         已结束
       </el-button>
-      <el-button disabled type="info" v-else-if="contest.joined">
-        已报名
-      </el-button>
+      <el-button disabled type="info" v-else-if="joined"> 已报名 </el-button>
       <el-button disabled type="info" v-else-if="checkTime(contest.startTime)">
         已开始
       </el-button>
@@ -102,7 +100,7 @@ export default {
             this.getRequest("/api/problemset/problemset/status", {
               problemsetId: this.$route.params.id,
             }).then((response) => {
-              this.contest.joined = response.payload.joined;
+              this.joined = response.payload.joined;
             });
           }
 
