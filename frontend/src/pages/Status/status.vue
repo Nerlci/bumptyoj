@@ -6,11 +6,13 @@
           v-model.number="problemSearchQuery"
           placeholder="以题目ID搜索评测记录..."
           class="search-input"
+          oninput="value=value.replace(/[^0-9.]/g,'')"
         ></el-input>
         <el-input
           v-model.number="userSearchQuery"
           placeholder="以用户ID搜索评测记录..."
           class="search-input"
+          oninput="value=value.replace(/[^0-9.]/g,'')"
         ></el-input>
         <el-button
           type="primary"
