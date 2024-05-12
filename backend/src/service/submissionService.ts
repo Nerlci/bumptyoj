@@ -165,7 +165,7 @@ const listSubmission = async (
 ) => {
   return prisma.submission.findMany({
     orderBy: {
-      id: "desc",
+      id: minId ? "asc" : "desc",
     },
     take: count,
     where: {

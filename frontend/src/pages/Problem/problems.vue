@@ -167,10 +167,6 @@ export default {
   margin: auto;
 }
 
-.cursor-pointer {
-  cursor: pointer;
-}
-
 .problem-edit {
   margin-top: 20px;
   /* 添加顶部边距，根据需要调整 */

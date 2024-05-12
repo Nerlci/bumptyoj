@@ -86,10 +86,6 @@ export default {
   text-align: center;
 }
 
-.cursor-pointer {
-  cursor: pointer;
-}
-
 #rank-list-pagination {
   margin-top: 30px;
 }

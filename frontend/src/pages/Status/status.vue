@@ -93,7 +93,12 @@
 
 <script>
 import { getRequest } from "@/utils/request";
-import { DateTime } from "luxon";
+import {
+  formatTime,
+  formatMemory,
+  formatCodeLength,
+  formatTimestamp,
+} from "@/utils/formatter";
 import Pagination from "../../components/Pagination";
 
 export default {
@@ -112,6 +117,8 @@ export default {
       loading: false,
       maxId: null, // 用于“下一页”的请求
       minId: null, // 用于“上一页”的请求
+      userIdMap: new Map(),
+      problemIdMap: new Map(),
     };
   },
   mounted() {
@@ -120,22 +127,6 @@ export default {
     this.fetchSubmissions();
   },
   methods: {
-    getMemoryUnit(value) {
-      const thresholds = {
-        B: 1,
-        KB: 1024,
-        MB: 1024 * 1024,
-      };
-      let unit = "B";
-      for (const [key, threshold] of Object.entries(thresholds)) {
-        if (value >= threshold) {
-          unit = key;
-        } else {
-          break;
-        }
-      }
-      return { unit, threshold: thresholds[unit] };
-    },
     fetchTotal() {
       let url = "/api/submission/count";
       if (this.problemSearchQuery || this.userSearchQuery) {
@@ -170,49 +161,58 @@ export default {
 
       getRequest(url)
         .then((response) => {
-          const userIdMap = new Map();
-          const problemIdMap = new Map();
+          if (direction === "prev") {
+            response.payload.submissions =
+              response.payload.submissions.reverse();
+          }
+
+          const userIdSet = new Set();
+          const problemIdSet = new Set();
           const promises = [];
 
           response.payload.submissions.forEach((submission) => {
-            if (userIdMap.has(submission.userId)) {
-              submission.username = userIdMap.get(submission.userId);
-            } else {
-              const promise = getRequest(`/api/user/user`, {
-                userId: submission.userId,
-              }).then((response) => {
-                submission.username = response.payload.username;
-                userIdMap.set(submission.userId, response.payload.username);
-              });
-              promises.push(promise);
+            if (!this.userIdMap.has(submission.userId)) {
+              userIdSet.add(submission.userId);
             }
-
-            if (problemIdMap.has(submission.problemId)) {
-              submission.displayId = problemIdMap.get(submission.problemId);
-            } else {
-              const promise = getRequest(`/api/problem/problem`, {
-                problemId: submission.problemId,
-              }).then((response) => {
-                submission.displayId = response.payload.metadata.displayId;
-                problemIdMap.set(
-                  submission.problemId,
-                  response.payload.metadata.displayId,
-                );
-              });
-              promises.push(promise);
+            if (!this.problemIdMap.has(submission.problemId)) {
+              problemIdSet.add(submission.problemId);
             }
           });
 
+          userIdSet.forEach((userId) => {
+            promises.push(
+              getRequest(`/api/user/user?userId=${userId}`).then((response) => {
+                this.userIdMap.set(userId, response.payload.username);
+              }),
+            );
+          });
+
+          problemIdSet.forEach((problemId) => {
+            promises.push(
+              getRequest(`/api/problem/problem?problemId=${problemId}`).then(
+                (response) => {
+                  this.problemIdMap.set(problemId, response.payload.metadata);
+                },
+              ),
+            );
+          });
+
           Promise.all(promises).then(() => {
-            this.submissions = response.payload.submissions;
-            if (this.submissions.length > 0) {
-              this.maxId = Math.max(
-                ...this.submissions.map((sub) => sub.submissionId),
-              );
-              this.minId = Math.min(
-                ...this.submissions.map((sub) => sub.submissionId),
-              );
-            }
+            this.submissions = response.payload.submissions.map(
+              (submission) => {
+                return {
+                  ...submission,
+                  username: this.userIdMap.get(submission.userId),
+                  displayId: this.problemIdMap.get(submission.problemId)
+                    .displayId,
+                };
+              },
+            );
+            this.maxId = response.payload.submissions[0].submissionId;
+            this.minId =
+              response.payload.submissions[
+                response.payload.submissions.length - 1
+              ].submissionId;
             this.loading = false;
           });
         })
@@ -248,29 +248,10 @@ export default {
         this.$message.error("已经是最后一页了！");
       }
     },
-    formatTimestamp(value) {
-      const dt = DateTime.fromISO(value.timestamp, { zone: "Asia/Shanghai" });
-      return dt.toRelative();
-    },
-    formatTime(value) {
-      if (value.time > 1000) {
-        return `${(value.time / 1000).toFixed(2)} s`;
-      } else {
-        return `${value.time} ms`;
-      }
-    },
-    formatMemory(value) {
-      let length = value.memory;
-      const { unit, threshold } = this.getMemoryUnit(length);
-      length = length / threshold;
-      return `${unit === "B" ? length : length.toFixed(2)} ${unit}`;
-    },
-    formatCodeLength(value) {
-      let length = value.length;
-      const { unit, threshold } = this.getMemoryUnit(length);
-      length = length / threshold;
-      return `${unit === "B" ? length : length.toFixed(2)} ${unit}`;
-    },
+    formatTime,
+    formatMemory,
+    formatCodeLength,
+    formatTimestamp,
   },
 };
 </script>
@@ -279,10 +260,6 @@ export default {
 .status-list {
   width: 90%;
   margin: auto;
-}
-
-.cursor-pointer {
-  cursor: pointer;
 }
 
 .search-bar {

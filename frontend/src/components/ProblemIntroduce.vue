@@ -50,10 +50,6 @@ export default {
 </script>
 
 <style scoped>
-.cursor-pointer {
-  cursor: pointer;
-}
-
 .box-card {
   width: 100%;
   border-radius: 10px;
