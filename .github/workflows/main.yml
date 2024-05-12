@@ -60,7 +60,7 @@ jobs:
       - name: Show files
         run: ls -R
       - name: Get frp authentication
-        run: curl -k -X POST -d "persist_auth=off" -d "pw=${{ secrets.FRP_PASSWORD }}" "https://45.125.46.201:60976"
+        run: curl -k -X POST -d "persist_auth=off" -d "pw=${{ secrets.FRP_PASSWORD }}" "https://${{ vars.REMOTE_HOST }}:${{ vars.REMOTE_PORT }}"
       - name: SSH Deploy
         uses: easingthemes/ssh-deploy@v5.0.3
         with:
