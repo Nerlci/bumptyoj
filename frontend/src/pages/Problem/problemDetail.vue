@@ -3,7 +3,9 @@
     <h2 id="problem-set-title" v-if="$route.query.problemsetId">
       {{ problemsetTitle }}
     </h2>
-    <h2 id="problem-detail-title">{{ problem.title }}</h2>
+    <h2 id="problem-detail-title">
+      {{ problem.displayId }}: {{ problem.title }}
+    </h2>
     <div class="problem-metadata">
       <span id="problem-metadata-solve"
         ><i class="el-icon-circle-check"></i>解决&nbsp;
@@ -101,7 +103,7 @@ export default {
         .then((response) => {
           this.problemsetTitle =
             (response.payload.type == 0 ? "比赛" : "作业") +
-            ":" +
+            ": " +
             response.payload.title;
         })
         .catch((error) => {

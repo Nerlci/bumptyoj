@@ -27,16 +27,25 @@
     </div>
 
     <el-table
+      v-loading="loading"
       :data="submissions"
       style="width: 100%"
       stripe
       @row-click="handleRowClick"
     >
       <el-table-column prop="submissionId" label="评测ID"></el-table-column>
-      <el-table-column prop="problemId" label="题目"></el-table-column>
+      <el-table-column prop="displayId" label="题目">
+        <template slot-scope="scope">
+          <span
+            @click.stop="handleProblemClick(scope.row.problemId)"
+            class="cursor-pointer"
+            >{{ scope.row.displayId }}</span
+          >
+        </template>
+      </el-table-column>
       <el-table-column prop="status" label="状态"></el-table-column>
       <el-table-column prop="score" label="分数"></el-table-column>
-      <el-table-column prop="userId" label="用户"></el-table-column>
+      <el-table-column prop="username" label="用户"></el-table-column>
       <el-table-column
         prop="time"
         label="运行时间"
@@ -100,11 +109,13 @@ export default {
       pageSize: 10,
       userSearchQuery: "",
       problemSearchQuery: "",
+      loading: false,
       maxId: null, // 用于“下一页”的请求
       minId: null, // 用于“上一页”的请求
     };
   },
   mounted() {
+    this.loading = true;
     this.fetchTotal();
     this.fetchSubmissions();
   },
@@ -159,15 +170,51 @@ export default {
 
       getRequest(url)
         .then((response) => {
-          this.submissions = response.payload.submissions;
-          if (this.submissions.length > 0) {
-            this.maxId = Math.max(
-              ...this.submissions.map((sub) => sub.submissionId),
-            );
-            this.minId = Math.min(
-              ...this.submissions.map((sub) => sub.submissionId),
-            );
-          }
+          const userIdMap = new Map();
+          const problemIdMap = new Map();
+          const promises = [];
+
+          response.payload.submissions.forEach((submission) => {
+            if (userIdMap.has(submission.userId)) {
+              submission.username = userIdMap.get(submission.userId);
+            } else {
+              const promise = getRequest(`/api/user/user`, {
+                userId: submission.userId,
+              }).then((response) => {
+                submission.username = response.payload.username;
+                userIdMap.set(submission.userId, response.payload.username);
+              });
+              promises.push(promise);
+            }
+
+            if (problemIdMap.has(submission.problemId)) {
+              submission.displayId = problemIdMap.get(submission.problemId);
+            } else {
+              const promise = getRequest(`/api/problem/problem`, {
+                problemId: submission.problemId,
+              }).then((response) => {
+                submission.displayId = response.payload.metadata.displayId;
+                problemIdMap.set(
+                  submission.problemId,
+                  response.payload.metadata.displayId,
+                );
+              });
+              promises.push(promise);
+            }
+          });
+
+          Promise.all(promises).then(() => {
+            this.submissions = response.payload.submissions;
+            if (this.submissions.length > 0) {
+              this.maxId = Math.max(
+                ...this.submissions.map((sub) => sub.submissionId),
+              );
+              this.minId = Math.min(
+                ...this.submissions.map((sub) => sub.submissionId),
+              );
+            }
+            this.loading = false;
+          });
         })
         .catch((error) => {
           console.error("Failed to fetch submissions:", error);
@@ -177,6 +224,12 @@ export default {
       this.$router.push({
         name: "statusDetail",
         params: { submissionId: row.submissionId },
+      });
+    },
+    handleProblemClick(problemId) {
+      this.$router.push({
+        name: "problemDetail",
+        params: { id: problemId },
       });
     },
     handlePreClick() {
@@ -226,6 +279,10 @@ export default {
 .status-list {
   width: 90%;
   margin: auto;
+}
+
+.cursor-pointer {
+  cursor: pointer;
 }
 
 .search-bar {

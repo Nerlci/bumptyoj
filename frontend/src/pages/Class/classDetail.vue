@@ -229,6 +229,10 @@ export default {
   margin: auto;
 }
 
+.cursor-pointer {
+  cursor: pointer;
+}
+
 .student-list {
   width: 80%;
   height: 100%;
