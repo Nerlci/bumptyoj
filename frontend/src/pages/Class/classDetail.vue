@@ -12,12 +12,12 @@
     <div class="student-list">
       <h3 style="margin-top: 20px; text-align: left">学生列表</h3>
       <el-table
-        :data="class_.studentData"
+        :data="class_.students"
         v-loading="loading"
         stripe
         style="height: 100%"
       >
-        <el-table-column label="学生 ID" prop="userId"></el-table-column>
+        <el-table-column label="学生 ID" prop="id"></el-table-column>
         <el-table-column label="学生用户名" prop="username"></el-table-column>
       </el-table>
     </div>
@@ -121,7 +121,6 @@ export default {
       class_: {
         className: "",
         students: [],
-        studentData: [],
         teacher: 0,
       },
       teacherName: "",
@@ -144,17 +143,6 @@ export default {
             userId: this.class_.teacherId,
           }).then((response) => {
             this.teacherName = response.payload.username;
-          });
-
-          this.class_.students.forEach((studentId) => {
-            this.getRequest("/api/user/user", {
-              userId: studentId,
-            }).then((response) => {
-              this.class_.studentData.push({
-                userId: response.payload.userId,
-                username: response.payload.username,
-              });
-            });
           });
 
           this.loading = false;

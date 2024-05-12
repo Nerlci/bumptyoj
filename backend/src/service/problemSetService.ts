@@ -28,9 +28,7 @@ const mapDataToProblemSet = (data: ProblemSet) => {
 const mapProblemSetToResponse = (result: any) => {
   return {
     ...mapProblemSetToResponseBase(result),
-    problems: result.problems.map((problem: any) => {
-      return problem.id;
-    }),
+    problems: result.problems,
     contestType: result.contestType,
   };
 };
@@ -40,9 +38,7 @@ const mapProblemSetToResponseWithClass = (result: any) => {
     className: result.classes.map((cls: any) => cls.name),
     homework: {
       ...mapProblemSetToResponseBase(result),
-      problems: result.problems.map((problem: any) => {
-        return problem.id;
-      }),
+      problems: result.problems,
     },
   };
 };
@@ -83,7 +79,13 @@ const getProblemSet = async (setId: number) => {
       id: setId,
     },
     include: {
-      problems: true,
+      problems: {
+        select: {
+          id: true,
+          title: true,
+          displayId: true,
+        },
+      },
     },
   });
 

@@ -7,7 +7,7 @@ const mapClassToResponse = (result: any) => {
     classId: result.id,
     teacherId: result.teacherId,
     className: result.name,
-    students: result.students.map((student: any) => student.id),
+    students: result.students,
   };
 };
 
@@ -52,6 +52,7 @@ const getClass = async (classId: number) => {
       students: {
         select: {
           id: true,
+          username: true,
         },
       },
     },

@@ -47,9 +47,9 @@
           添加题目
         </el-button>
 
-        <el-table :data="contest.problemData">
+        <el-table :data="contest.problems">
           <el-table-column
-            prop="problemId"
+            prop="id"
             width="76px"
             label="题目 ID"
           ></el-table-column>
@@ -106,7 +106,7 @@ export default {
           const requestData = {
             problemsetId: this.contest.problemsetId,
             title: this.contest.title,
-            problems: this.contest.problems,
+            problems: this.contest.problems.map((problem) => problem.id),
             startTime: this.contest.startTime,
             endTime: this.contest.endTime,
             description: this.contest.description,
@@ -142,9 +142,8 @@ export default {
       }
       this.getRequest(`/api/problem/problem?problemId=${problemId}`).then(
         (response) => {
-          this.contest.problems.push(problemId);
-          this.contest.problemData.push({
-            problemId: response.payload.metadata.problemId,
+          this.contest.problems.push({
+            id: response.payload.metadata.problemId,
             displayId: response.payload.metadata.displayId,
             title: response.payload.metadata.title,
           });
@@ -183,10 +182,7 @@ export default {
     },
     deleteProblem(problemId) {
       this.contest.problems = this.contest.problems.filter(
-        (problem) => problem !== problemId,
-      );
-      this.contest.problemData = this.contest.problemData.filter(
-        (problem) => problem.problemId !== problemId,
+        (problem) => problem.id !== problemId,
       );
     },
     onchange(value) {

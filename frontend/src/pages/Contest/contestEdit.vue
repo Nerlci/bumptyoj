@@ -20,7 +20,6 @@ export default {
         title: "",
         description: "",
         problems: [],
-        problemData: [],
         startTime: "",
         endTime: "",
         time: [],
@@ -42,18 +41,6 @@ export default {
             new Date(this.contest.startTime),
             new Date(this.contest.endTime),
           ];
-
-          this.contest.problems.forEach((problem) => {
-            this.getRequest("/api/problem/problem", {
-              problemId: problem,
-            }).then((response) => {
-              this.contest.problemData.push({
-                problemId: response.payload.metadata.problemId,
-                displayId: response.payload.metadata.displayId,
-                title: response.payload.metadata.title,
-              });
-            });
-          });
 
           this.loading = false;
         })

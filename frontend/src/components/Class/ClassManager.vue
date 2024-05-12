@@ -25,9 +25,9 @@
           添加学生
         </el-button>
 
-        <el-table :data="class_.studentData">
+        <el-table :data="class_.students">
           <el-table-column
-            prop="userId"
+            prop="id"
             width="100px"
             label="学生用户 ID"
           ></el-table-column>
@@ -82,7 +82,7 @@ export default {
             classId: this.class_.classId,
             className: this.class_.className,
             teacherId: this.class_.teacherId,
-            students: this.class_.students,
+            students: this.class_.students.map((student) => student.id),
           };
 
           putRequest(
@@ -117,9 +117,8 @@ export default {
         return;
       }
       this.getRequest(`/api/user/user?userId=${studentId}`).then((response) => {
-        this.class_.students.push(studentId);
-        this.class_.studentData.push({
-          userId: response.payload.userId,
+        this.class_.students.push({
+          id: response.payload.userId,
           username: response.payload.username,
         });
         this.studentId = "";
@@ -156,10 +155,7 @@ export default {
     },
     deleteStudent(studentId) {
       this.class_.students = this.class_.students.filter(
-        (student) => student !== studentId,
-      );
-      this.class_.studentData = this.class_.studentData.filter(
-        (student) => student.userId !== studentId,
+        (student) => student.id !== studentId,
       );
     },
   },

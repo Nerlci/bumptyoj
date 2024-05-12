@@ -151,6 +151,16 @@ const getSubmission = async (submissionId: number) => {
     where: { id: submissionId },
     include: {
       detail: true,
+      user: {
+        select: {
+          username: true,
+        },
+      },
+      problem: {
+        select: {
+          displayId: true,
+        },
+      },
     },
   });
 };
@@ -162,6 +172,7 @@ const listSubmission = async (
   submissionId: number | undefined,
   userId: number | undefined,
   problemId: number | undefined,
+  problemsetId: number | undefined,
 ) => {
   return prisma.submission.findMany({
     orderBy: {
@@ -176,6 +187,19 @@ const listSubmission = async (
       },
       userId: userId,
       problemId: problemId,
+      problemsetId: problemsetId,
+    },
+    include: {
+      user: {
+        select: {
+          username: true,
+        },
+      },
+      problem: {
+        select: {
+          displayId: true,
+        },
+      },
     },
   });
 };
@@ -183,11 +207,13 @@ const listSubmission = async (
 const countSubmission = async (
   userId: number | undefined,
   problemId: number | undefined,
+  problemsetId: number | undefined,
 ) => {
   return prisma.submission.count({
     where: {
       userId: userId,
       problemId: problemId,
+      problemsetId: problemsetId,
     },
   });
 };
