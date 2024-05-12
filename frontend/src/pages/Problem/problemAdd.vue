@@ -24,22 +24,46 @@
         ></el-input>
       </el-form-item>
       <el-form-item label="描述">
-        <el-input type="textarea" v-model="problem.description"></el-input>
+        <el-input
+          :autosize="{ minRows: 12, maxRows: 25 }"
+          type="textarea"
+          v-model="problem.description"
+        ></el-input>
       </el-form-item>
       <el-form-item label="输入格式">
-        <el-input type="textarea" v-model="problem.format.input"></el-input>
+        <el-input
+          :autosize="{ minRows: 4, maxRows: 6 }"
+          type="textarea"
+          v-model="problem.format.input"
+        ></el-input>
       </el-form-item>
       <el-form-item label="输出格式">
-        <el-input type="textarea" v-model="problem.format.output"></el-input>
+        <el-input
+          :autosize="{ minRows: 4, maxRows: 6 }"
+          type="textarea"
+          v-model="problem.format.output"
+        ></el-input>
       </el-form-item>
       <el-form-item label="样例输入">
-        <el-input type="textarea" v-model="problem.sample.input"></el-input>
+        <el-input
+          :autosize="{ minRows: 2, maxRows: 4 }"
+          type="textarea"
+          v-model="problem.sample.input"
+        ></el-input>
       </el-form-item>
       <el-form-item label="样例输出">
-        <el-input type="textarea" v-model="problem.sample.output"></el-input>
+        <el-input
+          :autosize="{ minRows: 2, maxRows: 4 }"
+          type="textarea"
+          v-model="problem.sample.output"
+        ></el-input>
       </el-form-item>
       <el-form-item label="其他信息">
-        <el-input type="textarea" v-model="problem.other"></el-input>
+        <el-input
+          :autosize="{ minRows: 3, maxRows: 6 }"
+          type="textarea"
+          v-model="problem.other"
+        ></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitProblem">添加题目</el-button>

@@ -14,6 +14,16 @@
         <el-input v-model="problem.title"></el-input>
       </el-form-item>
 
+      <el-form-item label="难度">
+        <el-input v-model="problem.difficulty"></el-input>
+      </el-form-item>
+      <el-form-item label="时间限制">
+        <el-input v-model.number="problem.time" type="number"></el-input>
+      </el-form-item>
+      <el-form-item label="内存限制">
+        <el-input v-model.number="problem.memory" type="number"> </el-input>
+      </el-form-item>
+
       <el-form-item label="描述" prop="description">
         <el-input
           v-model="problem.description"
