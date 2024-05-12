@@ -136,6 +136,8 @@ export default {
 
 .item {
   text-align: left;
+  white-space: pre-wrap;
+  font-size: 16px;
   font-family: Consolas, Monaco, monospace;
 }
 
