@@ -41,6 +41,7 @@
           class="problem-input"
           placeholder="题目ID"
           v-model.number="problemId"
+          oninput="value=value.replace(/[^0-9.]/g,'')"
         ></el-input>
         <el-button type="primary" class="add-problem" @click="addProblem">
           添加题目

@@ -15,6 +15,7 @@
           class="student-input"
           placeholder="学生用户 ID"
           v-model.number="studentId"
+          oninput="value=value.replace(/[^0-9.]/g,'')"
         ></el-input>
         <el-button type="primary" class="add-student" @click="addStudent">
           添加学生
