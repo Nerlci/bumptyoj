@@ -18,7 +18,6 @@ export default {
         className: "",
         teacherId: 0,
         students: [],
-        studentData: [],
       },
     };
   },

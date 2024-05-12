@@ -17,7 +17,7 @@
           <div class="collapse-title">题目列表</div>
         </template>
         <el-card class="box-card" shadow="hover">
-          <el-table :data="contest.problemData" @row-click="handleRowClick">
+          <el-table :data="contest.problems" @row-click="handleRowClick">
             <el-table-column
               prop="displayId"
               width="76px"
@@ -41,7 +41,6 @@ export default {
   data() {
     return {
       activeName: ["1", "2"],
-      problemData: [],
       md: new MarkdownIt({
         html: true,
         linkify: true,
@@ -57,7 +56,7 @@ export default {
       }
       this.$router.push({
         name: "problemDetail",
-        params: { id: row.problemId },
+        params: { id: row.id },
         query: { problemsetId: this.contest.problemsetId },
       });
     },

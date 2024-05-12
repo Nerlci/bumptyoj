@@ -55,6 +55,7 @@ const constRouter = [
   {
     path: "/status",
     name: "status",
+    query: { param: "problemsetId" },
     component: status,
   },
   {

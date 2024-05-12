@@ -117,8 +117,6 @@ export default {
       loading: false,
       maxId: null, // 用于“下一页”的请求
       minId: null, // 用于“上一页”的请求
-      userIdMap: new Map(),
-      problemIdMap: new Map(),
     };
   },
   mounted() {
@@ -129,13 +127,19 @@ export default {
   methods: {
     fetchTotal() {
       let url = "/api/submission/count";
-      if (this.problemSearchQuery || this.userSearchQuery) {
+      if (
+        this.problemSearchQuery ||
+        this.userSearchQuery ||
+        this.$route.query.problemsetId
+      ) {
         url += "?";
       }
       if (this.problemSearchQuery)
         url += `&problemId=${encodeURIComponent(this.problemSearchQuery)}`;
       if (this.userSearchQuery)
         url += `&userId=${encodeURIComponent(this.userSearchQuery)}`;
+      if (this.$route.query.problemsetId)
+        url += `&problemsetId=${this.$route.query.problemsetId}`;
 
       getRequest(url)
         .then((response) => {
@@ -152,6 +156,8 @@ export default {
         url += `&problemId=${encodeURIComponent(this.problemSearchQuery)}`;
       if (this.userSearchQuery)
         url += `&userId=${encodeURIComponent(this.userSearchQuery)}`;
+      if (this.$route.query.problemsetId)
+        url += `&problemsetId=${this.$route.query.problemsetId}`;
 
       if (direction === "next" && this.maxId) {
         url += `&maxId=${this.minId}`;
@@ -166,55 +172,13 @@ export default {
               response.payload.submissions.reverse();
           }
 
-          const userIdSet = new Set();
-          const problemIdSet = new Set();
-          const promises = [];
-
-          response.payload.submissions.forEach((submission) => {
-            if (!this.userIdMap.has(submission.userId)) {
-              userIdSet.add(submission.userId);
-            }
-            if (!this.problemIdMap.has(submission.problemId)) {
-              problemIdSet.add(submission.problemId);
-            }
-          });
-
-          userIdSet.forEach((userId) => {
-            promises.push(
-              getRequest(`/api/user/user?userId=${userId}`).then((response) => {
-                this.userIdMap.set(userId, response.payload.username);
-              }),
-            );
-          });
-
-          problemIdSet.forEach((problemId) => {
-            promises.push(
-              getRequest(`/api/problem/problem?problemId=${problemId}`).then(
-                (response) => {
-                  this.problemIdMap.set(problemId, response.payload.metadata);
-                },
-              ),
-            );
-          });
-
-          Promise.all(promises).then(() => {
-            this.submissions = response.payload.submissions.map(
-              (submission) => {
-                return {
-                  ...submission,
-                  username: this.userIdMap.get(submission.userId),
-                  displayId: this.problemIdMap.get(submission.problemId)
-                    .displayId,
-                };
-              },
-            );
-            this.maxId = response.payload.submissions[0].submissionId;
+          this.submissions = response.payload.submissions;
+          if (this.submissions.length > 0) {
+            this.maxId = this.submissions[0].submissionId;
             this.minId =
-              response.payload.submissions[
-                response.payload.submissions.length - 1
-              ].submissionId;
-            this.loading = false;
-          });
+              this.submissions[this.submissions.length - 1].submissionId;
+          }
+          this.loading = false;
         })
         .catch((error) => {
           console.error("Failed to fetch submissions:", error);

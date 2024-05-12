@@ -37,6 +37,14 @@
       排行榜
     </el-button>
 
+    <el-button
+      @click="showStatus(contest.problemsetId)"
+      type="primary"
+      class="show-rank-button"
+    >
+      状态
+    </el-button>
+
     <div class="contest-detail-main">
       <contest-info :contest="contest" />
     </div>
@@ -98,18 +106,6 @@ export default {
             });
           }
 
-          this.contest.problems.forEach((problem) => {
-            this.getRequest("/api/problem/problem", {
-              problemId: problem,
-            }).then((response) => {
-              this.contest.problemData.push({
-                problemId: response.payload.metadata.problemId,
-                displayId: response.payload.metadata.displayId,
-                title: response.payload.metadata.title,
-              });
-            });
-          });
-
           this.loading = false;
         })
         .catch((error) => {
@@ -144,6 +140,12 @@ export default {
     },
     showRank(problemsetId) {
       this.$router.push({ name: "contestRank", params: { id: problemsetId } });
+    },
+    showStatus(problemsetId) {
+      this.$router.push({
+        name: "status",
+        query: { problemsetId: problemsetId },
+      });
     },
     checkTime(time) {
       const now = DateTime.now();

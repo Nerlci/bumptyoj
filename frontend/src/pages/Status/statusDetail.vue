@@ -145,30 +145,11 @@ export default {
       const submissionId = this.$route.params.submissionId;
       getRequest("/api/submission/submission", { submissionId })
         .then((response) => {
-          const promises = [];
           const detail = response.payload;
 
-          promises.push(
-            getRequest(`/api/user/user?userId=${detail.userId}`).then(
-              (response) => {
-                detail.username = response.payload.username;
-              },
-            ),
-          );
-
-          promises.push(
-            getRequest(
-              `/api/problem/problem?problemId=${detail.problemId}`,
-            ).then((response) => {
-              detail.displayId = response.payload.metadata.displayId;
-            }),
-          );
-
-          Promise.all(promises).then(() => {
-            this.detail = detail;
-            this.fillCode(this.detail.code, this.detail.language);
-            this.loading = false;
-          });
+          this.detail = detail;
+          this.fillCode(this.detail.code, this.detail.language);
+          this.loading = false;
         })
         .catch((error) => {
           console.error("Failed to fetch submission details:", error);
