@@ -27,16 +27,25 @@
     </div>
 
     <el-table
+      v-loading="loading"
       :data="submissions"
       style="width: 100%"
       stripe
       @row-click="handleRowClick"
     >
       <el-table-column prop="submissionId" label="评测ID"></el-table-column>
-      <el-table-column prop="problemId" label="题目"></el-table-column>
+      <el-table-column prop="displayId" label="题目">
+        <template slot-scope="scope">
+          <span
+            @click.stop="handleProblemClick(scope.row.problemId)"
+            class="cursor-pointer"
+            >{{ scope.row.displayId }}</span
+          >
+        </template>
+      </el-table-column>
       <el-table-column prop="status" label="状态"></el-table-column>
       <el-table-column prop="score" label="分数"></el-table-column>
-      <el-table-column prop="userId" label="用户"></el-table-column>
+      <el-table-column prop="username" label="用户"></el-table-column>
       <el-table-column
         prop="time"
         label="运行时间"
@@ -84,7 +93,12 @@
 
 <script>
 import { getRequest } from "@/utils/request";
-import { DateTime } from "luxon";
+import {
+  formatTime,
+  formatMemory,
+  formatCodeLength,
+  formatTimestamp,
+} from "@/utils/formatter";
 import Pagination from "../../components/Pagination";
 
 export default {
@@ -100,31 +114,19 @@ export default {
       pageSize: 10,
       userSearchQuery: "",
       problemSearchQuery: "",
+      loading: false,
       maxId: null, // 用于“下一页”的请求
       minId: null, // 用于“上一页”的请求
+      userIdMap: new Map(),
+      problemIdMap: new Map(),
     };
   },
   mounted() {
+    this.loading = true;
     this.fetchTotal();
     this.fetchSubmissions();
   },
   methods: {
-    getMemoryUnit(value) {
-      const thresholds = {
-        B: 1,
-        KB: 1024,
-        MB: 1024 * 1024,
-      };
-      let unit = "B";
-      for (const [key, threshold] of Object.entries(thresholds)) {
-        if (value >= threshold) {
-          unit = key;
-        } else {
-          break;
-        }
-      }
-      return { unit, threshold: thresholds[unit] };
-    },
     fetchTotal() {
       let url = "/api/submission/count";
       if (this.problemSearchQuery || this.userSearchQuery) {
@@ -159,15 +161,60 @@ export default {
 
       getRequest(url)
         .then((response) => {
-          this.submissions = response.payload.submissions;
-          if (this.submissions.length > 0) {
-            this.maxId = Math.max(
-              ...this.submissions.map((sub) => sub.submissionId),
-            );
-            this.minId = Math.min(
-              ...this.submissions.map((sub) => sub.submissionId),
-            );
+          if (direction === "prev") {
+            response.payload.submissions =
+              response.payload.submissions.reverse();
           }
+
+          const userIdSet = new Set();
+          const problemIdSet = new Set();
+          const promises = [];
+
+          response.payload.submissions.forEach((submission) => {
+            if (!this.userIdMap.has(submission.userId)) {
+              userIdSet.add(submission.userId);
+            }
+            if (!this.problemIdMap.has(submission.problemId)) {
+              problemIdSet.add(submission.problemId);
+            }
+          });
+
+          userIdSet.forEach((userId) => {
+            promises.push(
+              getRequest(`/api/user/user?userId=${userId}`).then((response) => {
+                this.userIdMap.set(userId, response.payload.username);
+              }),
+            );
+          });
+
+          problemIdSet.forEach((problemId) => {
+            promises.push(
+              getRequest(`/api/problem/problem?problemId=${problemId}`).then(
+                (response) => {
+                  this.problemIdMap.set(problemId, response.payload.metadata);
+                },
+              ),
+            );
+          });
+
+          Promise.all(promises).then(() => {
+            this.submissions = response.payload.submissions.map(
+              (submission) => {
+                return {
+                  ...submission,
+                  username: this.userIdMap.get(submission.userId),
+                  displayId: this.problemIdMap.get(submission.problemId)
+                    .displayId,
+                };
+              },
+            );
+            this.maxId = response.payload.submissions[0].submissionId;
+            this.minId =
+              response.payload.submissions[
+                response.payload.submissions.length - 1
+              ].submissionId;
+            this.loading = false;
+          });
         })
         .catch((error) => {
           console.error("Failed to fetch submissions:", error);
@@ -177,6 +224,12 @@ export default {
       this.$router.push({
         name: "statusDetail",
         params: { submissionId: row.submissionId },
+      });
+    },
+    handleProblemClick(problemId) {
+      this.$router.push({
+        name: "problemDetail",
+        params: { id: problemId },
       });
     },
     handlePreClick() {
@@ -195,29 +248,10 @@ export default {
         this.$message.error("已经是最后一页了！");
       }
     },
-    formatTimestamp(value) {
-      const dt = DateTime.fromISO(value.timestamp, { zone: "Asia/Shanghai" });
-      return dt.toRelative();
-    },
-    formatTime(value) {
-      if (value.time > 1000) {
-        return `${(value.time / 1000).toFixed(2)} s`;
-      } else {
-        return `${value.time} ms`;
-      }
-    },
-    formatMemory(value) {
-      let length = value.memory;
-      const { unit, threshold } = this.getMemoryUnit(length);
-      length = length / threshold;
-      return `${unit === "B" ? length : length.toFixed(2)} ${unit}`;
-    },
-    formatCodeLength(value) {
-      let length = value.length;
-      const { unit, threshold } = this.getMemoryUnit(length);
-      length = length / threshold;
-      return `${unit === "B" ? length : length.toFixed(2)} ${unit}`;
-    },
+    formatTime,
+    formatMemory,
+    formatCodeLength,
+    formatTimestamp,
   },
 };
 </script>

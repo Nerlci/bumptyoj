@@ -1,12 +1,20 @@
 <template>
   <div class="status-detail">
     <el-card class="box-card">
-      <el-table :data="detailArray" style="width: 100%">
+      <el-table v-loading="loading" :data="detailArray" style="width: 100%">
         <el-table-column prop="submissionId" label="评测ID"></el-table-column>
-        <el-table-column prop="problemId" label="题目"></el-table-column>
+        <el-table-column prop="displayId" label="题目">
+          <template slot-scope="scope">
+            <span
+              @click.stop="handleProblemClick(scope.row.problemId)"
+              class="cursor-pointer"
+              >{{ scope.row.displayId }}</span
+            >
+          </template>
+        </el-table-column>
         <el-table-column prop="status" label="状态"></el-table-column>
         <el-table-column prop="score" label="分数"></el-table-column>
-        <el-table-column prop="userId" label="用户"></el-table-column>
+        <el-table-column prop="username" label="用户"></el-table-column>
         <el-table-column
           prop="time"
           label="运行时间"
@@ -53,7 +61,12 @@
 
 <script>
 import { getRequest } from "@/utils/request";
-import { DateTime } from "luxon";
+import {
+  formatTime,
+  formatMemory,
+  formatCodeLength,
+  formatTimestamp,
+} from "@/utils/formatter";
 
 import monaco from "../../components/MonacoEditor.vue";
 
@@ -74,6 +87,7 @@ export default {
         timestamp: "",
         detail: [],
       },
+      loading: false,
       opts: {
         value: "",
         readOnly: true, // 是否可编辑
@@ -91,6 +105,7 @@ export default {
     },
   },
   created() {
+    this.loading = true;
     this.fetchSubmissionDetail();
   },
   methods: {
@@ -130,38 +145,45 @@ export default {
       const submissionId = this.$route.params.submissionId;
       getRequest("/api/submission/submission", { submissionId })
         .then((response) => {
-          if (response.code === "200" && response.payload) {
-            this.detail = response.payload;
+          const promises = [];
+          const detail = response.payload;
+
+          promises.push(
+            getRequest(`/api/user/user?userId=${detail.userId}`).then(
+              (response) => {
+                detail.username = response.payload.username;
+              },
+            ),
+          );
+
+          promises.push(
+            getRequest(
+              `/api/problem/problem?problemId=${detail.problemId}`,
+            ).then((response) => {
+              detail.displayId = response.payload.metadata.displayId;
+            }),
+          );
+
+          Promise.all(promises).then(() => {
+            this.detail = detail;
             this.fillCode(this.detail.code, this.detail.language);
-          }
+            this.loading = false;
+          });
         })
         .catch((error) => {
           console.error("Failed to fetch submission details:", error);
         });
     },
-    formatTimestamp(value) {
-      const dt = DateTime.fromISO(value.timestamp, { zone: "Asia/Shanghai" });
-      return dt.toRelative();
+    handleProblemClick(problemId) {
+      this.$router.push({
+        name: "problemDetail",
+        params: { id: problemId },
+      });
     },
-    formatTime(value) {
-      if (value.time > 1000) {
-        return `${(value.time / 1000).toFixed(2)} s`;
-      } else {
-        return `${value.time} ms`;
-      }
-    },
-    formatMemory(value) {
-      let length = value.memory;
-      const { unit, threshold } = this.getMemoryUnit(length);
-      length = length / threshold;
-      return `${unit === "B" ? length : length.toFixed(2)} ${unit}`;
-    },
-    formatCodeLength(value) {
-      let length = value.length;
-      const { unit, threshold } = this.getMemoryUnit(length);
-      length = length / threshold;
-      return `${unit === "B" ? length : length.toFixed(2)} ${unit}`;
-    },
+    formatTime,
+    formatMemory,
+    formatCodeLength,
+    formatTimestamp,
   },
 };
 </script>

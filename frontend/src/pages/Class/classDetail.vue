@@ -106,7 +106,11 @@
 
 <script>
 import { Message } from "element-ui";
-import { DateTime } from "luxon";
+import {
+  formatStartTime,
+  formatEndTime,
+  formatLongText,
+} from "../../utils/formatter";
 
 export default {
   name: "classDetail",
@@ -187,18 +191,9 @@ export default {
     getPageInfo() {
       this.getPage(1);
     },
-    formatStartTime(value) {
-      const dt = DateTime.fromISO(value.startTime, { zone: "Asia/Shanghai" });
-      return dt.toFormat("yyyy-MM-dd HH:mm:ss");
-    },
-    formatEndTime(value) {
-      const dt = DateTime.fromISO(value.endTime, { zone: "Asia/Shanghai" });
-      return dt.toFormat("yyyy-MM-dd HH:mm:ss");
-    },
-    formatLongText(value) {
-      const desc = value.description;
-      return desc.length > 20 ? desc.slice(0, 20) + "..." : desc;
-    },
+    formatStartTime,
+    formatEndTime,
+    formatLongText,
     showHomework(id) {
       this.$router.push({ name: "contestDetail", params: { id: id } });
     },

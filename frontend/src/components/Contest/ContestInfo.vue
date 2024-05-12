@@ -51,7 +51,7 @@ export default {
   },
   methods: {
     handleRowClick(row) {
-      if (!this.contest.joined) {
+      if (!this.contest.joined && this.$store.state.status.type === 1) {
         this.$message.error("请先报名比赛");
         return;
       }

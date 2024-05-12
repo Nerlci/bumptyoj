@@ -103,6 +103,11 @@
 
 <script>
 import { DateTime } from "luxon";
+import {
+  formatStartTime,
+  formatEndTime,
+  formatLongText,
+} from "../../utils/formatter";
 
 export default {
   name: "problems",
@@ -182,18 +187,9 @@ export default {
       const dt = DateTime.fromISO(time, { zone: "Asia/Shanghai" });
       return dt <= now;
     },
-    formatStartTime(value) {
-      const dt = DateTime.fromISO(value.startTime, { zone: "Asia/Shanghai" });
-      return dt.toFormat("yyyy-MM-dd HH:mm:ss");
-    },
-    formatEndTime(value) {
-      const dt = DateTime.fromISO(value.endTime, { zone: "Asia/Shanghai" });
-      return dt.toFormat("yyyy-MM-dd HH:mm:ss");
-    },
-    formatLongText(value) {
-      const desc = value.description;
-      return desc.length > 20 ? desc.slice(0, 20) + "..." : desc;
-    },
+    formatStartTime,
+    formatEndTime,
+    formatLongText,
   },
   created() {
     this.getPageInfo();
@@ -206,10 +202,6 @@ export default {
   width: 80%;
   height: 100%;
   margin: auto;
-}
-
-.cursor-pointer {
-  cursor: pointer;
 }
 
 .contest-edit {

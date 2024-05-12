@@ -39,12 +39,41 @@
           <div class="collapse-title">样例输入和输出</div>
         </template>
         <el-card class="box-card" shadow="hover">
-          <div class="collapse-content">
-            <b>输入:</b> {{ problem.sampleInput }}
-          </div>
-          <div class="collapse-content">
-            <b>输出:</b> {{ problem.sampleOutput }}
-          </div>
+          <el-row :gutter="20">
+            <el-col :span="12">
+              <el-card class="example-card" shadow="hover">
+                <div slot="header" class="clearfix">
+                  <span>样例输入</span>
+                  <el-button
+                    style="float: right; padding: 3px 0"
+                    type="text"
+                    v-clipboard:copy="problem.sampleInput"
+                    v-clipboard:success="onCopy"
+                  >
+                    复制
+                  </el-button>
+                </div>
+                <div class="text item">{{ problem.sampleInput }}</div>
+              </el-card>
+            </el-col>
+
+            <el-col :span="12">
+              <el-card class="example-card" shadow="hover">
+                <div slot="header" class="clearfix">
+                  <span>样例输出</span>
+                  <el-button
+                    style="float: right; padding: 3px 0"
+                    type="text"
+                    v-clipboard:copy="problem.sampleOutput"
+                    v-clipboard:success="onCopy"
+                  >
+                    复制
+                  </el-button>
+                </div>
+                <div class="text item">{{ problem.sampleOutput }}</div>
+              </el-card></el-col
+            >
+          </el-row>
         </el-card>
       </el-collapse-item>
       <el-collapse-item name="5">
@@ -76,6 +105,14 @@ export default {
       activeName: ["1", "2", "3", "4", "5"],
     };
   },
+  methods: {
+    onCopy() {
+      this.$message({
+        message: "复制成功",
+        type: "success",
+      });
+    },
+  },
 };
 </script>
 
@@ -84,6 +121,24 @@ export default {
 </style>
 
 <style scoped>
+.clearfix:before,
+.clearfix:after {
+  display: table;
+  content: "";
+}
+.clearfix:after {
+  clear: both;
+}
+
+.clearfix {
+  text-align: left;
+}
+
+.item {
+  text-align: left;
+  font-family: Consolas, Monaco, monospace;
+}
+
 .problem-info {
   height: 100%;
   text-align: center;
