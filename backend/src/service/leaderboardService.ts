@@ -40,8 +40,8 @@ const countLeaderboard = async (
             where: {
               status: "Accepted",
               timestamp: {
-                gte: startTime ? new Date(startTime) : undefined,
-                lte: endTime ? new Date(endTime) : undefined,
+                gte: startTime ? startTime : undefined,
+                lte: endTime ? endTime : undefined,
               },
             },
           },
@@ -67,22 +67,25 @@ const weightedLeaderboard = async (
   startTime: string | undefined,
   endTime: string | undefined,
 ) => {
-  const difficultyMap = {
-    简单: 1,
-    中等: 1.5,
-    困难: 2,
-  };
+  const difficultyMap = new Map<string, number>([
+    ["简单", 1],
+    ["中等", 1.5],
+    ["困难", 2],
+  ]);
 
-  const caseString = Object.entries(difficultyMap).reduce(
-    (acc, [key, value]) => {
-      acc += `WHEN p.difficulty = '${key}' THEN ${value}\n`;
+  const caseString = Array.from(difficultyMap.entries()).reduce(
+    (acc, [difficulty, weight]) => {
+      acc += `WHEN p.difficulty = '${difficulty}' THEN ${weight} `;
       return acc;
     },
     "",
   );
-
-  const startTimeCondition = startTime ? `timestamp >= '${startTime}'` : "1=1";
-  const endTimeCondition = endTime ? `timestamp <= '${endTime}'` : "1=1";
+  const startTimeCondition = startTime
+    ? Prisma.sql`timestamp >= ${new Date(startTime)}`
+    : "1=1";
+  const endTimeCondition = endTime
+    ? Prisma.sql`timestamp <= ${new Date(endTime)}`
+    : "1=1";
 
   const scores = await prisma.$queryRaw<{ userId: number; score: number }[]>`
     SELECT s.userId, SUM(
@@ -93,7 +96,7 @@ const weightedLeaderboard = async (
     FROM Submission s
     INNER JOIN Problem p ON s.problemId = p.id
     WHERE status = 'Accepted' 
-    AND ${startTimeCondition} 
+    AND ${startTimeCondition}
     AND ${endTimeCondition}
     GROUP BY s.userId
     `;
