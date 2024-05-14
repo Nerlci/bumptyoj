@@ -60,7 +60,7 @@ export default {
       time: [],
       pickerOptions: {
         disabledDate(time) {
-          return time.getTime() >= Date.now();
+          return time.getTime() > Date.now();
         },
         shortcuts: [
           {
