@@ -14,7 +14,6 @@
         start-placeholder="开始时间"
         end-placeholder="结束时间"
         :picker-options="pickerOptions"
-        :default-time="[nowTime(), nowTime()]"
       >
       </el-date-picker>
     </div>
@@ -98,9 +97,6 @@ export default {
   methods: {
     onPick() {
       this.getPageInfo();
-    },
-    nowTime() {
-      return new Date().toISOString().slice(11, 19);
     },
     getPage(index) {
       this.pageIndex = index;
