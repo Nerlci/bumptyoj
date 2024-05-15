@@ -131,6 +131,7 @@ export default {
           if (response.code === "200") {
             this.$message.success("报名成功！");
             this.contest.joined = true;
+            this.joined = true;
           } else {
             this.$message.error("报名失败: " + response.error.msg);
           }

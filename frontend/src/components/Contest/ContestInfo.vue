@@ -54,7 +54,7 @@ export default {
         this.$message.error("请先报名比赛");
         return;
       }
-      if (this.contest.startTime > new Date().getTime()) {
+      if (new Date(this.contest.startTime) > new Date()) {
         this.$message.error("比赛尚未开始");
         return;
       }

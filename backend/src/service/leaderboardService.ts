@@ -73,13 +73,11 @@ const weightedLeaderboard = async (
     ["困难", 2],
   ]);
 
-  const caseString = Array.from(difficultyMap.entries()).reduce(
-    (acc, [difficulty, weight]) => {
+  const caseString =
+    Array.from(difficultyMap.entries()).reduce((acc, [difficulty, weight]) => {
       acc += `WHEN p.difficulty = '${difficulty}' THEN ${weight} `;
       return acc;
-    },
-    "",
-  );
+    }, "") + "ELSE 0";
   const startTimeCondition = startTime
     ? Prisma.sql`timestamp >= ${new Date(startTime)}`
     : "1=1";
@@ -130,6 +128,14 @@ const weightedLeaderboard = async (
 };
 
 const problemsetLeaderboard = async (setId: number) => {
+  const contestType = (await prisma.problemSet.findUnique({
+    where: {
+      id: setId,
+    },
+    select: {
+      contestType: true,
+    },
+  }))!.contestType;
   const problemSet = await prisma.problemSet.findUnique({
     where: {
       id: setId,
@@ -153,7 +159,10 @@ const problemsetLeaderboard = async (setId: number) => {
       },
       submissions: {
         where: {
-          status: "Accepted",
+          status: contestType == 1 ? "Accepted" : undefined,
+          score: {
+            gt: contestType == 0 ? 0 : undefined,
+          },
         },
         select: {
           userId: true,
@@ -164,8 +173,6 @@ const problemsetLeaderboard = async (setId: number) => {
       },
     },
   });
-
-  const contestType = problemSet!.contestType;
 
   const scores = problemSet!.submissions.reduce(
     (acc, submission) => {

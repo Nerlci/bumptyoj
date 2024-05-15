@@ -101,6 +101,11 @@ export default {
         problemsetId: this.$route.query.problemsetId,
       })
         .then((response) => {
+          if (new Date(response.payload.startTime) > new Date()) {
+            Message.error("比赛尚未开始");
+            return;
+          }
+          this.updatePro();
           this.problemsetTitle =
             (response.payload.type == 0 ? "比赛" : "作业") +
             ": " +
@@ -109,8 +114,9 @@ export default {
         .catch((error) => {
           console.log(error);
         });
+    } else {
+      this.updatePro();
     }
-    this.updatePro();
   },
   mounted() {
     this.show = true;
