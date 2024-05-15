@@ -51,6 +51,7 @@ const generateResult = async (submissionData: Submission) => {
     ...submissionData,
     detail,
     status: accepted ? "Accepted" : "Unaccepted",
+    score: accepted ? 100 : submissionData.score,
   };
 };
 

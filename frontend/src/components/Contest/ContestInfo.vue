@@ -54,6 +54,10 @@ export default {
         this.$message.error("请先报名比赛");
         return;
       }
+      if (this.contest.startTime > new Date().getTime()) {
+        this.$message.error("比赛尚未开始");
+        return;
+      }
       this.$router.push({
         name: "problemDetail",
         params: { id: row.id },
