@@ -80,17 +80,6 @@
   </div>
 </template>
 
-<style scoped>
-.status-list {
-  width: 90%;
-  margin: auto;
-}
-
-.search-input {
-  margin-right: 8px;
-}
-</style>
-
 <script>
 import { getRequest } from "@/utils/request";
 import {
@@ -127,21 +116,12 @@ export default {
   methods: {
     fetchTotal() {
       let url = "/api/submission/count";
-      if (
-        this.problemSearchQuery ||
-        this.userSearchQuery ||
-        this.$route.query.problemsetId
-      ) {
-        url += "?";
-      }
-      if (this.problemSearchQuery)
-        url += `&problemId=${encodeURIComponent(this.problemSearchQuery)}`;
-      if (this.userSearchQuery)
-        url += `&userId=${encodeURIComponent(this.userSearchQuery)}`;
-      if (this.$route.query.problemsetId)
-        url += `&problemsetId=${this.$route.query.problemsetId}`;
 
-      getRequest(url)
+      getRequest(url, {
+        problemId: this.problemSearchQuery,
+        userId: this.userSearchQuery,
+        problemsetId: this.$route.query.problemsetId,
+      })
         .then((response) => {
           this.total = response.payload.count;
           this.maxPage = Math.ceil(this.total / this.pageSize);
@@ -151,21 +131,16 @@ export default {
         });
     },
     fetchSubmissions(direction) {
-      let url = `/api/submission/list?count=${this.pageSize}`;
-      if (this.problemSearchQuery)
-        url += `&problemId=${encodeURIComponent(this.problemSearchQuery)}`;
-      if (this.userSearchQuery)
-        url += `&userId=${encodeURIComponent(this.userSearchQuery)}`;
-      if (this.$route.query.problemsetId)
-        url += `&problemsetId=${this.$route.query.problemsetId}`;
+      let url = `/api/submission/list`;
 
-      if (direction === "next" && this.maxId) {
-        url += `&maxId=${this.minId}`;
-      } else if (direction === "prev" && this.minId) {
-        url += `&minId=${this.maxId}`;
-      }
-
-      getRequest(url)
+      getRequest(url, {
+        count: this.pageSize,
+        problemId: this.problemSearchQuery,
+        userId: this.userSearchQuery,
+        problemsetId: this.$route.query.problemsetId,
+        ...(direction === "next" && this.maxId ? { maxId: this.minId } : {}),
+        ...(direction === "prev" && this.minId ? { minId: this.maxId } : {}),
+      })
         .then((response) => {
           if (direction === "prev") {
             response.payload.submissions =
@@ -224,6 +199,10 @@ export default {
 .status-list {
   width: 90%;
   margin: auto;
+}
+
+.search-input {
+  margin-right: 8px;
 }
 
 .search-bar {
