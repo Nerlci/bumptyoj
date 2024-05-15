@@ -109,22 +109,6 @@ export default {
     this.fetchSubmissionDetail();
   },
   methods: {
-    getMemoryUnit(value) {
-      const thresholds = {
-        B: 1,
-        KB: 1024,
-        MB: 1024 * 1024,
-      };
-      let unit = "B";
-      for (const [key, threshold] of Object.entries(thresholds)) {
-        if (value >= threshold) {
-          unit = key;
-        } else {
-          break;
-        }
-      }
-      return { unit, threshold: thresholds[unit] };
-    },
     fillCode(code, language) {
       this.opts.value = code;
       switch (language) {
