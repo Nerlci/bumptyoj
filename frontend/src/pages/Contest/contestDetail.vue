@@ -73,8 +73,8 @@ export default {
         type: 0,
         contestType: 0,
       },
-      joined: false,
       startString: "",
+      joined: false,
       endString: "",
       percentage: 0,
     };
@@ -101,6 +101,7 @@ export default {
               problemsetId: this.$route.params.id,
             }).then((response) => {
               this.joined = response.payload.joined;
+              this.contest.joined = response.payload.joined;
             });
           }
 
