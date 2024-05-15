@@ -70,8 +70,19 @@ const handleJudge = async (data: Submission) => {
   const { submissionId, detail, ...rest } = data;
 
   if (data.problemsetId) {
-    const problemSet = await problemSetService.getProblemSet(data.problemsetId);
-    const joined = problemSetService.getProblemSetStatus(
+    const problemSet = await prisma.problemSet.findUnique({
+      where: {
+        id: data.problemsetId,
+      },
+      include: {
+        problems: {
+          select: {
+            id: true,
+          },
+        },
+      },
+    });
+    const joined = await problemSetService.getProblemSetStatus(
       data.problemsetId,
       data.userId,
     );
@@ -86,6 +97,12 @@ const handleJudge = async (data: Submission) => {
 
     if (problemSet!.endTime! < new Date()) {
       throw new Error("Problemset has ended");
+    }
+
+    if (
+      problemSet!.problems!.findIndex((p) => p.id === data.problemId) === -1
+    ) {
+      throw new Error("Problem not in problemset");
     }
   }
 
