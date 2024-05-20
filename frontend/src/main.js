@@ -5,8 +5,12 @@ import ElementUI from "element-ui";
 import "element-ui/lib/theme-chalk/index.css";
 import { Message } from "element-ui";
 
-import { getRequest } from "@/utils/request";
-import { postRequest } from "@/utils/request";
+import {
+  getRequest,
+  postRequest,
+  putRequest,
+  deleteRequest,
+} from "./utils/request";
 
 import db from "./utils/sessionStorage";
 import * as config from "./utils/config";
@@ -33,6 +37,8 @@ Vue.prototype.$config = config;
 Vue.prototype.$message = Message;
 Vue.prototype.getRequest = getRequest;
 Vue.prototype.postRequest = postRequest;
+Vue.prototype.putRequest = putRequest;
+Vue.prototype.deleteRequest = deleteRequest;
 
 new Vue({
   router,

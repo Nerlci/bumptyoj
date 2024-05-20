@@ -102,24 +102,23 @@ export default {
   },
   methods: {
     submitProblem() {
-      this.$refs["problemForm"].validate((valid) => {
-        if (valid) {
-          postRequest("/api/problem/problem", this.problem)
-            .then((response) => {
-              if (response.code === "200") {
-                this.$message({
-                  message: "题目添加成功",
-                  type: "success",
-                });
-                // 通常在成功后会跳转到题目列表或显示题目详情
-                this.$router.replace("/problems");
-              } else {
-                this.$message.error("添加失败: " + response.data.error.msg);
-              }
-            })
-            .catch((error) => {
-              this.$message.error("添加失败: " + error.message);
-            });
+      this.$refs["problemForm"].validate(async (valid) => {
+        if (!valid) {
+          return;
+        }
+        const response = await postRequest(
+          "/api/problem/problem",
+          this.problem,
+        );
+        if (response.code === "200") {
+          this.$message({
+            message: "题目添加成功",
+            type: "success",
+          });
+          // 通常在成功后会跳转到题目列表或显示题目详情
+          this.$router.replace("/problems");
+        } else {
+          this.$message.error("添加失败: " + response.data.error.msg);
         }
       });
     },

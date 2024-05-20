@@ -8,13 +8,7 @@
         <el-button @click="Register" icon="el-icon-edit">注册</el-button>
       </div>
       <div v-else>
-        <el-button
-          type="primary"
-          @click="Manager"
-          v-if="this.$store.state.status.canAdd"
-          >添加</el-button
-        >
-        <el-button type="primary">{{
+        <el-button @click="userInfo" type="primary">{{
           this.$store.state.status.username
         }}</el-button>
         <el-button @click="logout" type="info">注销</el-button>
@@ -34,6 +28,9 @@ export default {
     },
     Register() {
       this.$router.push({ name: "register" });
+    },
+    userInfo() {
+      this.$router.push({ name: "user" });
     },
     logout() {
       this.getRequest("/api/user/logout").then(() => {

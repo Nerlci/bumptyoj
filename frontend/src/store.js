@@ -18,6 +18,7 @@ export default new Vuex.Store({
       state.status.isLogin = true;
       state.status.username = payload.username;
       state.status.userId = payload.userId;
+      state.status.email = payload.email;
       state.status.type = payload.type;
     },
     logout(state) {

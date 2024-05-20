@@ -150,29 +150,13 @@ export default {
   },
   methods: {
     submitForm(registerForm) {
-      this.$refs[registerForm].validate((valid) => {
+      this.$refs[registerForm].validate(async (valid) => {
         if (valid) {
           this.loading = true;
-          postRequest("/api/user/register", this.registerForm)
-            .then((resp) => {
-              this.loading = false;
-              // 首先确认resp不为空，且有code属性
-              if (resp && resp.code === "200") {
-                this.$router.replace("/login");
-              } else {
-                // 如果error对象和msg都存在，则显示错误信息，否则显示通用错误信息
-                Message.error(
-                  resp && resp.error && resp.error.msg
-                    ? resp.error.msg
-                    : "注册失败，未知错误",
-                );
-              }
-            })
-            .catch((error) => {
-              this.loading = false;
-              Message.error("网络请求异常");
-              console.log(error);
-            });
+          await postRequest("/api/user/register", this.registerForm);
+          this.loading = false;
+
+          this.$router.replace("/login");
         } else {
           Message.error("表单验证失败");
           return false;
