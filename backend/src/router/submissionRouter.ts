@@ -16,4 +16,10 @@ submissionRouter.get("/list", submissionController.listSubmission);
 
 submissionRouter.get("/count", submissionController.countSubmission);
 
+submissionRouter.get(
+  "/statistics",
+  authUserMiddleware,
+  submissionController.getStatistics,
+);
+
 export { submissionRouter };

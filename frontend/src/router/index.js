@@ -23,6 +23,7 @@ const class_ = () => import("../pages/Class/class");
 const classDetail = () => import("../pages/Class/classDetail");
 const classEdit = () => import("../pages/Class/classEdit");
 const classAdd = () => import("../pages/Class/classAdd");
+const user = () => import("../pages/user");
 
 Vue.use(Router);
 
@@ -36,6 +37,11 @@ const constRouter = [
     path: "/home",
     name: "home",
     component: home,
+  },
+  {
+    path: "/user",
+    name: "user",
+    component: user,
   },
   {
     path: "/login",

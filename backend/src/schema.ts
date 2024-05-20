@@ -159,3 +159,11 @@ export const problemSet = z
     },
   );
 export type ProblemSet = z.infer<typeof problemSet>;
+
+export class BumptyError extends Error {
+  code: string;
+  constructor(code: string, message: string) {
+    super(message);
+    this.code = code;
+  }
+}

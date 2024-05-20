@@ -79,18 +79,12 @@ export default {
         try {
           const resp = await postRequest("/api/user/login", this.loginForm);
           this.loading = false;
-          if (resp && resp.code === "200") {
-            this.$db.save("USER", resp.payload);
-            this.$db.save("LOGIN", "1");
-            this.$store.commit("login", resp.payload);
-            this.$router.replace("/home");
-          } else {
-            Message.error((resp && resp.error && resp.error.msg) || "登录失败");
-          }
+          this.$db.save("USER", resp.payload);
+          this.$db.save("LOGIN", "1");
+          this.$store.commit("login", resp.payload);
+          this.$router.replace("/home");
         } catch (error) {
           this.loading = false;
-          Message.error("网络请求异常或服务器错误");
-          console.error("请求错误：", error);
         }
       });
     },

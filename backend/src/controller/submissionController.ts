@@ -150,11 +150,27 @@ const countSubmission = async (req: Request, res: Response) => {
   }
 };
 
+const getStatistics = async (req: Request, res: Response) => {
+  const userId = res.locals.user.userId;
+  const result = await submissionService.getStatistics(userId);
+
+  res.send(
+    responseBase.parse({
+      code: "200",
+      payload: {
+        ...result,
+      },
+      error: { message: "" },
+    }),
+  );
+};
+
 const submissionController = {
   postSubmit,
   getSubmission,
   listSubmission,
   countSubmission,
+  getStatistics,
 };
 
 export { submissionController };

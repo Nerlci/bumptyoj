@@ -91,6 +91,12 @@ const handleJudge = async (data: Submission) => {
       throw new Error("User not joined the problemset");
     }
 
+    if (
+      problemSet!.problems!.findIndex((p) => p.id === data.problemId) === -1
+    ) {
+      throw new Error("Problem not in problemset");
+    }
+
     if (problemSet!.startTime! > new Date()) {
       throw new Error("Problemset not started yet");
     }
@@ -236,11 +242,47 @@ const countSubmission = async (
   });
 };
 
+const getStatistics = async (userId: number) => {
+  const submissions = await prisma.submission.findMany({
+    orderBy: {
+      id: "desc",
+    },
+    where: {
+      userId: userId,
+    },
+    include: {
+      problem: {
+        select: {
+          id: true,
+          displayId: true,
+        },
+      },
+    },
+  });
+
+  const problems = submissions
+    .filter((s) => s.status === "Accepted")
+    .map((s) => s.problem)
+    .filter((value, index, self) => {
+      return self.findIndex((p) => p.id === value.id) === index;
+    });
+
+  const result = {
+    acceptedCount: submissions.filter((s) => s.status === "Accepted").length,
+    submissionCount: submissions.length,
+    problemCount: problems.length,
+    problems,
+  };
+
+  return result;
+};
+
 const submissionService = {
   handleJudge,
   getSubmission,
   listSubmission,
   countSubmission,
+  getStatistics,
 };
 
 export { submissionService };

@@ -30,16 +30,15 @@ export default {
     FooterBar,
     HeaderBar,
   },
-  created() {
+  async created() {
     const hasToken = document.cookie.includes("token=");
 
     if (
       hasToken &&
       (!this.$store.state.user || !this.$store.state.user.isLogin)
     ) {
-      this.postRequest("/api/user/login").then((response) => {
-        this.$store.commit("login", response.payload);
-      });
+      const response = await this.postRequest("/api/user/login");
+      this.$store.commit("login", response.payload);
     }
     // this.getRequest('/loginStatue').then(resp => {
     //   //console.log(resp)

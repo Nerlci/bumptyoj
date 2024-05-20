@@ -59,39 +59,32 @@ export default {
     };
   },
   methods: {
-    updatePro() {
+    async updatePro() {
       this.loading = true;
-      this.getRequest("/api/problem/problem", {
+      const response = await this.getRequest("/api/problem/problem", {
         problemId: this.$route.params.id,
-      })
-        .then((response) => {
-          const data = response.payload.metadata;
-          const format = response.payload.format;
-          const sample = response.payload.sample;
-          this.problem = {
-            problemId: data.problemId,
-            displayId: data.displayId,
-            title: data.title,
-            acceptedCount: data.acceptedCount,
-            submissionCount: data.submissionCount,
-            createdAt: data.createdAt,
-            difficulty: data.difficulty,
-            time: data.time,
-            memory: data.memory,
-            description: response.payload.description,
-            inputFormat: format.input,
-            outputFormat: format.output,
-            sampleInput: sample.input,
-            sampleOutput: sample.output,
-            other: response.payload.other,
-          };
-          this.loading = false;
-        })
-        .catch((error) => {
-          this.loading = false;
-          console.log(error);
-          Message.error("未登录或无权限查看");
-        });
+      });
+      const data = response.payload.metadata;
+      const format = response.payload.format;
+      const sample = response.payload.sample;
+      this.problem = {
+        problemId: data.problemId,
+        displayId: data.displayId,
+        title: data.title,
+        acceptedCount: data.acceptedCount,
+        submissionCount: data.submissionCount,
+        createdAt: data.createdAt,
+        difficulty: data.difficulty,
+        time: data.time,
+        memory: data.memory,
+        description: response.payload.description,
+        inputFormat: format.input,
+        outputFormat: format.output,
+        sampleInput: sample.input,
+        sampleOutput: sample.output,
+        other: response.payload.other,
+      };
+      this.loading = false;
     },
   },
   created() {

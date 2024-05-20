@@ -1,128 +1,125 @@
 import { Request, Response, NextFunction } from "express";
 import { userService } from "../service/userService";
-import { encryptPassword, validatePassword } from "../utils/utils";
-import { responseBase } from "../schema";
+import {
+  encryptPassword,
+  handleErrors,
+  validatePassword,
+} from "../utils/utils";
+import { BumptyError, responseBase, user } from "../schema";
 import jwt from "jsonwebtoken";
 import { get } from "node:http";
 
 const registerUser = async (req: Request, res: Response) => {
-  const { email, password, username } = req.body;
+  try {
+    const { email, password, username } = req.body;
 
-  const emailAvailable = await userService.checkEmailAvailability(email);
+    if (!email || !password || !username) {
+      throw new BumptyError("400", "Invalid input");
+    }
 
-  if (!emailAvailable) {
+    const emailAvailable = await userService.checkEmailAvailability(email);
+
+    if (!emailAvailable) {
+      throw new BumptyError("400", "Email already taken");
+    }
+
+    const hashedPassword = encryptPassword(password);
+
+    const user = await userService.createUser({
+      email,
+      username,
+      password: hashedPassword,
+    });
+
     const response = responseBase.parse({
       error: {
-        msg: "Email already taken",
+        msg: "",
       },
-      code: "400",
-      payload: {},
+      code: "200",
+      payload: {
+        userId: user.id,
+        email: user.email,
+        username: user.username,
+        type: user.type,
+      },
     });
 
     res.json(response);
-    return;
+  } catch (err) {
+    handleErrors(err, res);
   }
-
-  const hashedPassword = await encryptPassword(password);
-
-  const user = await userService.createUser({
-    email,
-    username,
-    password: hashedPassword,
-  });
-
-  const response = responseBase.parse({
-    error: {
-      msg: "",
-    },
-    code: "200",
-    payload: {
-      userId: user.id,
-      email: user.email,
-      username: user.username,
-      type: user.type,
-    },
-  });
-
-  res.json(response);
 };
 
 const loginUser = async (req: Request, res: Response) => {
   try {
-    const token = req.cookies.token;
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as {
-      userId: number;
-      username: string;
-      type: string;
-    };
+    try {
+      const token = req.cookies.token;
+      const decoded = jwt.verify(token, process.env.JWT_SECRET!) as {
+        userId: number;
+        username: string;
+        email: string;
+        type: string;
+      };
+
+      const response = responseBase.parse({
+        code: "200",
+        payload: {
+          userId: decoded.userId,
+          username: decoded.username,
+          email: decoded.email,
+          type: decoded.type,
+        },
+        error: {
+          msg: "",
+        },
+      });
+
+      res.json(response);
+      return;
+    } catch (err) {}
+
+    const { email, password } = req.body;
+
+    const user = await userService.getUserByEmail(email);
+
+    if (!user) {
+      throw new BumptyError("400", "Invalid email or password");
+    }
+
+    const isValid = validatePassword(password, user.password);
+
+    if (!isValid) {
+      throw new BumptyError("400", "Invalid email or password");
+    }
 
     const response = responseBase.parse({
-      code: "200",
-      payload: {
-        userId: decoded.userId,
-        username: decoded.username,
-        type: decoded.type,
-      },
       error: {
         msg: "",
       },
-    });
-
-    res.json(response);
-    return;
-  } catch (err) {}
-
-  const { email, password } = req.body;
-
-  const user = await userService.getUserByEmail(email);
-
-  if (!user) {
-    const response = responseBase.parse({
-      error: {
-        msg: "Invalid email or password",
+      code: "200",
+      payload: {
+        userId: user.id,
+        username: user.username,
+        email: user.email,
+        type: user.type,
       },
-      code: "400",
-      payload: {},
     });
 
-    res.json(response);
-    return;
-  }
-
-  const isValid = await validatePassword(password, user.password);
-
-  if (!isValid) {
-    const response = responseBase.parse({
-      error: {
-        msg: "Invalid email or password",
+    const token = jwt.sign(
+      {
+        userId: user.id,
+        username: user.username,
+        email: user.email,
+        type: user.type,
       },
-      code: "400",
-      payload: {},
-    });
+      process.env.JWT_SECRET!,
+    );
 
+    res.cookie("token", token);
     res.json(response);
-    return;
+  } catch (err) {
+    handleErrors(err, res);
   }
-
-  const response = responseBase.parse({
-    error: {
-      msg: "",
-    },
-    code: "200",
-    payload: {
-      userId: user.id,
-      username: user.username,
-      type: user.type,
-    },
-  });
-
-  const token = jwt.sign(
-    { userId: user.id, username: user.username, type: user.type },
-    process.env.JWT_SECRET!,
-  );
-
-  res.cookie("token", token);
-  res.json(response);
 };
 
 const logoutUser = async (req: Request, res: Response) => {
@@ -141,36 +138,170 @@ const logoutUser = async (req: Request, res: Response) => {
 };
 
 const getUser = async (req: Request, res: Response) => {
-  const userId = Number(req.query.userId);
+  try {
+    const userId = Number(req.query.userId);
 
-  const user = await userService.getUserById(userId);
+    const user = await userService.getUserById(userId);
 
-  if (!user) {
+    if (!user) {
+      throw new BumptyError("400", "User not found");
+    }
+
     const response = responseBase.parse({
       error: {
-        msg: "User not found",
+        msg: "",
       },
-      code: "400",
+      code: "200",
+      payload: {
+        userId: user!.id,
+        username: user!.username,
+        type: user!.type,
+      },
+    });
+
+    res.json(response);
+  } catch (err) {
+    handleErrors(err, res);
+  }
+};
+
+const updateUser = async (req: Request, res: Response) => {
+  try {
+    const data = req.body;
+    const userId = Number(req.query.userId);
+    const curUserId = res.locals.user.userId;
+    const userType = res.locals.user.type;
+
+    const curUser = await userService.getUserById(curUserId);
+
+    if (!curUser) {
+      throw new BumptyError("400", "User not found");
+    }
+
+    if (!validatePassword(data.checkPassword, curUser.password)) {
+      throw new BumptyError("400", "Invalid password");
+    }
+
+    if (userType !== 0 && curUserId !== userId) {
+      throw new BumptyError("400", "Permission denied");
+    }
+
+    const tarUser = await userService.getUserById(userId);
+
+    if (!tarUser) {
+      throw new BumptyError("400", "User not found");
+    }
+
+    const updatedUser = await userService.updateUser(userId, {
+      username: data.username,
+      email: data.email,
+      password: encryptPassword(data.password),
+      type: data.type,
+    });
+
+    const response = responseBase.parse({
+      error: {
+        msg: "",
+      },
+      code: "200",
+      payload: {
+        userId: updatedUser.id,
+        email: updatedUser.email,
+        username: updatedUser.username,
+        type: updatedUser.type,
+      },
+    });
+
+    res.json(response);
+  } catch (err) {
+    handleErrors(err, res);
+  }
+};
+
+const deleteUser = async (req: Request, res: Response) => {
+  try {
+    const userId = Number(req.query.userId);
+    const userType = res.locals.user.type;
+
+    if (userType !== 0) {
+      throw new BumptyError("400", "Permission denied");
+    }
+
+    await userService.deleteUser(userId);
+
+    const response = responseBase.parse({
+      error: {
+        msg: "",
+      },
+      code: "200",
       payload: {},
     });
 
     res.json(response);
-    return;
+  } catch (err) {
+    handleErrors(err, res);
   }
+};
 
-  const response = responseBase.parse({
-    error: {
-      msg: "",
-    },
-    code: "200",
-    payload: {
-      userId: user!.id,
-      username: user!.username,
-      type: user!.type,
-    },
-  });
+const listUser = async (req: Request, res: Response) => {
+  try {
+    const userType = res.locals.user.type;
+    if (userType !== 0) {
+      throw new BumptyError("400", "Permission denied");
+    }
 
-  res.json(response);
+    const count = Number(req.query.count);
+    const offset = Number(req.query.offset) | 0;
+    const users = await userService.listUser(count, offset);
+
+    const resUser = users.map((user) => {
+      return {
+        userId: user.id,
+        email: user.email,
+        username: user.username,
+        type: user.type,
+      };
+    });
+
+    const response = responseBase.parse({
+      error: {
+        msg: "",
+      },
+      code: "200",
+      payload: {
+        users: resUser,
+      },
+    });
+
+    res.json(response);
+  } catch (err) {
+    handleErrors(err, res);
+  }
+};
+
+const countUser = async (req: Request, res: Response) => {
+  try {
+    const userType = res.locals.user.type;
+    if (userType !== 0) {
+      throw new BumptyError("400", "Permission denied");
+    }
+
+    const count = await userService.countUser();
+
+    const response = responseBase.parse({
+      error: {
+        msg: "",
+      },
+      code: "200",
+      payload: {
+        count,
+      },
+    });
+
+    res.json(response);
+  } catch (err) {
+    handleErrors(err, res);
+  }
 };
 
 const authUserMiddleware = async (
@@ -178,38 +309,23 @@ const authUserMiddleware = async (
   res: Response,
   next: NextFunction,
 ) => {
-  const token = req.cookies.token;
-
-  if (!token) {
-    const response = responseBase.parse({
-      error: {
-        msg: "Not logged in, please login first",
-      },
-      code: "400",
-      payload: {},
-    });
-
-    res.json(response);
-    return;
-  }
-
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!);
-    res.locals.user = decoded;
+    const token = req.cookies.token;
+
+    if (!token) {
+      throw new BumptyError("400", "Not logged in, please login first");
+    }
+
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET!);
+      res.locals.user = decoded;
+    } catch (err) {
+      throw new BumptyError("400", "Not logged in, please login first");
+    }
+    next();
   } catch (err) {
-    const response = responseBase.parse({
-      error: {
-        msg: "Not logged in, please login first",
-      },
-      code: "400",
-      payload: {},
-    });
-
-    res.json(response);
-    return;
+    handleErrors(err, res);
   }
-
-  next();
 };
 
 const userController = {
@@ -217,6 +333,10 @@ const userController = {
   loginUser,
   logoutUser,
   getUser,
+  updateUser,
+  deleteUser,
+  listUser,
+  countUser,
 };
 
 export { userController, authUserMiddleware };
