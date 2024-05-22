@@ -195,7 +195,9 @@ const updateUser = async (req: Request, res: Response) => {
     const updatedUser = await userService.updateUser(userId, {
       username: data.username,
       email: data.email,
-      password: encryptPassword(data.password),
+      password: data.password
+        ? encryptPassword(data.password)
+        : tarUser.password,
       type: data.type,
     });
 
