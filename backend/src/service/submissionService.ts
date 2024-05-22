@@ -104,6 +104,12 @@ const handleJudge = async (data: Submission) => {
     if (problemSet!.endTime! < new Date()) {
       throw new Error("Problemset has ended");
     }
+
+    if (
+      problemSet!.problems!.findIndex((p) => p.id === data.problemId) === -1
+    ) {
+      throw new Error("Problem not in problemset");
+    }
   }
 
   const result = await prisma.submission.create({
